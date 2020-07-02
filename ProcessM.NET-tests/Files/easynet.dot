@@ -1,0 +1,25 @@
+digraph G{
+	subgraph place {
+		graph [shape=circle,color=gray];
+		node [shape=circle,fixedsize=true,width=2];
+		"p0";
+		"p1";
+		"p2";
+		"p3";
+	}
+	subgraph transitions {
+		node[shape = rect, height = 0.2, width = 2];
+		"a";
+		"b";
+		"c";
+		"d";
+	}
+	"p0" -> "a";
+	"a" -> "p1";
+	"p1" -> "b";
+	"b" -> "p2";
+	"p2" -> "c";
+	"c" -> "p3";
+	"p1" -> "d";
+	"d" -> "p2";
+}

@@ -1,0 +1,44 @@
+digraph G{
+	subgraph place {
+		graph [shape = circle, color = gray];
+		node [shape = circle, fixedsize = true, width = 2];
+		"p0";
+		"p1";
+		"p2";
+		"p3";
+		"p4";
+		"p5";
+		"p6";
+		"p7";
+		"p8";
+	}
+	subgraph transitions {
+		node [shape = rect, height = 0.2, width = 2];
+		"a";
+		"b";
+		"c";
+		"d";
+		"e";
+		"f";
+		"g";
+	}
+	"p0" -> "a";
+	"a" -> "p1";
+	"p1" -> "b";
+	"p4" -> "b";
+	"p5" -> "b";
+	"b" -> "p2";
+	"p2" -> "c";
+	"c" -> "p3";
+	"p3" -> "d";
+	"d" -> "p1";
+	"d" -> "p4";
+	"d" -> "p5";
+	"p5" -> "e";
+	"e" -> "p6";
+	"p4" -> "f";
+	"f" -> "p7";
+	"p6" -> "g";
+	"p7" -> "g";
+	"g" -> "p8";
+}

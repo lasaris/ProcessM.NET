@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pnml xmlns="http://www.pnml.org/version-2009/grammar/pnml">
+	<net id="net" type="http://www.pnml.org/version-2009/grammar/pnml">
+		<page id="page-0">
+			<place id="p0">
+				<name>
+					<text>p0</text>
+				</name>
+			</place>
+			<place id="p1">
+				<name>
+					<text>p1</text>
+				</name>
+			</place>
+			<place id="p2">
+				<name>
+					<text>p2</text>
+				</name>
+			</place>
+			<place id="p3">
+				<name>
+					<text>p3</text>
+				</name>
+			</place>
+			<place id="p4">
+				<name>
+					<text>p4</text>
+				</name>
+			</place>
+			<transition id="t0">
+				<name>
+					<text>a</text>
+				</name>
+			</transition>
+			<transition id="t1">
+				<name>
+					<text>b</text>
+				</name>
+			</transition>
+			<transition id="t2">
+				<name>
+					<text>c</text>
+				</name>
+			</transition>
+			<transition id="t3">
+				<name>
+					<text>d</text>
+				</name>
+			</transition>
+			<transition id="t4">
+				<name>
+					<text>e</text>
+				</name>
+			</transition>
+			<arc id="a0" source="p0" target="t0">
+				<inscription>
+					<text>1</text>
+				</inscription>
+			</arc>
+			<arc id="a1" source="t0" target="p1">
+				<inscription>
+					<text>1</text>
+				</inscription>
+			</arc>
+			<arc id="a2" source="p1" target="t1">
+				<inscription>
+					<text>1</text>
+				</inscription>
+			</arc>
+			<arc id="a3" source="t1" target="p2">
+				<inscription>
+					<text>1</text>
+				</inscription>
+			</arc>
+			<arc id="a4" source="p2" target="t2">
+				<inscription>
+					<text>1</text>
+				</inscription>
+			</arc>
+			<arc id="a5" source="t2" target="p3">
+				<inscription>
+					<text>1</text>
+				</inscription>
+			</arc>
+			<arc id="a6" source="p3" target="t3">
+				<inscription>
+					<text>1</text>
+				</inscription>
+			</arc>
+			<arc id="a7" source="t3" target="p1">
+				<inscription>
+					<text>1</text>
+				</inscription>
+			</arc>
+			<arc id="a8" source="p3" target="t4">
+				<inscription>
+					<text>1</text>
+				</inscription>
+			</arc>
+			<arc id="t3" source="t4" target="p4">
+				<inscription>
+					<text>1</text>
+				</inscription>
+			</arc>
+		</page>
+	</net>
+</pnml>
