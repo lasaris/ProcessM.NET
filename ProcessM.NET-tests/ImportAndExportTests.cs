@@ -74,7 +74,7 @@ namespace ProcessM.NETtests
         public void CSVImportInvalidTest()
         {
             // Arrange
-            string path = ".\\thisFileDoesNotExist.csv";
+            string path = "." + separator + "thisFileDoesNotExist.csv";
 
             // Act and Assert
             Assert.ThrowsException<ArgumentException>(() => CSVImport.MakeDataFrame(path));
@@ -187,7 +187,7 @@ namespace ProcessM.NETtests
             IPetriNet exampleNet = MakeEasyPetriNet();
 
             // Act
-            string filepath = PNMLExport.Serialize(exampleNet);
+            string filepath = "." + separator + PNMLExport.Serialize(exampleNet);
             loadedNet = PNMLImport.Deserialize(filepath);
 
             // Assert
@@ -223,7 +223,7 @@ namespace ProcessM.NETtests
 
             // Act
             string filepath = DOTExport.Serialize(exampleNet);
-            string loadedDot = File.ReadAllText(".\\" + filepath);
+            string loadedDot = File.ReadAllText("." + separator + filepath);
 
             // Assert
             Assert.AreEqual(exampleDot, loadedDot);
