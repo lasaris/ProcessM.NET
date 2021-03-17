@@ -3,7 +3,7 @@
 namespace ProcessM.NET.Model
 {
     /// <summary>
-    /// Interface for transitions in Petri Net.
+    /// Interface for transitions in Petri Net or C net.
     /// </summary>
     public interface ITransition
     {

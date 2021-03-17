@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Deedle;
 
 namespace ProcessM.NET.Model.DataAnalysis
 {
@@ -49,11 +50,11 @@ namespace ProcessM.NET.Model.DataAnalysis
         /// <returns>List of filled workflow traces.</returns>
         private List<WorkflowTrace> MakeWftsBasedOnOrder(Model.ImportedEventLog importedData)
         {
-            var traces = MakeEmptyWfts(importedData.Contents.GetColumn<string>(importedData.CaseId));
+            List<WorkflowTrace> traces = MakeEmptyWfts(importedData.Contents.GetColumn<string>(importedData.CaseId));
 
             for (int i = 0; i < importedData.Contents.RowCount; i++)
             {
-                var row = importedData.Contents.TryGetRow<string>(i);
+                OptionalValue<Series<string, string>> row = importedData.Contents.TryGetRow<string>(i);
                 foreach (WorkflowTrace wft in traces)
                 {
                     if (wft.CaseId == row.Value.Get(importedData.CaseId))
@@ -73,11 +74,11 @@ namespace ProcessM.NET.Model.DataAnalysis
         /// <returns>List of filled workflow traces.</returns>
         private List<WorkflowTrace> MakeWftsBasedOnTimestamp(Model.ImportedEventLog importedData)
         {
-            var traces = MakeEmptyTimestampedWfts(importedData.Contents.GetColumn<string>(importedData.CaseId));
+            List<TimestampedWorkflowTrace> traces = MakeEmptyTimestampedWfts(importedData.Contents.GetColumn<string>(importedData.CaseId));
 
             for (int i = 0; i < importedData.Contents.RowCount; i++)
             {
-                var row = importedData.Contents.TryGetRow<string>(i);
+                OptionalValue<Series<string, string>> row = importedData.Contents.TryGetRow<string>(i);
                 foreach (TimestampedWorkflowTrace wft in traces)
                 {
                     if (wft.CaseId == row.Value.Get(importedData.CaseId))
