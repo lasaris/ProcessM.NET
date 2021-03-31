@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
+using System.Collections.Generic;
+using System.Text;
 
-namespace ProcessM.NET.Model.BasicPetriNet
+namespace ProcessM.NET.Model.CausalNet
 {
-    /// <summary>
-    /// Basic place implementation.
-    /// </summary>
-    public class Place : IPlace
+    public class CPlace : IPlace
     {
-        public string Id { get; } = "";
+        public string Id { get; }
 
-        public Place(string id)
+        public CPlace(string id)
         {
             Id = id;
         }
@@ -25,7 +23,7 @@ namespace ProcessM.NET.Model.BasicPetriNet
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((IPlace)obj);
+            return Equals((IPlace) obj);
         }
     }
 }

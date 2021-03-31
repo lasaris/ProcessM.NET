@@ -11,5 +11,8 @@ namespace ProcessM.NET.Model
         List<IPlace> OutputPlaces { get; }
         string Id { get; }
         string Activity { get; }
+        bool Invisible { get; }
+
+        void MakeInvisible();
     }
 }

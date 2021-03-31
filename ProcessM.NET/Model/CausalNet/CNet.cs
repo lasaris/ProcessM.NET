@@ -23,17 +23,17 @@ namespace ProcessM.NET.Model.CausalNet
         public Dictionary<string, HashSet<IBinding>> OutputBindings { get; } =
             new Dictionary<string, HashSet<IBinding>>();
 
-        public List<ICPlace> Activities { get; } = new List<ICPlace>();
+        public List<CPlace> Activities { get; } = new List<CPlace>();
 
-        public ICPlace StartActivity { get; private set; }
+        public CPlace StartActivity { get; private set; }
 
-        public ICPlace EndActivity { get; private set; }
+        public CPlace EndActivity { get; private set; }
 
         private void FillActivities(MatrixBase directlyFollowsMatrixMatrix)
         {
-            StartActivity = new ICPlace(directlyFollowsMatrixMatrix.StartActivities.First());
-            EndActivity = new ICPlace(directlyFollowsMatrixMatrix.EndActivities.First());
-            foreach (var activity in directlyFollowsMatrixMatrix.Activities) Activities.Add(new ICPlace(activity));
+            StartActivity = new CPlace(directlyFollowsMatrixMatrix.StartActivities.First());
+            EndActivity = new CPlace(directlyFollowsMatrixMatrix.EndActivities.First());
+            foreach (var activity in directlyFollowsMatrixMatrix.Activities) Activities.Add(new CPlace(activity));
         }
 
         private void FindBindings(WorkflowLog workflowLog, DependencyGraph dependencyGraph, int windowSize)

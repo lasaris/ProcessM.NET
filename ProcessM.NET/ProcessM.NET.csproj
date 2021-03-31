@@ -6,10 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Deedle" Version="2.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ConformanceChecking\Alignment\" />
+    <PackageReference Include="OptimizedPriorityQueue" Version="5.1.0" />
   </ItemGroup>
 
 </Project>

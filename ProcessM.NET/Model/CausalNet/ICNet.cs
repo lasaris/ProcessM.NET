@@ -7,10 +7,10 @@ namespace ProcessM.NET.Model.CausalNet
 {
     public interface ICNet
     {
-        List<ICPlace> Activities { get; }
+        List<CPlace> Activities { get; }
 
-        ICPlace StartActivity { get; }
+        CPlace StartActivity { get; }
 
-        ICPlace EndActivity { get; }
+        CPlace EndActivity { get; }
     }
 }
