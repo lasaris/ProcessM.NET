@@ -244,17 +244,10 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
                         {
                             OutputActivities[i].Add(j);
                             InputActivities[j].Add(i);
-                            longDistances.Add(new Tuple<int, int>(i, j));
+                            LongDependencies.Add(new Tuple<int, int>(i, j));
                         }
                     }
                 }
-            }
-
-            foreach (var (i, j) in longDistances)
-            {
-                InputActivities[i].Add(j);
-                OutputActivities[j].Add(i);
-                LongDependencies.Add(new Tuple<int, int>(i, j));
             }
         }
 
