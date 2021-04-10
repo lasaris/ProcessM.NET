@@ -1,18 +1,20 @@
-﻿using ProcessM.NET.Model.BasicPetriNet;
-using ProcessM.NET.Model.CausalNet;
+﻿using ProcessM.NET.Model.CausalNet;
 using ProcessM.NET.Model.DataAnalysis;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace ProcessM.NET.Discovery.Heuristic_Miner
+namespace ProcessM.NET.Discovery.HeuristicMiner
 {
     public static class HeuristicMiner
     {
-        public static CNet MakeCNet(WorkflowLog workflowLog, int minFreq, float minDependency, int minBind, int windowSize)
+        public static CNet MineCNet(WorkflowLog workflowLog, HeuristicMinerSettings heuristicsMinerSettings)
         {
-            WorkflowLogUtil.WorkflowLogPreprocessor(workflowLog);
-            return new CNet(workflowLog, minFreq, minDependency, minBind, windowSize);
+            //Preprocessing the log; each trace starts with same activity and ends with same activity
+            WorkflowLogUtils.WorkflowLogPreprocessor(workflowLog);
+            return new CNet(workflowLog, heuristicsMinerSettings);
+        }
+
+        public static CNet MineCNet(WorkflowLog workflowLog)
+        {
+            return MineCNet(workflowLog, new HeuristicMinerSettings());
         }
     }
 }

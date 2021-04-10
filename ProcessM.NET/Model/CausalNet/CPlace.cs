@@ -4,26 +4,15 @@ using System.Text;
 
 namespace ProcessM.NET.Model.CausalNet
 {
-    public class CPlace : IPlace
+    public class CPlace : ICPlace
     {
-        public string Id { get; }
+        public int Id { get; }
+        public int Frequency { get; }
 
-        public CPlace(string id)
+        public CPlace(int id, int frequency)
         {
             Id = id;
-        }
-
-        public bool Equals(IPlace other)
-        {
-            return other != null && Id == other.Id;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((IPlace) obj);
+            Frequency = frequency;
         }
     }
 }

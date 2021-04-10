@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Deedle;
 
 namespace ProcessM.NET.Model.DataAnalysis
@@ -112,6 +113,22 @@ namespace ProcessM.NET.Model.DataAnalysis
             {
                 WorkflowTraces = MakeWftsBasedOnTimestamp(importedData);
             }
+        }
+
+        public List<Tuple<WorkflowTrace, int>> GetTracesWithOccurrence()
+        {
+            var dictionary = new Dictionary<WorkflowTrace, int>();
+            foreach (var trace in WorkflowTraces)
+            {
+                var dictElement = dictionary.FirstOrDefault(e => e.Key.Activities.SequenceEqual(trace.Activities));
+                if (dictElement.Key == null)
+                {
+                    dictionary.Add(trace, 1);
+                }
+                else dictionary[dictElement.Key] = dictElement.Value + 1;
+            }
+
+            return dictionary.Select(x => new Tuple<WorkflowTrace, int>(x.Key, x.Value)).ToList();
         }
 
         public WorkflowLog(List<WorkflowTrace> workflowTraces)
