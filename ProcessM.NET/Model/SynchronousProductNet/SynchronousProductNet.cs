@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ProcessM.NET.Model.BasicPetriNet;
 
 namespace ProcessM.NET.Model.SynchronousProductNet
@@ -74,7 +72,7 @@ namespace ProcessM.NET.Model.SynchronousProductNet
                     productTransition.OutputPlaces.Add(oPlace);
                 }
                 
-                //0 cost for "invisible" transitions
+                // cost 0 for "invisible" transitions
                 var syncTransition = new STransition(productTransition, transition.Invisible ? 0 : cost);
                 
                 foreach (var place in transition.InputPlaces)

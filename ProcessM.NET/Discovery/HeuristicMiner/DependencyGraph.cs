@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using ProcessM.NET.Model.DataAnalysis;
 
 namespace ProcessM.NET.Discovery.HeuristicMiner
 {
@@ -10,7 +8,7 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
     {
         /* Mapping int to string */
         public List<string> Activities { get; }
-        /* Maping string to int */
+        /* Mapping string to int */
         public Dictionary<string, int> ActivityIndices { get; }
 
         public HeuristicMinerSettings Settings { get; }
@@ -136,7 +134,7 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
         private HashSet<Tuple<int, int>> EachTaskStrongestCause(DependencyMatrix dependencyMatrix)
         {
             var causes = new HashSet<Tuple<int, int>>();
-            // i == 1 => skip first column
+            // Skip start activity
             for (var i = 1; i < Activities.Count; i++)
             {
                 var strongest = -1;

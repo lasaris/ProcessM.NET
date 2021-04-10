@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using ProcessM.NET.Discovery.HeuristicMiner;
 using ProcessM.NET.Model.DataAnalysis;
 

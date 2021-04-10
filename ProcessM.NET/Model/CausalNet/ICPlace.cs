@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ProcessM.NET.Model.CausalNet
+﻿namespace ProcessM.NET.Model.CausalNet
 {
     public interface ICPlace
     {
