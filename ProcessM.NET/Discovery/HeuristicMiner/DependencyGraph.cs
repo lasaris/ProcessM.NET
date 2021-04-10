@@ -226,7 +226,6 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
 
         private void FindLongDistance(SuccessorMatrix successorMatrix)
         {
-            var longDistances = new HashSet<Tuple<int, int>>();
             for (var i = 0; i < Activities.Count; i++)
             {
                 for (var j = i + 1; j < Activities.Count; j++)
