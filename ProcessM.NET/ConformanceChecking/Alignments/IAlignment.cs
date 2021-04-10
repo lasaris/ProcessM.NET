@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ProcessM.NET.ConformanceChecking.Alignments
+﻿namespace ProcessM.NET.ConformanceChecking.Alignments
 {
     public interface IAlignment
     {

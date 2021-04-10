@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Transactions;
+﻿using System.Collections.Generic;
 using ProcessM.NET.Model.BasicPetriNet;
 using ProcessM.NET.Model.DataAnalysis;
 using ProcessM.NET.Model.SynchronousProductNet;

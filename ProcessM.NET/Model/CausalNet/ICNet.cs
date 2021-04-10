@@ -1,7 +1,5 @@
-﻿using ProcessM.NET.Model.CausalNet;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ProcessM.NET.Model.CausalNet
 {

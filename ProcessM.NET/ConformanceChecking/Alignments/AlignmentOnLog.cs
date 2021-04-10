@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using ProcessM.NET.Model.BasicPetriNet;
 using ProcessM.NET.Model.DataAnalysis;
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-
-namespace ProcessM.NET.Model.BasicPetriNet
+﻿namespace ProcessM.NET.Model.BasicPetriNet
 {
     /// <summary>
     /// Basic place implementation.

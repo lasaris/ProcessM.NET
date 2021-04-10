@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ProcessM.NET.Discovery.HeuristicMiner
+﻿namespace ProcessM.NET.Discovery.HeuristicMiner
 {
     public class HeuristicMinerSettings
     {
