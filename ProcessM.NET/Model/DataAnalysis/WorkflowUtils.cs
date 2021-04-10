@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ProcessM.NET.Model.DataAnalysis
 {
-    public static class WorkflowLogUtil
+    public static class WorkflowLogUtils
     {
         public static void WorkflowLogPreprocessor(WorkflowLog workflowLog)
         {

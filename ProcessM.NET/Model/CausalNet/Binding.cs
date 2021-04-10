@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace ProcessM.NET.Model.CausalNet
 {
     public class Binding : IBinding
     {
-        public HashSet<string> Activities { get; }
-        public int Frequency { get; private set; } = 0;
+        public HashSet<int> Activities { get; }
+        public int Frequency { get; private set; }
 
-        public Binding(HashSet<string> activities)
+        public Binding(HashSet<int> activities, int frequency)
         {
             Activities = activities;
+            Frequency = frequency;
         }
 
-        public void AddFrequency()
+        public void AddFrequency(int value)
         {
-            Frequency++;
+            Frequency += value;
         }
     }
 }

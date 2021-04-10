@@ -7,12 +7,12 @@ using System.Text;
 namespace ProcessM.NET.ConformanceChecking.CausalFootprint
 {
     /// <summary>
-    /// This class creates Causal Footprint overlay of given Petri Net, analyzes the results and returns Relation Matrix of given Petri Net.
+    /// This class creates Causal Footprint overlay of given Petri Net, analyzes the results and returns Relation DirectDependencyMatrix of given Petri Net.
     /// </summary>
     public static class PetriNetAnalyzer
     {
         /// <summary>
-        /// Finds all transitions that come directly after the beginningTransition in given Petri Net and updates given Relation Matrix accordingly.
+        /// Finds all transitions that come directly after the beginningTransition in given Petri Net and updates given Relation DirectDependencyMatrix accordingly.
         /// </summary>
         /// <param name="matrix">A relation matrix of analyzed Petri Net.</param>
         /// <param name="beginningTransition">A beginning transition.</param>
@@ -69,7 +69,7 @@ namespace ProcessM.NET.ConformanceChecking.CausalFootprint
         }
 
         /// <summary>
-        /// Finds parallelism in Petri Net overlay and updates given Relation Matrix accordingly.
+        /// Finds parallelism in Petri Net overlay and updates given Relation DirectDependencyMatrix accordingly.
         /// </summary>
         /// <param name="matrix">A relation matrix of analyzed Petri Net.</param>
         /// <param name="net">Petri Net overlay.</param>

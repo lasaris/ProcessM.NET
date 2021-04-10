@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace ProcessM.NET.Model.CausalNet
 {
     public interface IBinding
     {
-        HashSet<string> Activities { get; }
+        HashSet<int> Activities { get; }
         int Frequency { get; }
 
-        void AddFrequency();
+        void AddFrequency(int val);
     }
 }

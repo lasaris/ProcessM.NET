@@ -44,18 +44,11 @@ namespace ProcessM.NET.ConformanceChecking.Alignments
         {
             var dict = new Dictionary<WorkflowTrace, Tuple<AlignmentOnTrace, int>>();
             var worstCostOnModel = ComputeWorstCostOfModel(pNet, modelMoveCost);
-            foreach (var trace in workflowLog.WorkflowTraces)
+            foreach (var (trace, occurrence) in workflowLog.GetTracesWithOccurrence())
             {
-                if (dict.ContainsKey(trace))
-                {
-                    dict[trace] = new Tuple<AlignmentOnTrace, int>(dict[trace].Item1, dict[trace].Item2 + 1);
-                }
-                else
-                {
-                    dict.Add(trace,
-                        new Tuple<AlignmentOnTrace, int>(
-                            new AlignmentOnTrace(trace, pNet, worstCostOnModel, traceMoveCost, modelMoveCost), 1));
-                }
+                var traceAlignment =
+                    new AlignmentOnTrace(trace, pNet, worstCostOnModel, traceMoveCost, modelMoveCost);
+                dict[trace] = new Tuple<AlignmentOnTrace, int>(traceAlignment, occurrence);
             }
 
             return dict;

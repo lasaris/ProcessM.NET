@@ -1,139 +1,191 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ProcessM.NET.Discovery.Heuristic_Miner;
+using System.Runtime.InteropServices.ComTypes;
+using ProcessM.NET.Discovery.HeuristicMiner;
 using ProcessM.NET.Model.DataAnalysis;
 
 namespace ProcessM.NET.Model.CausalNet
 {
     public class CNet : ICNet
     {
-        public CNet(WorkflowLog workflowLog, int minFreq, float minDependency, int minBind, int windowSize)
-        {
-            var directlyFollowsMatrix = new DirectlyFollowsMatrix(workflowLog);
-            var dependencyGraph = new DependencyGraph(directlyFollowsMatrix, minFreq, minDependency);
-            FillActivities(directlyFollowsMatrix);
-            FindBindings(workflowLog, dependencyGraph, windowSize);
-            FilterBindings(minBind);
-        }
-
-        public Dictionary<string, HashSet<IBinding>> InputBindings { get; } =
-            new Dictionary<string, HashSet<IBinding>>();
-
-        public Dictionary<string, HashSet<IBinding>> OutputBindings { get; } =
-            new Dictionary<string, HashSet<IBinding>>();
-
+        public List<string> IndexToActivity { get; }
+        public Dictionary<string, int> ActivityIndices { get; }
         public List<CPlace> Activities { get; } = new List<CPlace>();
-
         public CPlace StartActivity { get; private set; }
-
         public CPlace EndActivity { get; private set; }
 
-        private void FillActivities(MatrixBase directlyFollowsMatrixMatrix)
+        public Dictionary<Tuple<int, int>, int> LongDistance { get; }
+            = new Dictionary<Tuple<int, int>, int>();
+
+        public Dictionary<int, HashSet<IBinding>> InputBindings { get; } =
+            new Dictionary<int, HashSet<IBinding>>();
+
+        public Dictionary<int, HashSet<IBinding>> OutputBindings { get; } =
+            new Dictionary<int, HashSet<IBinding>>();
+
+
+        public CNet(WorkflowLog workflowLog, HeuristicMinerSettings heuristicsMinerSettings)
         {
-            StartActivity = new CPlace(directlyFollowsMatrixMatrix.StartActivities.First());
-            EndActivity = new CPlace(directlyFollowsMatrixMatrix.EndActivities.First());
-            foreach (var activity in directlyFollowsMatrixMatrix.Activities) Activities.Add(new CPlace(activity));
+            var successorMatrix = new SuccessorMatrix(workflowLog);
+            var dependencyGraph = new DependencyGraph(successorMatrix, heuristicsMinerSettings);
+            IndexToActivity = dependencyGraph.Activities;
+            ActivityIndices = dependencyGraph.ActivityIndices;
+            FillActivities(successorMatrix);
+            PrepareBindings(dependencyGraph);
+            FindBindings(dependencyGraph, workflowLog);
         }
 
-        private void FindBindings(WorkflowLog workflowLog, DependencyGraph dependencyGraph, int windowSize)
+        private void FillActivities(SuccessorMatrix successorMatrix)
+        {
+            var startAct = successorMatrix.StartActivities.First();
+            var endAct = successorMatrix.EndActivities.First();
+            for (int i = 0; i < successorMatrix.ActivityOccurrences.Length; i++)
+            {
+                var freq = successorMatrix.ActivityOccurrences[i];
+                Activities.Add(new CPlace(i, freq));
+            }
+
+            StartActivity = Activities[successorMatrix.ActivityIndices[startAct]];
+            EndActivity = Activities[successorMatrix.ActivityIndices[endAct]];
+        }
+
+        private void PrepareBindings(DependencyGraph dependencyGraph)
         {
             foreach (var activity in Activities)
             {
-                var inputBindings = new HashSet<IBinding>();
-                var outputBindings = new HashSet<IBinding>();
-                OutputBindings.Add(activity.Id, outputBindings);
-                InputBindings.Add(activity.Id, inputBindings);
+                InputBindings.Add(activity.Id, new HashSet<IBinding>());
+                OutputBindings.Add(activity.Id, new HashSet<IBinding>());
             }
 
-            foreach (var trace in workflowLog.WorkflowTraces)
+            foreach (var longDependency in dependencyGraph.LongDependencies)
+            {
+                LongDistance.Add(longDependency, 0);
+            }
+        }
+
+        private void FindBindings(DependencyGraph dependencyGraph, WorkflowLog workflowLog)
+        {
+            foreach (var (trace, occurrence) in workflowLog.GetTracesWithOccurrence())
+            {
                 for (var i = 0; i < trace.Activities.Count; i++)
                 {
-                    HashSet<string> inActivities = GetInActivitiesInWindow(trace, dependencyGraph, i, windowSize);
-                    HashSet<string> outActivities = GetOutActivitiesInWindow(trace, dependencyGraph, i, windowSize);
-                    var usedBinding = InputBindings[trace.Activities[i]]
-                        .FirstOrDefault(binding => binding.Activities.SetEquals(inActivities));
-                    if (usedBinding is null)
+                    int currentActivity = dependencyGraph.ActivityIndices[trace.Activities[i]];
+
+                    var outCandidate = OutBindCandidate(dependencyGraph, currentActivity, i, trace, occurrence);
+                    var inCandidate = InBindCandidate(dependencyGraph, currentActivity, i, trace);
+
+                    if (outCandidate.Count > 0)
                     {
-                        usedBinding = new Binding(inActivities);
-                        InputBindings[trace.Activities[i]].Add(usedBinding);
+                        var binding = OutputBindings[currentActivity].FirstOrDefault(b => b.Activities.SetEquals(outCandidate));
+                        if (binding is null)
+                        {
+                            OutputBindings[currentActivity].Add(new Binding(outCandidate, occurrence));
+                        } else binding.AddFrequency(occurrence);
                     }
 
-                    usedBinding.AddFrequency();
-                    usedBinding = OutputBindings[trace.Activities[i]]
-                        .FirstOrDefault(binding => binding.Activities.SetEquals(outActivities));
-                    if (usedBinding is null)
+                    if (inCandidate.Count <= 0) continue;
                     {
-                        usedBinding = new Binding(outActivities);
-                        OutputBindings[trace.Activities[i]].Add(usedBinding);
+                        var binding = InputBindings[currentActivity].FirstOrDefault(b => b.Activities.SetEquals(inCandidate));
+                        if (binding is null)
+                        {
+                            InputBindings[currentActivity].Add(new Binding(inCandidate, occurrence));
+                        } else binding.AddFrequency(occurrence);
                     }
-
-                    usedBinding.AddFrequency();
                 }
+            }
         }
 
-        private void FilterBindings(int minBind)
+        private HashSet<int> OutBindCandidate(DependencyGraph dependencyGraph, int from, int tracePosition, WorkflowTrace trace, int traceOccurrence)
         {
-            foreach (KeyValuePair<string, HashSet<IBinding>> bindings in InputBindings)
-                bindings.Value.RemoveWhere(b => b.Frequency <= minBind);
-            foreach (KeyValuePair<string, HashSet<IBinding>> bindings in OutputBindings)
-                bindings.Value.RemoveWhere(b => b.Frequency <= minBind);
+            var bindCandidate = new HashSet<int>();
+            foreach (var to in dependencyGraph.OutputActivities[from])
+            {
+                if (IsNearestInput(dependencyGraph, from, to, tracePosition, trace, traceOccurrence))
+                    bindCandidate.Add(to);
+            }
+
+            return bindCandidate;
         }
 
-        private static HashSet<string> GetOutActivitiesInWindow(WorkflowTrace workflowTrace,
-            DependencyGraph dependencyGraph, int index, int windowSize = 4)
+        private HashSet<int> InBindCandidate(DependencyGraph dependencyGraph, int from, int tracePosition, WorkflowTrace trace)
         {
-            List<string> outActivities = workflowTrace
-                .Activities
-                .GetRange(Math.Min(index + 1, workflowTrace.Activities.Count - 1),
-                    Math.Min(windowSize, workflowTrace.Activities.Count - index - 1));
-            outActivities = outActivities
-                .Where(activity => dependencyGraph
-                    .Graph[workflowTrace.Activities[index]]
-                    .Contains(activity))
-                .ToHashSet()
-                .ToList();
+            var bindCandidate = new HashSet<int>();
+            foreach (var to in dependencyGraph.InputActivities[from])
+            {
+                if (IsNearestOutput(dependencyGraph, from, to, tracePosition, trace))
+                    bindCandidate.Add(to);
+            }
 
-            for (var i = 0; i < outActivities.Count; i++)
-                if (IsInFollowedList(outActivities.GetRange(0, i), dependencyGraph, outActivities[i]))
-                    outActivities.Remove(outActivities[i]);
-
-            return outActivities.ToHashSet();
+            return bindCandidate;
         }
 
-        private static bool IsInFollowedList(IEnumerable<string> activities, DependencyGraph dependencyGraph,
-            string activity)
+        private bool IsNearestInput(DependencyGraph dependencyGraph, int from, int to,
+            int tracePosition, WorkflowTrace trace, int traceOccurrence)
         {
-            return activities.Any(act => dependencyGraph.Graph[act]
-                .Contains(activity));
+            var fromTo = new Tuple<int, int>(from, to);
+            for (int i = tracePosition + 1; i < trace.Activities.Count; i++)
+            {
+                var iActivity = ActivityIndices[trace.Activities[i]];
+                if (iActivity == to)
+                {
+                    if (!dependencyGraph.LongDependencies.Any(t => t.Equals(fromTo)))
+                    {
+                        for (int j = i - 1; j > tracePosition; j--)
+                        {
+                            var jActivity = ActivityIndices[trace.Activities[j]];
+                            if (dependencyGraph.OutputActivities[jActivity].Contains(iActivity) &&
+                                dependencyGraph.OutputActivities[from].Contains(jActivity))
+                                return false;
+                        }
+                    }
+                    else
+                    {
+                        LongDistance[fromTo] += traceOccurrence;
+                        return false;
+                    }
+                    return true;
+                }
+
+                if (trace.Activities[i] == trace.Activities[tracePosition]) //Same activity, which we started with
+                {
+                    return false;
+                }
+            }
+
+            //No occurrence of to activity
+            return false;
         }
 
-        private static bool IsInPreviousList(IEnumerable<string> activities, DependencyGraph dependencyGraph,
-            string activity)
+        private bool IsNearestOutput(DependencyGraph dependencyGraph, int from, int to,
+            int tracePosition, WorkflowTrace trace)
         {
-            return activities.Any(act => dependencyGraph.Graph[activity]
-                .Contains(act));
-        }
+            if (dependencyGraph.LongDependencies.Any(t => t.Item1 == to && t.Item2 == from))
+                return false;
+            for (int i = tracePosition - 1; i >= 0; i--)
+            {
+                var iActivity = ActivityIndices[trace.Activities[i]];
+                if (iActivity == to)
+                {
+                    for (int j = i + 1; j < tracePosition; j++)
+                    {
+                        var jActivity = ActivityIndices[trace.Activities[j]];
+                    
+                        if (dependencyGraph.InputActivities[jActivity].Contains(iActivity) &&
+                            dependencyGraph.InputActivities[from].Contains(jActivity))
+                            return false;
+                    }
+                    return true;
+                }
 
-        private static HashSet<string> GetInActivitiesInWindow(WorkflowTrace workflowTrace,
-            DependencyGraph dependencyGraph, int index, int windowSize = 4)
-        {
-            List<string> inActivities
-                = workflowTrace.Activities
-                    .GetRange(Math.Max(index - windowSize, 0), index);
-            inActivities = inActivities
-                .Where(activity => dependencyGraph
-                    .Graph[activity]
-                    .Contains(workflowTrace.Activities[index]))
-                .ToHashSet()
-                .ToList();
+                if (trace.Activities[i] == trace.Activities[tracePosition]) //Same activity, which we started with
+                {
+                    return false;
+                }
+            }
 
-            for (var i = 0; i < inActivities.Count; i++)
-                if (IsInPreviousList(inActivities.GetRange(i, inActivities.Count - i), dependencyGraph,
-                    inActivities[i]))
-                    inActivities.Remove(inActivities[i]);
-
-            return inActivities.ToHashSet();
+            //No occurrence of to activity
+            return false;
         }
     }
 }
