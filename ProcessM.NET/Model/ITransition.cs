@@ -3,7 +3,7 @@
 namespace ProcessM.NET.Model
 {
     /// <summary>
-    /// Interface for transitions in Petri Net.
+    /// Interface for transitions in Petri Net or C net.
     /// </summary>
     public interface ITransition
     {
@@ -11,5 +11,8 @@ namespace ProcessM.NET.Model
         List<IPlace> OutputPlaces { get; }
         string Id { get; }
         string Activity { get; }
+        bool Invisible { get; }
+
+        void MakeInvisible();
     }
 }

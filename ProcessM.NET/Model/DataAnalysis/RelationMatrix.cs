@@ -6,67 +6,25 @@ namespace ProcessM.NET.Model.DataAnalysis
     /// A class which represents a matrix of relations (causal footprint) of all activities in data loaded from event log
     /// as well as supplementary data which are used to better envision and use the matrix.
     /// </summary>
-    public class RelationMatrix
+    public class RelationMatrix : MatrixBase
     {
-        /// <summary>
-        /// A list of activities observed in event log.
-        /// </summary>
-        public List<string> Activities { get; }
-
-        /// <summary>
-        /// A dictionary of activity to index mapping in relation matrix (causal footprint).
-        /// </summary>
-        public Dictionary<string, int> ActivityIndices { get; }
-
-        /// <summary>
-        /// A set of activities which appear at the beginning of observed traces.
-        /// </summary>
-        public HashSet<string> StartActivities { get; }
-
-        /// <summary>
-        /// A set of activities which appear at the end of observed traces.
-        /// </summary>
-        public HashSet<string> EndActivities { get; }
-
         /// <summary>
         /// A relation matrix (casual footprint) of relations within two activities.
         /// </summary>
         public Relation[,] Footprint { get; }
 
         /// <summary>
-        /// Goes through given list of workflow traces and fills the Activities, StartActivities, EndActivities and ActivityIndices fields.
-        /// </summary>
-        /// <param name="workflowTraces">A list of (non-timestamped) workflow traces.</param>
-        private void FillActivities(List<WorkflowTrace> workflowTraces)
-        {
-            foreach (WorkflowTrace wft in workflowTraces)
-            {
-                StartActivities.Add(wft.Activities[0]);
-                EndActivities.Add(wft.Activities[wft.Activities.Count - 1]);
-
-                foreach (string a in wft.Activities)
-                {
-                    if (!Activities.Contains(a))
-                    {
-                        ActivityIndices.Add(a, Activities.Count);
-                        Activities.Add(a);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Goes through given workflow traces and marks direct succession (B comes directly after A) of all loaded activities.
         /// </summary>
         /// <param name="workflowTraces">A list of (non-timestamped) workflow traces.</param>
-        private void FindSuccession(List<WorkflowTrace> workflowTraces)
+        private void FindSuccession(IEnumerable<WorkflowTrace> workflowTraces)
         {
-            foreach (WorkflowTrace wft in workflowTraces)
+            foreach (var wft in workflowTraces)
             {
-                for (int i = 0; i < wft.Activities.Count - 1; i++)
+                for (var i = 0; i < wft.Activities.Count - 1; i++)
                 {
-                    int fromIndex = ActivityIndices[wft.Activities[i]];
-                    int toIndex = ActivityIndices[wft.Activities[i + 1]];
+                    var fromIndex = ActivityIndices[wft.Activities[i]];
+                    var toIndex = ActivityIndices[wft.Activities[i + 1]];
                     Footprint[fromIndex, toIndex] = Relation.Succession;
                 }
             }
@@ -79,9 +37,9 @@ namespace ProcessM.NET.Model.DataAnalysis
         /// </summary>
         private void UpdateRelations()
         {
-            for (int i = 0; i < Activities.Count; i++)
+            for (var i = 0; i < Activities.Count; i++)
             {
-                for (int j = 0; j < Activities.Count; j++)
+                for (var j = 0; j < Activities.Count; j++)
                 {
                     if (Footprint[i, j] == Relation.Succession && Footprint[j, i] == Relation.Succession)
                     {
@@ -103,19 +61,8 @@ namespace ProcessM.NET.Model.DataAnalysis
         /// <param name="startActivities">A set of activities which can appear at the beginning of traces.</param>
         /// <param name="endActivities">A set of activities which can appear at the end of traces.</param>
         public RelationMatrix(List<string> activities, HashSet<string> startActivities, HashSet<string> endActivities)
+            :base(activities, startActivities, endActivities)
         {
-            Activities = activities;
-            StartActivities = startActivities;
-            EndActivities = endActivities;
-            ActivityIndices = new Dictionary<string, int>();
-
-            int i = 0;
-            foreach (string activity in activities)
-            {
-                ActivityIndices.Add(activity, i);
-                i++;
-            }
-
             Footprint = new Relation[activities.Count, activities.Count];
         }
 
@@ -123,14 +70,8 @@ namespace ProcessM.NET.Model.DataAnalysis
         /// Is used to create a full relation matrix based on WorkflowLog.
         /// </summary>
         /// <param name="log">A workflow log made from loaded data.</param>
-        public RelationMatrix(WorkflowLog log)
+        public RelationMatrix(WorkflowLog log) : base(log)
         {
-            StartActivities = new HashSet<string>();
-            EndActivities = new HashSet<string>();
-            Activities = new List<string>();
-            ActivityIndices = new Dictionary<string, int>();
-            FillActivities(log.WorkflowTraces);
-
             Footprint = new Relation[Activities.Count, Activities.Count];
 
             FindSuccession(log.WorkflowTraces);

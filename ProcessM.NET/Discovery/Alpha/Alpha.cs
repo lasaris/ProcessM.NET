@@ -61,7 +61,7 @@ namespace ProcessM.NET.Discovery.Alpha
         /// <returns>Id which should be used for next place.</returns>
         private static int SetupPlaces(HashSet<Tuple<HashSet<string>, HashSet<string>>> setsAB, List<IPlace> places, List<ITransition> transitions, int id)
         {
-            foreach (var setAB in setsAB)
+            foreach (Tuple<HashSet<string>, HashSet<string>> setAB in setsAB)
             {
                 Place placeAB = new Place("p" + id);
                 id++;

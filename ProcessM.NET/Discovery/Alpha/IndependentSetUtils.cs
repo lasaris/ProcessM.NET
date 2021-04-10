@@ -70,9 +70,9 @@ namespace ProcessM.NET.Discovery.Alpha
         {
             var setsAB = new HashSet<Tuple<HashSet<string>, HashSet<string>>>();
 
-            foreach (var setA in independentSets)
+            foreach (HashSet<string> setA in independentSets)
             {
-                foreach (var setB in independentSets)
+                foreach (HashSet<string> setB in independentSets)
                 {
                     bool isValidSet = true;
                     foreach (string activityA in setA)
@@ -91,7 +91,7 @@ namespace ProcessM.NET.Discovery.Alpha
                         bool isBiggerSet = false;
                         var setsToRemove = new HashSet<Tuple<HashSet<string>, HashSet<string>>>();
 
-                        foreach (var setAB in setsAB)
+                        foreach (Tuple<HashSet<string>, HashSet<string>> setAB in setsAB)
                         {
                             if (setAB.Item1.IsSubsetOf(setA) && setAB.Item2.IsSubsetOf(setB))
                             {

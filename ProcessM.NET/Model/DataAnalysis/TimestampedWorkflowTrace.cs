@@ -42,8 +42,8 @@ namespace ProcessM.NET.Model.DataAnalysis
         public WorkflowTrace ConvertToWorkflowTrace()
         {
             List<string> orderedActivities = new List<string>();
-            var newActivities = Activities.OrderBy(a => a.Value);
-            foreach (var timestampedActivity in newActivities)
+            IOrderedEnumerable<KeyValuePair<string, DateTime>> newActivities = Activities.OrderBy(a => a.Value);
+            foreach (KeyValuePair<string, DateTime> timestampedActivity in newActivities)
             {
                 orderedActivities.Add(timestampedActivity.Key);
             }

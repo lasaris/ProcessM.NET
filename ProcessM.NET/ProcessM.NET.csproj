@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Deedle" Version="2.1.0" />
+    <PackageReference Include="OptimizedPriorityQueue" Version="5.1.0" />
   </ItemGroup>
 
 </Project>

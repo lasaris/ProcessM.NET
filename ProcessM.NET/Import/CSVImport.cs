@@ -48,7 +48,7 @@ namespace ProcessM.NET.Import
             {
                 missingValues = new string[] { "NaN", "NA", "#N/A", ":", "-", "TBA", "TBD" }; // default value of ReadCsv
             }
-            var data = Frame.ReadCsv(path, hasHeaders: hasHeaders, inferTypes: inferTypes, separators: separatorsString, culture: culture, maxRows: maxRows, missingValues: missingValues);
+            Frame<int, string> data = Frame.ReadCsv(path, hasHeaders: hasHeaders, inferTypes: inferTypes, separators: separatorsString, culture: culture, maxRows: maxRows, missingValues: missingValues);
             return new ImportedEventLog(data);
         }
     }

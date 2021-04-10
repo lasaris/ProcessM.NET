@@ -7,10 +7,11 @@ namespace ProcessM.NET.Model.BasicPetriNet
     /// </summary>
     public class Transition : ITransition
     {
-        public List<IPlace> InputPlaces { get; } = new List<IPlace>();
-        public List<IPlace> OutputPlaces { get; } = new List<IPlace>();
+        public List<IPlace> InputPlaces { get; }
+        public List<IPlace> OutputPlaces { get; }
         public string Id { get; }
         public string Activity { get; }
+        public bool Invisible { get; private set; } = false;
 
         public Transition(string id, string activity)
         {
@@ -18,6 +19,11 @@ namespace ProcessM.NET.Model.BasicPetriNet
             OutputPlaces = new List<IPlace>();
             Id = id;
             Activity = activity;
+        }
+
+        public void MakeInvisible()
+        {
+            Invisible = true;
         }
     }
 }
