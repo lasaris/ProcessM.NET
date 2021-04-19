@@ -2,14 +2,25 @@
 
 namespace ProcessM.NET.Model.DataAnalysis
 {
+    /// <summary>
+    /// Static class for preprocessing a workflow log
+    /// </summary>
     public static class WorkflowLogUtils
     {
+        /// <summary>
+        /// Creates same start activity and end activity for each trace in the Workflow log
+        /// </summary>
+        /// <param name="workflowLog">Workflow log</param>
         public static void WorkflowLogPreprocessor(WorkflowLog workflowLog)
         {
             PreprocessStartActivity(workflowLog);
             PreprocessEndActivity(workflowLog);
         }
 
+        /// <summary>
+        /// Preprocess start activity
+        /// </summary>
+        /// <param name="workflowLog">Workflow log</param>
         private static void PreprocessStartActivity(WorkflowLog workflowLog)
         {
             var startActivities = new HashSet<string>();
@@ -27,6 +38,10 @@ namespace ProcessM.NET.Model.DataAnalysis
             }
         }
 
+        /// <summary>
+        /// Preprocess end activity
+        /// </summary>
+        /// <param name="workflowLog">Workflow log</param>
         private static void  PreprocessEndActivity(WorkflowLog workflowLog)
         {
             var endActivities = new HashSet<string>();

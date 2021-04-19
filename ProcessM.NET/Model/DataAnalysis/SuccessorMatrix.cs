@@ -1,7 +1,7 @@
-﻿using ProcessM.NET.Model.DataAnalysis;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 
-namespace ProcessM.NET.Discovery.HeuristicMiner
+namespace ProcessM.NET.Model.DataAnalysis
 {
     /// <summary>
     /// A class which represents a directly follows matrix and L2L matrix of all activities  in data loaded from event log
@@ -18,9 +18,12 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
         /// </summary>
         public int[,] L2LMatrix { get; }
         /// <summary>
-        /// A LongDistance follows matrix of relation within two activities
+        /// A Long distance follows matrix of relation within two activities
         /// </summary>
         public int[,] LongDistanceMatrix { get; }
+        /// <summary>
+        /// Sum of activity occurrences
+        /// </summary>
         public int[] ActivityOccurrences { get; }
 
         /// <summary>
@@ -33,16 +36,15 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
             L2LMatrix = new int[Activities.Count, Activities.Count];
             LongDistanceMatrix = new int[Activities.Count, Activities.Count];
             ActivityOccurrences = new int[Activities.Count];
-            ComputeDirectLongActivMatrix(log.WorkflowTraces);
+            ComputeDirectLongMatrix(log.WorkflowTraces);
             ComputeL2L(log.WorkflowTraces);
         }
 
         /// <summary>
-        /// Goes through given workflow traces and compute sum of direct succession (B comes directly after A) of all loaded activities.
-        /// This DirectDependencyMatrix contains information about direct succession and L1L.
+        /// Goes through given workflow traces and compute sum of long successions, direct dependencies and L1L loops
         /// </summary>
         /// <param name="workflowTraces">A list of (non-timestamped) workflow traces.</param>
-        private void ComputeDirectLongActivMatrix(List<WorkflowTrace> workflowTraces)
+        private void ComputeDirectLongMatrix(List<WorkflowTrace> workflowTraces)
         {
             foreach (var trace in workflowTraces)
             {
@@ -51,9 +53,8 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
                 {
                     int aIdx = ActivityIndices[trace.Activities[i]];
                     ActivityOccurrences[aIdx] += 1;
-                    foreach (var id in discoveredIndexes)
+                    foreach (var id in discoveredIndexes.Where(id => id < aIdx && !discoveredIndexes.Contains(aIdx)))
                     {
-                        if (id >= aIdx || discoveredIndexes.Contains(aIdx)) continue;
                         LongDistanceMatrix[id, aIdx] += 1;
                     }
                     discoveredIndexes.Add(aIdx);
@@ -65,6 +66,10 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
             }
         }
 
+        /// <summary>
+        /// Computes the L2L matrix
+        /// </summary>
+        /// <param name="workflowTraces">List of Workflow traces</param>
         private void ComputeL2L(List<WorkflowTrace> workflowTraces)
         {
             foreach (var trace in workflowTraces)

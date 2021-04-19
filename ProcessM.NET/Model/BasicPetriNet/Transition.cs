@@ -21,7 +21,7 @@ namespace ProcessM.NET.Model.BasicPetriNet
             Activity = activity;
         }
 
-        public void MakeInvisible()
+        public void ChangeVisibility()
         {
             Invisible = true;
         }

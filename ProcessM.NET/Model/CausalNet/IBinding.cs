@@ -2,6 +2,9 @@
 
 namespace ProcessM.NET.Model.CausalNet
 {
+    /// <summary>
+    /// Interface for a binding in Causal net
+    /// </summary>
     public interface IBinding
     {
         HashSet<int> Activities { get; }

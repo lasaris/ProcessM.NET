@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace ProcessM.NET.Model.CausalNet
 {
+    /// <summary>
+    /// Interface for a Causal Net
+    /// </summary>
     public interface ICNet
     {
         List<string> IndexToActivity { get; }
