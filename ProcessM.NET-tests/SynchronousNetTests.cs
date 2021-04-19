@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProcessM.NET.ConformanceChecking.Alignments;
+using ProcessM.NET.Discovery.HeuristicMiner;
 using ProcessM.NET.Import;
 using ProcessM.NET.Model;
 using ProcessM.NET.Model.BasicPetriNet;
@@ -14,11 +18,54 @@ using ProcessM.NET.Model.SynchronousProductNet;
 namespace ProcessM.NETtests
 {
     [TestClass]
-    public class SynchronousNetTests
+    public class SynchronousNetTests : TestBase
     {
         [TestMethod]
-        public void TraceAndPetriNetAdvanced()
+        public void SyncNetEasy()
         {
+            // Arrange
+            ImportedEventLog elog = CSVImport.MakeDataFrame(heuristicCsv);
+            elog.SetActivity("act");
+            elog.SetCaseId("id");
+            WorkflowLog wlog = new WorkflowLog(elog);
+            var tNet = AlignmentUtils.MakePNetFromTrace(wlog.WorkflowTraces[23]);
+            var pNet = CNetUtils.ConvertCNetToPetriNet(HeuristicMiner.MineCNet(wlog));
+
+            // Act
+            var syncNet = new SynchronousProductNet(tNet, pNet);
+
+            // Assert
+            Assert.AreEqual(syncNet.Places.Count, pNet.Places.Count + tNet.Places.Count);
+            Assert.AreEqual(pNet.Transitions.Count + 2 * tNet.Transitions.Count, syncNet.Transitions.Count);
+            Assert.IsTrue(syncNet.EndPlaces.SetEquals(new HashSet<IPlace> { tNet.EndPlace, pNet.EndPlace }));
+            Assert.IsTrue(syncNet.StartPlaces.SetEquals(new HashSet<IPlace> { tNet.StartPlace, pNet.StartPlace }));
+        }
+
+        [TestMethod]
+        public void SyncNetHard()
+        {
+            // Arrange
+            ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsv);
+            elog.SetActivity("act");
+            elog.SetCaseId("id");
+            WorkflowLog wlog = new WorkflowLog(elog);
+            var tNet = AlignmentUtils.MakePNetFromTrace(wlog.WorkflowTraces[23]);
+            var pNet = CNetUtils.ConvertCNetToPetriNet(HeuristicMiner.MineCNet(wlog));
+
+            // Act
+            var syncNet = new SynchronousProductNet(tNet, pNet);
+
+            // Assert
+            Assert.AreEqual(syncNet.Places.Count, pNet.Places.Count + tNet.Places.Count);
+            Assert.AreEqual(pNet.Transitions.Count + 2 * tNet.Transitions.Count, syncNet.Transitions.Count);
+            Assert.IsTrue(syncNet.EndPlaces.SetEquals(new HashSet<IPlace> { tNet.EndPlace, pNet.EndPlace }));
+            Assert.IsTrue(syncNet.StartPlaces.SetEquals(new HashSet<IPlace> { tNet.StartPlace, pNet.StartPlace }));
+        }
+
+        [TestMethod]
+        public void SyncNetAdvancedCustom()
+        {
+            // Arrange
             var trace = new WorkflowTrace("0");
             trace.Activities.Add("register");
             trace.Activities.Add("decide");
@@ -51,7 +98,7 @@ namespace ProcessM.NETtests
             transitions[^1].OutputPlaces.Add(places[5]);
 
             transitions.Add(new Transition("t5", ""));
-            transitions[^1].MakeInvisible();
+            transitions[^1].ChangeVisibility();
             transitions[^1].InputPlaces.Add(places[5]);
             transitions[^1].OutputPlaces.Add(places[6]);
             transitions[^1].OutputPlaces.Add(places[8]);
@@ -69,7 +116,7 @@ namespace ProcessM.NETtests
             transitions[^1].OutputPlaces.Add(places[10]);
 
             transitions.Add(new Transition("t9", ""));
-            transitions[^1].MakeInvisible();
+            transitions[^1].ChangeVisibility();
             transitions[^1].InputPlaces.Add(places[7]);
             transitions[^1].InputPlaces.Add(places[9]);
             transitions[^1].OutputPlaces.Add(places[10]);
@@ -80,15 +127,14 @@ namespace ProcessM.NETtests
 
             PetriNet pNet = new PetriNet(transitions, places, places[0], places[^1]);
 
+            // Act
             SynchronousProductNet syncNet = new SynchronousProductNet(tNet, pNet);
-            Assert.AreEqual(syncNet.Places.Count, pNet.Places.Count + tNet.Places.Count);
-            Assert.AreEqual(syncNet.Transitions.Count, 20);
-            var a = AlignmentUtils.ComputeCostOfAlignment(AlignmentUtils.OptimalAlignmentOnTrace(trace, pNet));
-            var o = AlignmentUtils.ComputeWorstCostOfModel(pNet) + AlignmentUtils.ComputeWorstCostOfTrace(trace);
-            var fitness = 1 - (a / o);
-            Console.WriteLine(a);
-            //TODO ASSERTS
 
+            // Assert
+            Assert.AreEqual(syncNet.Places.Count, pNet.Places.Count + tNet.Places.Count);
+            Assert.AreEqual(pNet.Transitions.Count + 2 * tNet.Transitions.Count, syncNet.Transitions.Count);
+            Assert.IsTrue(syncNet.EndPlaces.SetEquals(new HashSet<IPlace> {tNet.EndPlace, pNet.EndPlace}));
+            Assert.IsTrue(syncNet.StartPlaces.SetEquals(new HashSet<IPlace> { tNet.StartPlace, pNet.StartPlace }));
         }
-}
+    }
 }

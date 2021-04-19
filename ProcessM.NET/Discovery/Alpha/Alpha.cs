@@ -113,7 +113,7 @@ namespace ProcessM.NET.Discovery.Alpha
             id = SetupPlaces(setsAB, places, transitions, id);
             SetupEndPlace(places, matrix.EndActivities, transitions, id);
 
-            return new PetriNet(transitions, places, places[0], places[places.Count - 1]);
+            return new PetriNet(transitions, places, places[0], places[^1]);
         }
     }
 }

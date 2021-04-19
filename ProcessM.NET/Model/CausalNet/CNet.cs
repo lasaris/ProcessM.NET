@@ -6,24 +6,50 @@ using ProcessM.NET.Model.DataAnalysis;
 
 namespace ProcessM.NET.Model.CausalNet
 {
+    /// <summary>
+    /// Class which represents the Causal net
+    /// </summary>
     public class CNet : ICNet
     {
+        /// <summary>
+        /// Mapping index to activity
+        /// </summary>
         public List<string> IndexToActivity { get; }
+        /// <summary>
+        /// Mapping activity to index
+        /// </summary>
         public Dictionary<string, int> ActivityIndices { get; }
+        /// <summary>
+        /// List of Activities
+        /// </summary>
         public List<CPlace> Activities { get; } = new List<CPlace>();
+        /// <summary>
+        /// Start activity
+        /// </summary>
         public CPlace StartActivity { get; private set; }
+        /// <summary>
+        /// End activity
+        /// </summary>
         public CPlace EndActivity { get; private set; }
-
+        /// <summary>
+        /// Long distance dependencies
+        /// </summary>
         public Dictionary<Tuple<int, int>, int> LongDistance { get; }
             = new Dictionary<Tuple<int, int>, int>();
-
+        /// <summary>
+        /// Dictionary which represents input bindings for each activity
+        /// </summary>
         public Dictionary<int, HashSet<IBinding>> InputBindings { get; } =
             new Dictionary<int, HashSet<IBinding>>();
-
+        /// <summary>
+        /// Dictionary which represents output bindings for each activity
+        /// </summary>
         public Dictionary<int, HashSet<IBinding>> OutputBindings { get; } =
             new Dictionary<int, HashSet<IBinding>>();
 
 
+        /// <param name="workflowLog">Workflow log</param>
+        /// <param name="heuristicsMinerSettings">Heuristic miner settings</param>
         public CNet(WorkflowLog workflowLog, HeuristicMinerSettings heuristicsMinerSettings)
         {
             var successorMatrix = new SuccessorMatrix(workflowLog);
@@ -35,6 +61,10 @@ namespace ProcessM.NET.Model.CausalNet
             FindBindings(dependencyGraph, workflowLog);
         }
 
+        /// <summary>
+        /// Fill Activities based on successor matrix
+        /// </summary>
+        /// <param name="successorMatrix">Successor Matrix</param>
         private void FillActivities(SuccessorMatrix successorMatrix)
         {
             var startAct = successorMatrix.StartActivities.First();
@@ -49,6 +79,10 @@ namespace ProcessM.NET.Model.CausalNet
             EndActivity = Activities[successorMatrix.ActivityIndices[endAct]];
         }
 
+        /// <summary>
+        /// Prepare bindings for each activity
+        /// </summary>
+        /// <param name="dependencyGraph"></param>
         private void PrepareBindings(DependencyGraph dependencyGraph)
         {
             foreach (var activity in Activities)
@@ -63,6 +97,11 @@ namespace ProcessM.NET.Model.CausalNet
             }
         }
 
+        /// <summary>
+        /// Find bindings based on the dependency graph and the workflow log
+        /// </summary>
+        /// <param name="dependencyGraph">Dependency graph</param>
+        /// <param name="workflowLog">Workflow log</param>
         private void FindBindings(DependencyGraph dependencyGraph, WorkflowLog workflowLog)
         {
             foreach (var (trace, occurrence) in workflowLog.GetTracesWithOccurrence())
@@ -95,6 +134,15 @@ namespace ProcessM.NET.Model.CausalNet
             }
         }
 
+        /// <summary>
+        /// Find output binding candidate
+        /// </summary>
+        /// <param name="dependencyGraph">Depdendency graph</param>
+        /// <param name="from">From index</param>
+        /// <param name="tracePosition">Position in the trace</param>
+        /// <param name="trace">Trace</param>
+        /// <param name="traceOccurrence">Occurrence of the trace</param>
+        /// <returns>Output binding candidate</returns>
         private HashSet<int> OutBindCandidate(DependencyGraph dependencyGraph, int from, int tracePosition, WorkflowTrace trace, int traceOccurrence)
         {
             var bindCandidate = new HashSet<int>();
@@ -107,6 +155,14 @@ namespace ProcessM.NET.Model.CausalNet
             return bindCandidate;
         }
 
+        /// <summary>
+        /// Find input binding candidate
+        /// </summary>
+        /// <param name="dependencyGraph">Depdendency graph</param>
+        /// <param name="from">From index</param>
+        /// <param name="tracePosition">Position in the trace</param>
+        /// <param name="trace">Trace</param>
+        /// <returns>Input binding candidate</returns>
         private HashSet<int> InBindCandidate(DependencyGraph dependencyGraph, int from, int tracePosition, WorkflowTrace trace)
         {
             var bindCandidate = new HashSet<int>();
@@ -119,6 +175,17 @@ namespace ProcessM.NET.Model.CausalNet
             return bindCandidate;
         }
 
+        /// <summary>
+        /// Check if activity from is the nearest input of activity to
+        /// And Change long distance occurrence if arc is long distance dependency
+        /// </summary>
+        /// <param name="dependencyGraph">Dependency graph</param>
+        /// <param name="from">From index</param>
+        /// <param name="to">To index</param>
+        /// <param name="tracePosition">Trace position</param>
+        /// <param name="trace">Trace</param>
+        /// <param name="traceOccurrence">Trace occurrence</param>
+        /// <returns>Whether activity from is the nearest input of activity to</returns>
         private bool IsNearestInput(DependencyGraph dependencyGraph, int from, int to,
             int tracePosition, WorkflowTrace trace, int traceOccurrence)
         {
@@ -155,7 +222,15 @@ namespace ProcessM.NET.Model.CausalNet
             //No occurrence of to activity
             return false;
         }
-
+        /// <summary>
+        /// Check if activity from is the nearest output of activity activity to
+        /// </summary>
+        /// <param name="dependencyGraph">Dependency graph</param>
+        /// <param name="from">From index</param>
+        /// <param name="to">To index</param>
+        /// <param name="tracePosition">Trace position</param>
+        /// <param name="trace">Trace</param>
+        /// <returns>Whether activity from is the nearest output of activity to</returns>
         private bool IsNearestOutput(DependencyGraph dependencyGraph, int from, int to,
             int tracePosition, WorkflowTrace trace)
         {

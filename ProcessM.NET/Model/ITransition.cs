@@ -13,6 +13,6 @@ namespace ProcessM.NET.Model
         string Activity { get; }
         bool Invisible { get; }
 
-        void MakeInvisible();
+        void ChangeVisibility();
     }
 }

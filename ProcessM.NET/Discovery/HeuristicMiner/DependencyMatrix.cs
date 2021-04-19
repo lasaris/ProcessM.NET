@@ -1,13 +1,27 @@
 ﻿using System;
+using ProcessM.NET.Model.DataAnalysis;
 
 namespace ProcessM.NET.Discovery.HeuristicMiner
 {
+    /// <summary>
+    /// Class which represents dependency matrix
+    /// </summary>
     public class DependencyMatrix
     {
+        /// <summary>
+        /// Direct dependency matrix
+        /// </summary>
         public double[,] DirectDependencyMatrix { get; }
+        /// <summary>
+        /// Length 2 loops dependency matrix
+        /// </summary>
         public double[,] L2LDependencyMatrix { get; }
+        /// <summary>
+        /// Length 1 loops dependency matrix (as 1 dimension)
+        /// </summary>
         public double[] L1LDependencyMatrix { get; }
 
+        /// <param name="successorMatrix">Successor matrix</param>
         public DependencyMatrix(SuccessorMatrix successorMatrix)
         {
             DirectDependencyMatrix = new double[successorMatrix.Activities.Count, successorMatrix.Activities.Count];
@@ -16,6 +30,11 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
             ComputeDependencyMatrix(successorMatrix);
             ComputeL2LDependencyMatrix(successorMatrix);
         }
+
+        /// <summary>
+        /// Compute direct dependency matrix and length 1 loops dependency matrix
+        /// </summary>
+        /// <param name="successorMatrix">Successor matrix</param>
         private void ComputeDependencyMatrix(SuccessorMatrix successorMatrix)
         {
             for (var i = 0; i < DirectDependencyMatrix.GetLength(0); i++)
@@ -39,6 +58,10 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
             }
         }
 
+        /// <summary>
+        /// Compute length 2 loops dependency matrix
+        /// </summary>
+        /// <param name="successorMatrix">Successor matrix</param>
         private void ComputeL2LDependencyMatrix(SuccessorMatrix successorMatrix)
         {
             for (var i = 0; i < L2LDependencyMatrix.GetLength(0); i++)

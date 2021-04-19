@@ -9,10 +9,21 @@ using ProcessM.NET.Model.SynchronousProductNet;
 
 namespace ProcessM.NET.ConformanceChecking.Alignments
 {
+    /// <summary>
+    /// Class which represents basic operations for computing the alignment
+    /// </summary>
     public static class AlignmentUtils
     {
         private static readonly IEqualityComparer<HashSet<IPlace>> IPlaceSetComparer = HashSet<IPlace>.CreateSetComparer();
 
+        /// <summary>
+        /// Compute optimal alignment based on a trace and a Petri net
+        /// </summary>
+        /// <param name="trace">Workflow trace</param>
+        /// <param name="pNet">Petri net</param>
+        /// <param name="traceMoveCost">Trace move cost</param>
+        /// <param name="modelMoveCost">Model move cost</param>
+        /// <returns>Alignment on trace</returns>
         public static List<STransition> OptimalAlignmentOnTrace(WorkflowTrace trace, PetriNet pNet, int traceMoveCost = 1,
             int modelMoveCost = 1)
         {
@@ -21,12 +32,17 @@ namespace ProcessM.NET.ConformanceChecking.Alignments
             return FindOptimalAlignment(syncNet);
         }
 
+        /// <summary>
+        /// Construct Petri net from a trace
+        /// </summary>
+        /// <param name="trace">Workflowtrace</param>
+        /// <returns>Petri net of trace</returns>
         public static PetriNet MakePNetFromTrace(WorkflowTrace trace)
         {
-            var places = new List<IPlace> {new Place("p1'")};
+            var places = new List<IPlace> {new Place("p0'")};
             var transitions = new List<ITransition>();
             
-            var i = 2;
+            var i = 1;
             foreach (var activity in trace.Activities)
             {
                 places.Add(new Place("p" + i + "'"));
@@ -39,6 +55,14 @@ namespace ProcessM.NET.ConformanceChecking.Alignments
             return new PetriNet(transitions, places, places[0], places[^1]);
         }
 
+        /// <summary>
+        /// Compute optimal alignment based on a workflow log and a Petri net
+        /// </summary>
+        /// <param name="workflowLog">Workflow log</param>
+        /// <param name="pNet">Petri net</param>
+        /// <param name="traceMoveCost">Trace move cost</param>
+        /// <param name="modelMoveCost">Model move cost</param>
+        /// <returns>Dictionary with a trace as key and tuple (alignment of the trace and trace occurrence) as value</returns>
         public static Dictionary<WorkflowTrace, Tuple<AlignmentOnTrace, int>> OptimalAlignmentsOnLog(WorkflowLog workflowLog, PetriNet pNet,
             int traceMoveCost = 1, int modelMoveCost = 1)
         {
@@ -54,11 +78,22 @@ namespace ProcessM.NET.ConformanceChecking.Alignments
             return dict;
         }
 
+        /// <summary>
+        /// Compute cost of trace alignment
+        /// </summary>
+        /// <param name="alignment">Alignment</param>
+        /// <returns>Cost of an alignment as double</returns>
         public static double ComputeCostOfAlignment(List<STransition> alignment)
         {
             return alignment.Sum(sTransition => sTransition.Cost);
         }
 
+        /// <summary>
+        /// Compute alignment based on Parent dictionary (helper function to reverse the shortest path in graph)
+        /// </summary>
+        /// <param name="parentDict"></param>
+        /// <param name="syncNet"></param>
+        /// <returns>Alignment as List of STransitions</returns>
         private static List<STransition> ConstructAlignmentFromParentDict(
             IReadOnlyDictionary<HashSet<IPlace>, Tuple<STransition, HashSet<IPlace>>> parentDict,
             SynchronousProductNet syncNet)
@@ -77,7 +112,11 @@ namespace ProcessM.NET.ConformanceChecking.Alignments
             return alignment;
         }
 
-
+        /// <summary>
+        /// Find optimal alignment on a synchronous net
+        /// </summary>
+        /// <param name="syncNet">Synchronous net</param>
+        /// <returns>Alignment as List of STransitions</returns>
         private static List<STransition> FindOptimalAlignment(SynchronousProductNet syncNet)
         {
             var priorityQueue = new SimplePriorityQueue<HashSet<IPlace>, int>(IPlaceSetComparer);
@@ -98,8 +137,9 @@ namespace ProcessM.NET.ConformanceChecking.Alignments
 
                 foreach (var place in node)
                 {
-                    foreach (var transition in syncNet.PlacesToTransitions[place])
+                    foreach (var transitionId in syncNet.PlacesToTransitions[place])
                     {
+                        var transition = syncNet.Transitions[transitionId];
                         HashSet<IPlace> nextNode = node;
 
                         var containsAll = true;
@@ -135,11 +175,23 @@ namespace ProcessM.NET.ConformanceChecking.Alignments
             return ConstructAlignmentFromParentDict(parents, syncNet);
         }
 
+        /// <summary>
+        /// Compute worst cost of model (the shortest path in a Petri net)
+        /// </summary>
+        /// <param name="pNet">Petri net</param>
+        /// <param name="modelMoveCost">Model move cost</param>
+        /// <returns>Worst cost of the model as double</returns>
         public static double ComputeWorstCostOfModel(PetriNet pNet, int modelMoveCost = 1)
         {
             return ComputeCostOfAlignment(FindOptimalAlignment(new SynchronousProductNet(pNet, modelMoveCost)));
         }
 
+        /// <summary>
+        /// Compute worst cost of a trace
+        /// </summary>
+        /// <param name="trace">Workflow trace</param>
+        /// <param name="traceMoveCost">Trace move cost</param>
+        /// <returns>Worst cost of the trace as double</returns>
         public static double ComputeWorstCostOfTrace(WorkflowTrace trace, int traceMoveCost = 1)
         {
             return trace.Activities.Count * traceMoveCost;

@@ -1,5 +1,8 @@
 ﻿namespace ProcessM.NET.ConformanceChecking.Alignments
 {
+    /// <summary>
+    /// Interface for Alignment classes
+    /// </summary>
     public interface IAlignment
     {
         double Fitness { get; }
