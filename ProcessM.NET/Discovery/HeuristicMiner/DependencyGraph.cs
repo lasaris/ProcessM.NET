@@ -84,7 +84,8 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
             //5. Each Task; the strongest cause
             var strongCauses = EachTaskStrongestCause(dependencyMatrix);
 
-            if (Settings.AllTasksConnected) {
+            if (Settings.AllTasksConnected) 
+            {
                 //6. & 7. Find and remove weak outgoing connections for L2L
                 RemoveWeakDependencies(dependencyMatrix, strongFollowers, l2L);
                 //8. & 9. Find and remove weak incoming connections for L2L
@@ -202,7 +203,7 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
                 var strongest = -1;
                 for (var j = 0; j < Activities.Count; j++)
                 {
-                    if (i == j) continue; //Strongest cause cannot be same activity-
+                    if (i == j) continue; //Strongest cause cannot be same activity
                     if (strongest == -1)
                     {
                         strongest = j;

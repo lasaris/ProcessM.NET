@@ -6,8 +6,16 @@ using ProcessM.NET.Model.BasicPetriNet;
 
 namespace ProcessM.NET.Model.CausalNet
 {
+    /// <summary>
+    /// Class which represents basic utils for Causal Net
+    /// </summary>
     public static class CNetUtils
     {
+        /// <summary>
+        /// Convert Causal net to Petri net
+        /// </summary>
+        /// <param name="causalNet"></param>
+        /// <returns></returns>
         public static PetriNet ConvertCNetToPetriNet(CNet causalNet)
         {
             var inputPlaces = new Dictionary<int, int>();

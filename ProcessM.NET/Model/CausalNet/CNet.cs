@@ -222,6 +222,7 @@ namespace ProcessM.NET.Model.CausalNet
             //No occurrence of to activity
             return false;
         }
+
         /// <summary>
         /// Check if activity from is the nearest output of activity activity to
         /// </summary>
