@@ -35,7 +35,7 @@ namespace ProcessM.NET.ConformanceChecking.Alignments
         /// <summary>
         /// Construct Petri net from a trace
         /// </summary>
-        /// <param name="trace">Workflowtrace</param>
+        /// <param name="trace">Workflow trace</param>
         /// <returns>Petri net of trace</returns>
         public static PetriNet MakePNetFromTrace(WorkflowTrace trace)
         {
@@ -91,8 +91,8 @@ namespace ProcessM.NET.ConformanceChecking.Alignments
         /// <summary>
         /// Compute alignment based on Parent dictionary (helper function to reverse the shortest path in graph)
         /// </summary>
-        /// <param name="parentDict"></param>
-        /// <param name="syncNet"></param>
+        /// <param name="parentDict">Parent dictionary</param>
+        /// <param name="syncNet">Synchronous Net</param>
         /// <returns>Alignment as List of STransitions</returns>
         private static List<STransition> ConstructAlignmentFromParentDict(
             IReadOnlyDictionary<HashSet<IPlace>, Tuple<STransition, HashSet<IPlace>>> parentDict,

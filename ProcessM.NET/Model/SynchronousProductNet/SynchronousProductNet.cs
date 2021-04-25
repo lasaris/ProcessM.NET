@@ -28,7 +28,7 @@ namespace ProcessM.NET.Model.SynchronousProductNet
         /// <summary>
         /// Mapping places to their Transitions
         /// </summary>
-        public Dictionary<IPlace, List<int>> PlacesToTransitions { get; private set; }
+        public Dictionary<IPlace, List<int>> PlacesToTransitions { get; }
 
         /// <param name="tNet">Petri net of the trace</param>
         /// <param name="pNet">Petri net of the model</param>

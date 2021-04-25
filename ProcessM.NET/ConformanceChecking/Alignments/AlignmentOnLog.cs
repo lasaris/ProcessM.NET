@@ -19,7 +19,7 @@ namespace ProcessM.NET.ConformanceChecking.Alignments
         /// </summary>
         public int TraceMoveCost { get; }
         /// <summary>
-        /// Cost of move on th emodel
+        /// Cost of move on the model
         /// </summary>
         public int ModelMoveCost { get; }
         /// <summary>
