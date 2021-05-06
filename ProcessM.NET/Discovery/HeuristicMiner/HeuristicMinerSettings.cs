@@ -22,10 +22,6 @@
         /// </summary>
         public double RelativeToBestThreshold { get; set; } = 0.05;
         /// <summary>
-        /// Positive observations threshold
-        /// </summary>
-        public int PositiveObservationsThreshold { get; set; } = 1;
-        /// <summary>
         /// All-tasks connected
         /// </summary>
         public bool AllTasksConnected { get; set; } = true;
