@@ -235,8 +235,7 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
                 var dependencyStrong = dependencyMatrix.DirectDependencyMatrix[strongest.Item1, strongest.Item2];
                 var strongestLoop = strongestHashSet.First(o => o.Item1 == j);
                 var dependencyLoop = dependencyMatrix.DirectDependencyMatrix[strongestLoop.Item1, strongestLoop.Item2];
-                if (dependencyStrong < Settings.DependencyThreshold &&
-                    dependencyStrong - dependencyLoop > Settings.RelativeToBestThreshold)
+                if (dependencyStrong <= dependencyLoop)
                 {
                     toRemove.Add(new Tuple<int, int>(i, strongest.Item2));
                 }

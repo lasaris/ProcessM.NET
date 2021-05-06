@@ -98,7 +98,6 @@ namespace ProcessM.NETtests
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
             var expectedSuccessor = MakeExpectedSuccessorMatrix();
-            MakeExpectedHardL2LMatrix();
 
             // Act
             SuccessorMatrix successorMatrix = new SuccessorMatrix(wlog);
