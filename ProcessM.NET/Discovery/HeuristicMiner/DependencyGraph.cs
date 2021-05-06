@@ -94,7 +94,7 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
 
             //10. Find extra accepted in & out connections
             var followers = FindExtra(strongFollowers, dependencyMatrix, successorMatrix, false);
-            //var causes = FindExtra(strongCauses, dependencyMatrix, successorMatrix, true); ProM Doesn't do that
+            var causes = FindExtra(strongCauses, dependencyMatrix, successorMatrix, true); ProM Doesn't do that
             //12. Combine Hash-sets
             l1L.UnionWith(l2L);
             l1L.UnionWith(followers);
