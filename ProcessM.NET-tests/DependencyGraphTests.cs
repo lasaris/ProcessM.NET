@@ -60,6 +60,7 @@ namespace ProcessM.NETtests
             var successorMatrix = new SuccessorMatrix(wlog);
 
             // Act
+            //HeuristicMinerSettings settings = new HeuristicMinerSettings {AllTasksConnected = false, DependencyThreshold = 0.92, RelativeToBestThreshold = 0};
             HeuristicMinerSettings settings = new HeuristicMinerSettings {L1LThreshold = 0.7};
             DependencyGraph dependencyGraph = new DependencyGraph(successorMatrix, settings);
 

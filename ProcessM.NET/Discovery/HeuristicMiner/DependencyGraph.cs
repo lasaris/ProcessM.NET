@@ -75,37 +75,41 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
         {
             //1. Unnecessary (We store activities in SuccessorMatrix)
             //2. Length 1 loops
-            var l1L = FindL1Loops(successorMatrix, dependencyMatrix);
+            var l1L = FindL1Loops(dependencyMatrix);
             //3. Length 2 loops
-            var l2L = FindL2Loops(successorMatrix, dependencyMatrix);
+            var l2L = FindL2Loops(dependencyMatrix);
 
-            //4. Each Task; the strongest follower
-            var strongFollowers = EachTaskStrongestFollower(dependencyMatrix);
-            //5. Each Task; the strongest cause
-            var strongCauses = EachTaskStrongestCause(dependencyMatrix);
+            HashSet<Tuple<int, int>> strongFollowers = new HashSet<Tuple<int, int>>();
+            HashSet<Tuple<int, int>> strongCauses = new HashSet<Tuple<int, int>>();
 
-            if (Settings.AllTasksConnected) 
+            if (Settings.AllTasksConnected)
             {
+                //4. Each Task; the strongest follower
+                strongFollowers = EachTaskStrongestFollower(dependencyMatrix);
+                //5. Each Task; the strongest cause
+                strongCauses = EachTaskStrongestCause(dependencyMatrix);
+
+
                 //6. & 7. Find and remove weak outgoing connections for L2L
-                RemoveWeakDependencies(dependencyMatrix, strongFollowers, l2L);
+                RemoveWeak(dependencyMatrix, strongFollowers, l2L, false);
                 //8. & 9. Find and remove weak incoming connections for L2L
-                RemoveWeakCauses(dependencyMatrix, strongCauses, l2L);
+                RemoveWeak(dependencyMatrix, strongCauses, l2L, true);
             }
 
             //10. Find extra accepted in & out connections
-            var followers = FindExtra(strongFollowers, dependencyMatrix, successorMatrix, false);
-            var causes = FindExtra(strongCauses, dependencyMatrix, successorMatrix, true);
+            var followers = FindExtra(strongFollowers, dependencyMatrix, false);
+            var causes = FindExtra(strongCauses, dependencyMatrix, true);
 
             //12. Combine Hash-sets
             l1L.UnionWith(l2L);
             l1L.UnionWith(followers);
             l1L.UnionWith(causes);
-            
+            /*
             if (Settings.AllTasksConnected)
             {
                 l1L.UnionWith(strongFollowers);
                 l1L.UnionWith(strongCauses);
-            }
+            }*/
 
             CreateGraph(l1L);
 
@@ -121,14 +125,12 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
         /// <param name="successorMatrix">Direct succession matrix</param>
         /// <param name="dependencyMatrix">Dependency matrix</param>
         /// <returns>Hashset with length 1 loop edges</returns>
-        private HashSet<Tuple<int, int>> FindL1Loops(SuccessorMatrix successorMatrix, DependencyMatrix dependencyMatrix)
+        private HashSet<Tuple<int, int>> FindL1Loops(DependencyMatrix dependencyMatrix)
         {
             var edges = new HashSet<Tuple<int, int>>();
             for (var i = 0; i < Activities.Count; i++)
             {
-                if (!(dependencyMatrix.L1LDependencyMatrix[i] >= Settings.L1LThreshold && 
-                      successorMatrix.DirectMatrix[i, i] >= Settings.PositiveObservationsThreshold))
-                    continue;
+                if (!(dependencyMatrix.L1LDependencyMatrix[i] >= Settings.L1LThreshold)) continue;
                 edges.Add(new Tuple<int, int>(i, i));
             }
 
@@ -141,15 +143,14 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
         /// <param name="successorMatrix">Direct succession matrix</param>
         /// <param name="dependencyMatrix">Dependency matrix</param>
         /// <returns>Hashset with length 2 loop edges</returns>
-        private HashSet<Tuple<int, int>> FindL2Loops(SuccessorMatrix successorMatrix, DependencyMatrix dependencyMatrix)
+        private HashSet<Tuple<int, int>> FindL2Loops(DependencyMatrix dependencyMatrix)
         {
             var edges = new HashSet<Tuple<int, int>>();
             for (var i = 0; i < Activities.Count; i++)
             {
                 for (var j = 0; j < Activities.Count; j++)
                 {
-                    if(!(dependencyMatrix.L2LDependencyMatrix[i, j] >= Settings.L2LThreshold && 
-                         successorMatrix.DirectMatrix[i, j] >= Settings.PositiveObservationsThreshold)) 
+                    if(!(dependencyMatrix.L2LDependencyMatrix[i, j] >= Settings.L2LThreshold)) 
                         continue;
                     edges.Add(new Tuple<int, int>(i, j));
                 }
@@ -227,41 +228,20 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
         /// <param name="dependencyMatrix">Dependency graph</param>
         /// <param name="strongestHashSet">Arcs</param>
         /// <param name="l2Loops">Length 2 loops</param>
-        private void RemoveWeakDependencies(DependencyMatrix dependencyMatrix, HashSet<Tuple<int, int>> strongestHashSet, HashSet<Tuple<int, int>> l2Loops)
+        private void RemoveWeak(DependencyMatrix dependencyMatrix, HashSet<Tuple<int, int>> strongestHashSet, HashSet<Tuple<int, int>> l2Loops, bool dirIn)
         {
             var toRemove = new HashSet<Tuple<int, int>>();
             foreach (var (i, j) in l2Loops)
             {
-                var strongest = strongestHashSet.First(o => o.Item1 == i);
+                var strongest = strongestHashSet.First(o => (dirIn ? o.Item1 : o.Item2) == i);
                 var dependencyStrong = dependencyMatrix.DirectDependencyMatrix[strongest.Item1, strongest.Item2];
-                var strongestLoop = strongestHashSet.First(o => o.Item1 == j);
+                var strongestLoop = strongestHashSet.First(o => (dirIn ? o.Item2 : o.Item1) == j);
                 var dependencyLoop = dependencyMatrix.DirectDependencyMatrix[strongestLoop.Item1, strongestLoop.Item2];
-                if (dependencyStrong <= dependencyLoop)
+                if (dependencyStrong < Settings.DependencyThreshold &&
+                    dependencyStrong - dependencyLoop > Settings.RelativeToBestThreshold)
                 {
-                    toRemove.Add(new Tuple<int, int>(i, strongest.Item2));
-                }
-            }
-            strongestHashSet.ExceptWith(toRemove);
-        }
+                    toRemove.Add(dirIn ? new Tuple<int, int>(strongest.Item1, i) : new Tuple<int, int>(i, strongest.Item2));
 
-        /// <summary>
-        /// Removes weak causes from Hashset of arcs
-        /// </summary>
-        /// <param name="dependencyMatrix">Dependency graph</param>
-        /// <param name="strongestHashSet">Arcs</param>
-        /// <param name="l2Loops">Length 2 loops</param>
-        private void RemoveWeakCauses(DependencyMatrix dependencyMatrix, HashSet<Tuple<int, int>> strongestHashSet, HashSet<Tuple<int, int>> l2Loops)
-        {
-            var toRemove = new HashSet<Tuple<int, int>>();
-            foreach (var (i, j) in l2Loops)
-            {
-                var strongest = strongestHashSet.First(o => o.Item2 == i);
-                var dependencyStrong = dependencyMatrix.DirectDependencyMatrix[strongest.Item1, strongest.Item2];
-                var strongestLoop = strongestHashSet.First(o => o.Item2 == j);
-                var dependencyLoop = dependencyMatrix.DirectDependencyMatrix[strongestLoop.Item1, strongestLoop.Item2];
-                if (dependencyStrong <= dependencyLoop)
-                {
-                    toRemove.Add(new Tuple<int, int>(strongest.Item1, i));
                 }
             }
             strongestHashSet.ExceptWith(toRemove);
@@ -274,24 +254,27 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
         /// <param name="dependencyMatrix">Dependency matrix</param>
         /// <param name="successorMatrix">Successor Matrix</param>
         /// <param name="directionIn">direction</param>
-        private HashSet<Tuple<int, int>> FindExtra(HashSet<Tuple<int, int>> strongest, DependencyMatrix dependencyMatrix, SuccessorMatrix successorMatrix, bool directionIn)
+        private HashSet<Tuple<int, int>> FindExtra(HashSet<Tuple<int, int>> strongest, DependencyMatrix dependencyMatrix, bool directionIn)
         {
             var extra = new HashSet<Tuple<int, int>>();
-            foreach (var (i, j) in strongest)
-            {
-                var strongestDependency = dependencyMatrix.DirectDependencyMatrix[i, j];
-                if (strongestDependency < Settings.DependencyThreshold) continue;
-                for (int k = 0; k < Activities.Count; k++)
+            if(Settings.AllTasksConnected)
+                foreach (var (i, j) in strongest)
                 {
-                    var candidateDependency = directionIn ? dependencyMatrix.DirectDependencyMatrix[k, j] : dependencyMatrix.DirectDependencyMatrix[i, k];
-                    var candidateDirect =
-                        directionIn ? successorMatrix.DirectMatrix[k, j] : successorMatrix.DirectMatrix[i, k];
-                    if (candidateDependency >= Settings.DependencyThreshold &&
-                        strongestDependency - candidateDependency <= Settings.RelativeToBestThreshold &&
-                        candidateDirect >= Settings.PositiveObservationsThreshold)
-                        extra.Add(directionIn ? new Tuple<int, int>(k, j) : new Tuple<int, int>(i, k));
+                    extra.Add((new Tuple<int, int>(i, j)));
+                    var strongestDependency = dependencyMatrix.DirectDependencyMatrix[i, j];
+                    if (strongestDependency < Settings.DependencyThreshold) continue;
+                    for (int k = 0; k < Activities.Count; k++)
+                    {
+                        var candidateDependency = directionIn ? dependencyMatrix.DirectDependencyMatrix[k, j] : dependencyMatrix.DirectDependencyMatrix[i, k];
+                        if (candidateDependency >= Settings.DependencyThreshold &&
+                            strongestDependency - candidateDependency <= Settings.RelativeToBestThreshold)
+                            extra.Add(directionIn ? new Tuple<int, int>(k, j) : new Tuple<int, int>(i, k));
+                    }
                 }
-            }
+            else for(int i = 0; i < Activities.Count; i++)
+                    for(int j = 0; j < Activities.Count; j++)
+                        if (dependencyMatrix.DirectDependencyMatrix[i, j] >= Settings.DependencyThreshold)
+                            extra.Add(new Tuple<int, int>(i, j));
             return extra;
         }
 
@@ -326,8 +309,7 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
                 {
                     // A >>>w B
                     var longDistanceValue = Convert.ToDouble(successorMatrix.LongDistanceMatrix[i, j]) / (successorMatrix.ActivityOccurrences[i] + 1);
-                    if (successorMatrix.LongDistanceMatrix[i, j] >= Settings.PositiveObservationsThreshold &&
-                        longDistanceValue >= Settings.LongDistanceThreshold)
+                    if (longDistanceValue >= Settings.LongDistanceThreshold)
                     {
                         var startActivity = successorMatrix.ActivityIndices[successorMatrix.StartActivities.First()];
                         var endActivity = successorMatrix.ActivityIndices[successorMatrix.EndActivities.First()];
