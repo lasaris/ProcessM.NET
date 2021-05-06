@@ -94,11 +94,12 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
 
             //10. Find extra accepted in & out connections
             var followers = FindExtra(strongFollowers, dependencyMatrix, successorMatrix, false);
-            var causes = FindExtra(strongCauses, dependencyMatrix, successorMatrix, true); ProM Doesn't do that
+            var causes = FindExtra(strongCauses, dependencyMatrix, successorMatrix, true);
+
             //12. Combine Hash-sets
             l1L.UnionWith(l2L);
             l1L.UnionWith(followers);
-            //l1L.UnionWith(causes);
+            l1L.UnionWith(causes);
             
             if (Settings.AllTasksConnected)
             {
@@ -278,15 +279,15 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
             var extra = new HashSet<Tuple<int, int>>();
             foreach (var (i, j) in strongest)
             {
-                var followerDependency = dependencyMatrix.DirectDependencyMatrix[i, j];
-                if (followerDependency < Settings.DependencyThreshold) continue;
+                var strongestDependency = dependencyMatrix.DirectDependencyMatrix[i, j];
+                if (strongestDependency < Settings.DependencyThreshold) continue;
                 for (int k = 0; k < Activities.Count; k++)
                 {
                     var candidateDependency = directionIn ? dependencyMatrix.DirectDependencyMatrix[k, j] : dependencyMatrix.DirectDependencyMatrix[i, k];
                     var candidateDirect =
                         directionIn ? successorMatrix.DirectMatrix[k, j] : successorMatrix.DirectMatrix[i, k];
                     if (candidateDependency >= Settings.DependencyThreshold &&
-                        followerDependency - candidateDependency <= Settings.RelativeToBestThreshold &&
+                        strongestDependency - candidateDependency <= Settings.RelativeToBestThreshold &&
                         candidateDirect >= Settings.PositiveObservationsThreshold)
                         extra.Add(directionIn ? new Tuple<int, int>(k, j) : new Tuple<int, int>(i, k));
                 }
