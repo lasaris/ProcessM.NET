@@ -89,7 +89,7 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
                 //6. & 7. Find and remove weak outgoing connections for L2L
                 RemoveWeakDependencies(dependencyMatrix, strongFollowers, l2L);
                 //8. & 9. Find and remove weak incoming connections for L2L
-                RemoveWeakDependencies(dependencyMatrix, strongCauses, l2L);
+                RemoveWeakCauses(dependencyMatrix, strongCauses, l2L);
             }
 
             //10. Find extra accepted in & out connections
@@ -238,6 +238,29 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
                 if (dependencyStrong <= dependencyLoop)
                 {
                     toRemove.Add(new Tuple<int, int>(i, strongest.Item2));
+                }
+            }
+            strongestHashSet.ExceptWith(toRemove);
+        }
+
+        /// <summary>
+        /// Removes weak causes from Hashset of arcs
+        /// </summary>
+        /// <param name="dependencyMatrix">Dependency graph</param>
+        /// <param name="strongestHashSet">Arcs</param>
+        /// <param name="l2Loops">Length 2 loops</param>
+        private void RemoveWeakCauses(DependencyMatrix dependencyMatrix, HashSet<Tuple<int, int>> strongestHashSet, HashSet<Tuple<int, int>> l2Loops)
+        {
+            var toRemove = new HashSet<Tuple<int, int>>();
+            foreach (var (i, j) in l2Loops)
+            {
+                var strongest = strongestHashSet.First(o => o.Item2 == i);
+                var dependencyStrong = dependencyMatrix.DirectDependencyMatrix[strongest.Item1, strongest.Item2];
+                var strongestLoop = strongestHashSet.First(o => o.Item2 == j);
+                var dependencyLoop = dependencyMatrix.DirectDependencyMatrix[strongestLoop.Item1, strongestLoop.Item2];
+                if (dependencyStrong <= dependencyLoop)
+                {
+                    toRemove.Add(new Tuple<int, int>(strongest.Item1, i));
                 }
             }
             strongestHashSet.ExceptWith(toRemove);
