@@ -76,7 +76,7 @@ namespace ProcessM.NET.Model.CausalNet
                 }
             }
 
-            foreach (var ((from, to), _) in causalNet.LongDistance) //MY APPROACH TO HANDLE LONG DISTANCE DEPENDENCIES
+            foreach (var (from, to) in causalNet.LongDependencies) //MY APPROACH TO HANDLE LONG DISTANCE DEPENDENCIES
             {
                 places.Add(new Place("p" + ++placeCount));
                 transitions[actTransitions[from]].OutputPlaces.Add(places[^1]);

@@ -158,27 +158,24 @@ namespace ProcessM.NETtests
             Assert.IsTrue(dependencyGraph.InputActivities[start].Count == 1);
             //NO OUTPUT FOR END ACT
             Assert.IsTrue(dependencyGraph.OutputActivities[end].Count == 0);
-            //IN
+            Assert.IsTrue(dependencyGraph.LongDependencies.Count == 2);
+            //
             Assert.IsTrue(dependencyGraph.InputActivities[1].SetEquals(new HashSet<int> { 0, 2 }));
             Assert.IsTrue(dependencyGraph.InputActivities[2].SetEquals(new HashSet<int> { 1 }));
             Assert.IsTrue(dependencyGraph.InputActivities[3].SetEquals(new HashSet<int> { 2 }));
             Assert.IsTrue(dependencyGraph.InputActivities[4].SetEquals(new HashSet<int> { 3, 7 }));
-            //LONG DISTANCE
-            Assert.IsTrue(dependencyGraph.InputActivities[5].SetEquals(new HashSet<int> { 4, 3 }));
+            Assert.IsTrue(dependencyGraph.InputActivities[5].SetEquals(new HashSet<int> { 4 }));
             Assert.IsTrue(dependencyGraph.InputActivities[6].SetEquals(new HashSet<int> { 5, 8 }));
             Assert.IsTrue(dependencyGraph.InputActivities[7].SetEquals(new HashSet<int> { 2 }));
-            //LONG DISTANCE
-            Assert.IsTrue(dependencyGraph.InputActivities[8].SetEquals(new HashSet<int> { 4, 7 }));
+            Assert.IsTrue(dependencyGraph.InputActivities[8].SetEquals(new HashSet<int> { 4 }));
             //OUT
             Assert.IsTrue(dependencyGraph.OutputActivities[0].SetEquals(new HashSet<int> { 0, 1 }));
             Assert.IsTrue(dependencyGraph.OutputActivities[1].SetEquals(new HashSet<int> { 2 }));
             Assert.IsTrue(dependencyGraph.OutputActivities[2].SetEquals(new HashSet<int> { 1, 7, 3 }));
-            //LONG DISTANCE
-            Assert.IsTrue(dependencyGraph.OutputActivities[3].SetEquals(new HashSet<int> { 4, 5 }));
+            Assert.IsTrue(dependencyGraph.OutputActivities[3].SetEquals(new HashSet<int> { 4 }));
             Assert.IsTrue(dependencyGraph.OutputActivities[4].SetEquals(new HashSet<int> { 5, 8 }));
             Assert.IsTrue(dependencyGraph.OutputActivities[5].SetEquals(new HashSet<int> { 6 }));
-            //LONG DISTANCE
-            Assert.IsTrue(dependencyGraph.OutputActivities[7].SetEquals(new HashSet<int> { 4, 8 }));
+            Assert.IsTrue(dependencyGraph.OutputActivities[7].SetEquals(new HashSet<int> { 4 }));
             Assert.IsTrue(dependencyGraph.OutputActivities[8].SetEquals(new HashSet<int> { 6 }));
         }
 

@@ -162,10 +162,7 @@ namespace ProcessM.NETtests
             CNet causalNet = HeuristicMiner.MineCNet(wlog, settings);
 
             // Assert
-            // LONG DISTANCE WITH OCCURRENCE
-            Assert.AreEqual(2, causalNet.LongDistance.Count);
-            Assert.IsTrue(causalNet.LongDistance[new Tuple<int, int>(3, 5)] == 57);
-            Assert.IsTrue(causalNet.LongDistance[new Tuple<int, int>(7, 8)] == 43);
+            Assert.AreEqual(2, causalNet.LongDependencies.Count);
 
             Assert.AreEqual(0, causalNet.StartActivity.Id);
             Assert.AreEqual(6, causalNet.EndActivity.Id);

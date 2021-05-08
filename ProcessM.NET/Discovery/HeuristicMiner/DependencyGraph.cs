@@ -104,12 +104,6 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
             l1L.UnionWith(l2L);
             l1L.UnionWith(followers);
             l1L.UnionWith(causes);
-            /*
-            if (Settings.AllTasksConnected)
-            {
-                l1L.UnionWith(strongFollowers);
-                l1L.UnionWith(strongCauses);
-            }*/
 
             CreateGraph(l1L);
 
@@ -305,10 +299,15 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
         {
             for (var i = 0; i < Activities.Count; i++)
             {
-                for (var j = i + 1; j < Activities.Count; j++)
+                for (var j = 0; j < Activities.Count; j++)
                 {
                     // A >>>w B
-                    var longDistanceValue = Convert.ToDouble(successorMatrix.LongDistanceMatrix[i, j]) / (successorMatrix.ActivityOccurrences[i] + 1);
+                    //var longDistanceValue = Convert.ToDouble(successorMatrix.LongDistanceMatrix[i, j]) / (successorMatrix.ActivityOccurrences[i] + 1);
+                    var longDistanceValue =
+                        Convert.ToDouble(2 * successorMatrix.LongDistanceMatrix[i, j]) /
+                                         (successorMatrix.ActivityOccurrences[i] + successorMatrix.ActivityOccurrences[j] + 1) -
+                        Convert.ToDouble(2 * Math.Abs(successorMatrix.ActivityOccurrences[i] - successorMatrix.ActivityOccurrences[j])) /
+                        (successorMatrix.ActivityOccurrences[i] + successorMatrix.ActivityOccurrences[j] + 1);
                     if (longDistanceValue >= Settings.LongDistanceThreshold)
                     {
                         var startActivity = successorMatrix.ActivityIndices[successorMatrix.StartActivities.First()];
@@ -317,8 +316,6 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
                             PathExists(startActivity, endActivity, j) &&
                             PathExists(i, endActivity, j))
                         {
-                            OutputActivities[i].Add(j);
-                            InputActivities[j].Add(i);
                             LongDependencies.Add(new Tuple<int, int>(i, j));
                         }
                     }
@@ -335,6 +332,8 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
         /// <returns>Bool if exist path from to without visiting skip</returns>
         private bool PathExists(int from, int to, int skip)
         {
+            if (from == skip || to == skip)
+                return false;
             var discovered = new bool[Activities.Count];
             discovered[from] = true;
             var queue = new Queue<int>();
