@@ -78,9 +78,8 @@ namespace ProcessM.NETtests
             Assert.AreEqual("p" + (2 * causalNet.EndActivity.Id + 1), petriNet.EndPlace.Id);
             // 2 new places
             Assert.AreEqual(18 + 2, petriNet.Places.Count);
-            Assert.AreEqual(21 + 2, petriNet.Transitions.Count);
-            // 12 invisible transitions + 2 new
-            Assert.AreEqual(12 + 2, petriNet.Transitions.Count(t => t.Invisible));
+            Assert.AreEqual(21, petriNet.Transitions.Count);
+            Assert.AreEqual(12, petriNet.Transitions.Count(t => t.Invisible));
         }
     }
 }
