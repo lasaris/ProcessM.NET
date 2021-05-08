@@ -46,10 +46,10 @@ namespace ProcessM.NETtests
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
-            CNet causalNet = new CNet(wlog, new HeuristicMinerSettings());
+            CNet causalNet = HeuristicMiner.MineCNet(wlog);
 
             // Act
-            PetriNet petriNet = CNetUtils.ConvertCNetToPetriNet(causalNet);
+            PetriNet petriNet = HeuristicMiner.MinePetriNet(wlog);
 
             // Assert
             Assert.AreEqual("p0", petriNet.StartPlace.Id);
@@ -58,6 +58,29 @@ namespace ProcessM.NETtests
             Assert.AreEqual(21, petriNet.Transitions.Count);
             // 12 invisible transitions
             Assert.AreEqual(12, petriNet.Transitions.Count(t => t.Invisible));
+        }
+
+        [TestMethod]
+        public void ConvertHardCNetToPetriNetWithLongDistancesTest()
+        {
+            // Arrange
+            ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsv);
+            elog.SetActivity("act");
+            elog.SetCaseId("id");
+            WorkflowLog wlog = new WorkflowLog(elog);
+            CNet causalNet = new CNet(wlog, new HeuristicMinerSettings());
+
+            // Act
+            PetriNet petriNet = HeuristicMiner.MinePetriNet(wlog, new HeuristicMinerSettings{UseLongDistance = true});
+
+            // Assert
+            Assert.AreEqual("p0", petriNet.StartPlace.Id);
+            Assert.AreEqual("p" + (2 * causalNet.EndActivity.Id + 1), petriNet.EndPlace.Id);
+            // 2 new places
+            Assert.AreEqual(18 + 2, petriNet.Places.Count);
+            Assert.AreEqual(21 + 2, petriNet.Transitions.Count);
+            // 12 invisible transitions + 2 new
+            Assert.AreEqual(12 + 2, petriNet.Transitions.Count(t => t.Invisible));
         }
     }
 }
