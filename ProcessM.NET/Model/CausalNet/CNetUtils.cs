@@ -74,6 +74,16 @@ namespace ProcessM.NET.Model.CausalNet
                 }
             }
 
+            foreach (var ((from, to), _) in causalNet.LongDistance) //MY APPROACH TO HANDLE LONG DISTANCE DEPENDENCIES
+            {
+                places.Add(new Place("p" + ++placeCount));
+                var longTransition = new Transition("t" + ++transitionCount, "");
+                longTransition.ChangeVisibility();
+                longTransition.InputPlaces.Add(places[outputPlaces[from]]);
+                longTransition.OutputPlaces.Add(places[inputPlaces[to]]);
+                transitions.Add(longTransition);
+            }
+
             var startPlace = places[inputPlaces[causalNet.StartActivity.Id]];
             var endPlace = places[outputPlaces[causalNet.EndActivity.Id]];
             return new PetriNet(transitions, places, startPlace, endPlace);
