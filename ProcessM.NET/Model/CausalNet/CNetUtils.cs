@@ -20,6 +20,7 @@ namespace ProcessM.NET.Model.CausalNet
         {
             var inputPlaces = new Dictionary<int, int>();
             var outputPlaces = new Dictionary<int, int>();
+            var activityTransitions = new Dictionary<int, int>();
             var places = new List<IPlace>();
             var transitions = new List<ITransition>();
             var transitionCount = -1;
@@ -40,6 +41,7 @@ namespace ProcessM.NET.Model.CausalNet
                 actTransition.OutputPlaces.Add(outPlace);
 
                 transitions.Add(actTransition);
+                activityTransitions.Add(activity.Id, activityTransitions.Count - 1);
             }
 
             foreach (var (aIdx, bindings) in causalNet.InputBindings)
@@ -74,14 +76,11 @@ namespace ProcessM.NET.Model.CausalNet
                 }
             }
 
-            foreach (var ((from, to), _) in causalNet.LongDistance) //MY APPROACH TO HANDLE LONG DISTANCE DEPENDENCIES
+            foreach (var ((from, to), _) in causalNet.LongDistance) //MY APPROACH TO HANDLE LONG DISTANCE DEPENDENCIES (WRONG)
             {
                 places.Add(new Place("p" + ++placeCount));
-                var longTransition = new Transition("t" + ++transitionCount, "");
-                longTransition.ChangeVisibility();
-                longTransition.InputPlaces.Add(places[outputPlaces[from]]);
-                longTransition.OutputPlaces.Add(places[inputPlaces[to]]);
-                transitions.Add(longTransition);
+                transitions[activityTransitions[from]].OutputPlaces.Add(places[^1]);
+                transitions[activityTransitions[to]].InputPlaces.Add(places[^1]);
             }
 
             var startPlace = places[inputPlaces[causalNet.StartActivity.Id]];
