@@ -34,8 +34,7 @@ namespace ProcessM.NET.Model.CausalNet
         /// <summary>
         /// Long distance dependencies
         /// </summary>
-        public Dictionary<Tuple<int, int>, int> LongDistance { get; }
-            = new Dictionary<Tuple<int, int>, int>();
+        public HashSet<Tuple<int, int>> LongDependencies { get; private set; }
         /// <summary>
         /// Dictionary which represents input bindings for each activity
         /// </summary>
@@ -91,10 +90,7 @@ namespace ProcessM.NET.Model.CausalNet
                 OutputBindings.Add(activity.Id, new HashSet<IBinding>());
             }
 
-            foreach (var longDependency in dependencyGraph.LongDependencies)
-            {
-                LongDistance.Add(longDependency, 0);
-            }
+            LongDependencies = dependencyGraph.LongDependencies;
         }
 
         /// <summary>
@@ -189,26 +185,17 @@ namespace ProcessM.NET.Model.CausalNet
         private bool IsNearestInput(DependencyGraph dependencyGraph, int from, int to,
             int tracePosition, WorkflowTrace trace, int traceOccurrence)
         {
-            var fromTo = new Tuple<int, int>(from, to);
             for (int i = tracePosition + 1; i < trace.Activities.Count; i++)
             {
                 var iActivity = ActivityIndices[trace.Activities[i]];
                 if (iActivity == to)
                 {
-                    if (!dependencyGraph.LongDependencies.Any(t => t.Equals(fromTo)))
+                    for (int j = i - 1; j > tracePosition; j--)
                     {
-                        for (int j = i - 1; j > tracePosition; j--)
-                        {
-                            var jActivity = ActivityIndices[trace.Activities[j]];
-                            if (dependencyGraph.OutputActivities[jActivity].Contains(iActivity) &&
-                                dependencyGraph.OutputActivities[from].Contains(jActivity))
-                                return false;
-                        }
-                    }
-                    else
-                    {
-                        LongDistance[fromTo] += traceOccurrence;
-                        return false;
+                        var jActivity = ActivityIndices[trace.Activities[j]];
+                        if (dependencyGraph.OutputActivities[jActivity].Contains(iActivity) &&
+                            dependencyGraph.OutputActivities[from].Contains(jActivity))
+                            return false;
                     }
                     return true;
                 }
@@ -235,8 +222,6 @@ namespace ProcessM.NET.Model.CausalNet
         private bool IsNearestOutput(DependencyGraph dependencyGraph, int from, int to,
             int tracePosition, WorkflowTrace trace)
         {
-            if (dependencyGraph.LongDependencies.Any(t => t.Item1 == to && t.Item2 == from))
-                return false;
             for (int i = tracePosition - 1; i >= 0; i--)
             {
                 var iActivity = ActivityIndices[trace.Activities[i]];

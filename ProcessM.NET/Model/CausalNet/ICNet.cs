@@ -31,7 +31,7 @@ namespace ProcessM.NET.Model.CausalNet
         /// <summary>
         /// Long distance dependencies
         /// </summary>
-        Dictionary<Tuple<int, int>, int> LongDistance { get; }
+        HashSet<Tuple<int, int>> LongDependencies { get; }
         /// <summary>
         /// Input bindings
         /// </summary>

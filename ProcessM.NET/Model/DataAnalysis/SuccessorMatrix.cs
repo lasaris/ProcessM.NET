@@ -53,9 +53,11 @@ namespace ProcessM.NET.Model.DataAnalysis
                 {
                     int aIdx = ActivityIndices[trace.Activities[i]];
                     ActivityOccurrences[aIdx] += 1;
-                    foreach (var id in discoveredIndexes.Where(id => id < aIdx && !discoveredIndexes.Contains(aIdx)))
+                    foreach (var id in discoveredIndexes)
                     {
-                        LongDistanceMatrix[id, aIdx] += 1;
+                        if (!discoveredIndexes.Contains(aIdx))
+                            LongDistanceMatrix[id, aIdx] += 1;
+                        else break;
                     }
                     discoveredIndexes.Add(aIdx);
 

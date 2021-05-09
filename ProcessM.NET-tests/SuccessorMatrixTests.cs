@@ -84,7 +84,10 @@ namespace ProcessM.NETtests
             longMatrix[4, 6] = 100;
             longMatrix[4, 8] = 43;
             longMatrix[5, 6] = 57;
+            longMatrix[7, 4] = 43;
+            longMatrix[7, 6] = 43;
             longMatrix[7, 8] = 43;
+            longMatrix[8, 6] = 43;
             return longMatrix;
         }
 
