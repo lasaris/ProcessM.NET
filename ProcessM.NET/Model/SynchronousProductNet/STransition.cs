@@ -18,7 +18,7 @@ namespace ProcessM.NET.Model.SynchronousProductNet
         /// <summary>
         /// Id of transition
         /// </summary>
-        public string Id { get; }
+        public string Id { get; set; }
         /// <summary>
         /// Activity
         /// </summary>

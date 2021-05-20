@@ -5,7 +5,7 @@
     /// </summary>
     public class Place : IPlace
     {
-        public string Id { get; } = "";
+        public string Id { get; set; } = "";
 
         public Place(string id)
         {

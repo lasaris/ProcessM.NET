@@ -8,6 +8,6 @@
         /// <summary>
         /// Id
         /// </summary>
-        string Id { get; }
+        string Id { get; set; }
     }
 }

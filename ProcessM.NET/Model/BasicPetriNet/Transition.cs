@@ -9,7 +9,7 @@ namespace ProcessM.NET.Model.BasicPetriNet
     {
         public List<IPlace> InputPlaces { get; }
         public List<IPlace> OutputPlaces { get; }
-        public string Id { get; }
+        public string Id { get; set; }
         public string Activity { get; }
         public bool Invisible { get; private set; } = false;
 

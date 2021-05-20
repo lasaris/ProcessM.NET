@@ -9,7 +9,7 @@ namespace ProcessM.NET.Model
     {
         List<IPlace> InputPlaces { get; }
         List<IPlace> OutputPlaces { get; }
-        string Id { get; }
+        string Id { get; set; }
         string Activity { get; }
         bool Invisible { get; }
 

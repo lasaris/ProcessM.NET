@@ -33,6 +33,21 @@ namespace ProcessM.NET.ConformanceChecking.Alignments
         }
 
         /// <summary>
+        /// Compute optimal alignment based on a trace and a Petri net
+        /// </summary>
+        /// <param name="trace">Workflow trace</param>
+        /// <param name="pNet">Petri net</param>
+        /// <param name="traceMoveCost">Trace move cost</param>
+        /// <param name="modelMoveCost">Model move cost</param>
+        /// <returns>Alignment on trace</returns>
+        public static List<STransition> OptimalAlignmentOnNets(PetriNet pNet1, PetriNet pNet2, int traceMoveCost = 1,
+            int modelMoveCost = 1)
+        {
+            var syncNet = new SynchronousProductNet(pNet1, pNet2, traceMoveCost, modelMoveCost);
+            return FindOptimalAlignment(syncNet);
+        }
+
+        /// <summary>
         /// Construct Petri net from a trace
         /// </summary>
         /// <param name="trace">Workflow trace</param>
@@ -131,7 +146,7 @@ namespace ProcessM.NET.ConformanceChecking.Alignments
                 HashSet<IPlace> node = priorityQueue.Dequeue();
 
                 if (IPlaceSetComparer.Equals(node, syncNet.EndPlaces))
-                    break;
+                    return ConstructAlignmentFromParentDict(parents, syncNet);
 
                 explored.Add(node);
 
@@ -171,8 +186,8 @@ namespace ProcessM.NET.ConformanceChecking.Alignments
                     }
                 }
             }
-            
-            return ConstructAlignmentFromParentDict(parents, syncNet);
+
+            throw new ArgumentException("Path from initial marking to final marking does not exist.");
         }
 
         /// <summary>
