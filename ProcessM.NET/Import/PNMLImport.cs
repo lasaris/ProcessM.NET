@@ -2,6 +2,7 @@
 using ProcessM.NET.Model.BasicPetriNet;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Xml.Linq;
 
@@ -102,14 +103,14 @@ namespace ProcessM.NET.Import
         }
 
         /// <summary>
-        /// Takes a path to a PNML file and builds a Petri Net according to its content.
+        /// Takes a stream of PNML file and builds a Petri Net according to its content.
         /// The net is expected to have exactly one start place and exactly one end place.
         /// </summary>
-        /// <param name="inputFilePath">Path to PNML.</param>
+        /// <param name="stream">Stream containing data of PNML file.</param>
         /// <returns>PetriNet built from given PNML.</returns>
-        public static IPetriNet Deserialize(string inputFilePath)
+        public static IPetriNet Deserialize(Stream stream)
         {
-            XElement pnmlRoot = XElement.Load(inputFilePath);
+            XElement pnmlRoot = XElement.Load(stream);
             XNamespace ns = pnmlRoot.Attribute("xmlns").Value;
             XElement netNode = pnmlRoot.Element(ns + "net");
             XElement pageNode = netNode.Element(ns + "page");
