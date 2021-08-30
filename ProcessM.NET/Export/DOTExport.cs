@@ -31,7 +31,7 @@ namespace ProcessM.NET.Export
             string doubleIndent = indentation + indentation;
             return indentation + "subgraph place {\n" +
                 doubleIndent + "graph [shape = circle, color = gray];\n" +
-                doubleIndent + "node [shape = circle, fixedsize = true, width = 2];\n";
+                doubleIndent + "node [shape = circle, fixedsize = true, width = 0.5, label = \" \"];\n";
         }
 
         /// <summary>
@@ -44,6 +44,13 @@ namespace ProcessM.NET.Export
             string doubleIndent = indentation + indentation;
             return indentation + "subgraph transitions {\n" +
                 doubleIndent + "node [shape = rect, height = 0.2, width = 2];\n";
+        }
+        
+        private static string GetInvisibleTransitionsHeader(string indentation)
+        {
+            string doubleIndent = indentation + indentation;
+            return indentation + "subgraph invisible_transitions {\n" +
+                   doubleIndent + "node [shape = rect, height = 0.1, width = 1, label = \" \", fillcolor = black, style=filled];\n";
         }
 
         /// <summary>
@@ -59,7 +66,7 @@ namespace ProcessM.NET.Export
             outStr.Append(GetPlacesHeader(indentation));
             foreach (IPlace p in places)
             {
-                outStr.Append(doubleIndent + "\"" + p.Id + "\";\n");
+                outStr.Append(doubleIndent + "\"" + p.Id + "\"\n");
             }
             outStr.Append(indentation + "}\n");
             return outStr;
@@ -76,7 +83,7 @@ namespace ProcessM.NET.Export
             string doubleIndent = indentation + indentation;
             StringBuilder outStr = new StringBuilder("");
             outStr.Append(GetTransitionsHeader(indentation));
-            foreach (ITransition t in transitions)
+            foreach (ITransition t in transitions.Where(tr => !tr.Invisible))
             {
                 outStr.Append(doubleIndent + "\"" + t.Activity + "\";\n");
             }
@@ -84,6 +91,18 @@ namespace ProcessM.NET.Export
             return outStr;
         }
 
+        private static StringBuilder GetInvisibleTransitions(IEnumerable<ITransition> transitions, string indentation)
+        {
+            string doubleIndent = indentation + indentation;
+            StringBuilder outStr = new StringBuilder("");
+            outStr.Append(GetInvisibleTransitionsHeader(indentation));
+            foreach (ITransition t in transitions.Where(tr => tr.Invisible))
+            {
+                outStr.Append(doubleIndent + "\"" + t.Id + "\";\n");
+            }
+            outStr.Append(indentation + "}\n");
+            return outStr;
+        }
         /// <summary>
         /// Fills the .DOT graph with arc representation based on transitions of exported Petri Net.
         /// </summary>
@@ -97,11 +116,11 @@ namespace ProcessM.NET.Export
             {
                 foreach (IPlace ip in t.InputPlaces)
                 {
-                    outStr.Append(indentation + "\"" + ip.Id + "\" -> \"" + t.Activity + "\";\n");
+                    outStr.Append(indentation + "\"" + ip.Id + "\" -> \"" + (t.Invisible ? t.Id : t.Activity) + "\";\n");
                 }
                 foreach (IPlace op in t.OutputPlaces)
                 {
-                    outStr.Append(indentation + "\"" + t.Activity + "\" -> \"" + op.Id + "\";\n");
+                    outStr.Append(indentation + "\"" + (t.Invisible ? t.Id : t.Activity) + "\" -> \"" + op.Id + "\";\n");
                 }
             }
             outStr.Append("}");
@@ -120,6 +139,7 @@ namespace ProcessM.NET.Export
             outStr.Append(GetGraphHeader());
             outStr.Append(GetPlaces(net.Places, indentation));
             outStr.Append(GetTransitions(net.Transitions, indentation));
+            outStr.Append(GetInvisibleTransitions(net.Transitions, indentation));
             outStr.Append(GetArcs(net.Transitions, indentation));
             return outStr.ToString();
         }
