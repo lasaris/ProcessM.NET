@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProcessM.NET.ConformanceChecking.Alignments;
@@ -18,7 +19,8 @@ namespace ProcessM.NETtests
         public void AlignmentOnLogEasy()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(heuristicCsv);
+            using FileStream fs = File.Open(heuristicCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
@@ -36,7 +38,8 @@ namespace ProcessM.NETtests
         public void AlignmentOnLogHard()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsv);
+            using FileStream fs = File.Open(hardCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
@@ -55,7 +58,8 @@ namespace ProcessM.NETtests
         public void AlignmentOnLogHardCustomSettings()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsv);
+            using FileStream fs = File.Open(hardCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);

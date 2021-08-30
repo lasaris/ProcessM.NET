@@ -26,7 +26,8 @@ namespace ProcessM.NETtests
         public void CompareLogWithAccordingPetriNetTest()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsv);
+            using FileStream fs = File.Open(hardCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
@@ -44,14 +45,16 @@ namespace ProcessM.NETtests
         public void CompareMildlyTamperedLogWithHardPetriNetTest()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsv);
+            using FileStream hardFs = File.Open(hardCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(hardFs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
             RelationMatrix matrix = new RelationMatrix(wlog);
             IPetriNet madeNet = Alpha.MakePetriNet(matrix);
 
-            ImportedEventLog tamperedLog = CSVImport.MakeDataFrame(tamperedHardCsv);
+            using FileStream tamperedHardFs = File.Open(tamperedHardCsv, FileMode.Open);
+            ImportedEventLog tamperedLog = CSVImport.MakeDataFrame(tamperedHardFs);
             tamperedLog.SetActivity("act");
             tamperedLog.SetCaseId("id");
 
@@ -66,14 +69,16 @@ namespace ProcessM.NETtests
         public void CompareCompletelyDifferentLogWithHardPetriNetTest()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsv);
+            using FileStream fs = File.Open(hardCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
             RelationMatrix matrix = new RelationMatrix(wlog);
             IPetriNet madeNet = Alpha.MakePetriNet(matrix);
 
-            ImportedEventLog tamperedLog = CSVImport.MakeDataFrame(randomLog);
+            using FileStream randomLogFs = File.Open(randomLog, FileMode.Open);
+            ImportedEventLog tamperedLog = CSVImport.MakeDataFrame(randomLogFs);
             tamperedLog.SetActivity("act");
             tamperedLog.SetCaseId("id");
 
