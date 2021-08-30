@@ -7,10 +7,10 @@ namespace ProcessM.NET.Model.BasicPetriNet
     /// </summary>
     public class Transition : ITransition
     {
-        public List<IPlace> InputPlaces { get; }
-        public List<IPlace> OutputPlaces { get; }
+        public List<IPlace> InputPlaces { get; set;}
+        public List<IPlace> OutputPlaces { get; set;}
         public string Id { get; set; }
-        public string Activity { get; }
+        public string Activity { get; set;}
         public bool Invisible { get; private set; } = false;
 
         public Transition(string id, string activity)

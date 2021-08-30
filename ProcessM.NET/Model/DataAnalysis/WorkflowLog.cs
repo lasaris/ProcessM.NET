@@ -10,7 +10,7 @@ namespace ProcessM.NET.Model.DataAnalysis
     /// </summary>
     public class WorkflowLog
     {
-        public List<WorkflowTrace> WorkflowTraces { get; }
+        public List<WorkflowTrace> WorkflowTraces { get; set; }
 
         /// <summary>
         /// Makes a collection of empty workflow trace shells, one for each unique "Case ID" in loaded data from an event log.
@@ -130,10 +130,12 @@ namespace ProcessM.NET.Model.DataAnalysis
 
             return dictionary.Select(x => new Tuple<WorkflowTrace, int>(x.Key, x.Value)).ToList();
         }
-
+        
         public WorkflowLog(List<WorkflowTrace> workflowTraces)
         {
             WorkflowTraces = workflowTraces;
         }
+        
+        public WorkflowLog() {}
     }
 }

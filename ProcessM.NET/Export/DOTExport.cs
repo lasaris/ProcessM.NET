@@ -1,7 +1,6 @@
 ﻿using ProcessM.NET.Model;
-using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace ProcessM.NET.Export
@@ -110,11 +109,11 @@ namespace ProcessM.NET.Export
         }
 
         /// <summary>
-        /// Serializes given Petri Net compliant with IPetriNet interface to a .DOT file.
+        /// Serializes given Petri Net compliant with IPetriNet interface to a .DOT file string.
         /// </summary>
         /// <param name="net">An IPetriNet compliant Petri Net.</param>
         /// <param name="indentation">Indentation symbol, this class uses "\t" as default.</param>
-        /// <returns>Filename of created file.</returns>
+        /// <returns>.dot file string</returns>
         public static string Serialize(IPetriNet net, string indentation = "\t")
         {
             StringBuilder outStr = new StringBuilder("");
@@ -122,16 +121,7 @@ namespace ProcessM.NET.Export
             outStr.Append(GetPlaces(net.Places, indentation));
             outStr.Append(GetTransitions(net.Transitions, indentation));
             outStr.Append(GetArcs(net.Transitions, indentation));
-
-            string filename = "petrinet" + DateTime.Now.ToString().Replace('.', '-').Replace(':', '-') + ".dot";
-            using (var fileStream = new FileStream(filename, FileMode.Create))
-            {
-                using (var streamWriter = new StreamWriter(fileStream))
-                {
-                    streamWriter.Write(outStr.ToString());
-                }
-            }
-            return filename;
+            return outStr.ToString();
         }
     }
 }

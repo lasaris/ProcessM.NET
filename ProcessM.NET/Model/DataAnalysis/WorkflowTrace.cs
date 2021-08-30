@@ -9,7 +9,7 @@ namespace ProcessM.NET.Model.DataAnalysis
     public class WorkflowTrace
     {
         public string CaseId { get; }
-        public List<string> Activities { get; }
+        public List<string> Activities { get; set;}
 
         public WorkflowTrace(string caseId)
         {
