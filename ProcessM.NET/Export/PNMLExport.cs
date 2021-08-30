@@ -1,6 +1,7 @@
 ﻿using ProcessM.NET.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
@@ -129,10 +130,10 @@ namespace ProcessM.NET.Export
         }
 
         /// <summary>
-        /// Serializes given Petri Net compliant with IPetriNet interface to a PNML file with .xml extension.
+        /// Serializes given Petri Net compliant with IPetriNet interface to a PNML file.
         /// </summary>
         /// <param name="net">An IPetriNet compliant Petri Net.</param>
-        /// <returns>Filename of created file.</returns>
+        /// <returns>PNML file string.</returns>
         public static string Serialize(IPetriNet net)
         {
             XNamespace ns = "http://www.pnml.org/version-2009/grammar/pnml";
@@ -144,14 +145,13 @@ namespace ProcessM.NET.Export
             AddPlaces(xPage, net.Places, ns);
             AddTransitions(xPage, net.Transitions, ns);
             AddArcs(xPage, net.Transitions, ns);
-
+            
             XmlWriterSettings settings = new XmlWriterSettings { Indent = true, IndentChars = ("\t") };
-            string filename = "petrinet" + DateTime.Now.ToString().Replace('.', '-').Replace(':', '-') + ".xml";
-            using (XmlWriter writer = XmlWriter.Create(filename, settings))
-            {
-                xRoot.Save(writer);
-            }
-            return filename;
+            using var ms = new MemoryStream();
+            using var writer = XmlWriter.Create(ms, settings);
+            xRoot.Save(writer);
+            writer.Close();
+            return Encoding.UTF8.GetString(ms.GetBuffer(), 0, (int)ms.Length);
         }
     }
 }
