@@ -146,7 +146,7 @@ namespace ProcessM.NET.Export
             AddArcs(xPage, net.Transitions, ns);
 
             XmlWriterSettings settings = new XmlWriterSettings { Indent = true, IndentChars = ("\t") };
-            string filename = "petrinet" + DateTime.Now.ToString().Replace('.', '-').Replace(':', '-') + ".xml";
+            string filename = "petrinet" + DateTime.Now.ToString().Replace('.', '-').Replace(':', '-').Replace('/', '-') + ".xml";
             using (XmlWriter writer = XmlWriter.Create(filename, settings))
             {
                 xRoot.Save(writer);
