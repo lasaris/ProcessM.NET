@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Text;
+using System.Linq;
 using Deedle;
 using ProcessM.NET.Model;
 
@@ -32,11 +31,11 @@ namespace ProcessM.NET.Import
             bool hasHeaders = true, 
             bool inferTypes = true, 
             string culture = "", 
-            string separatorsString = ",",
+            string separatorsString = null,
             int maxRows = int.MaxValue,
             string[] missingValues = null)
         {
-            if (culture == null || culture == "")
+            if (string.IsNullOrEmpty(culture))
             {
                 culture = CultureInfo.InvariantCulture.Name;
             }
@@ -44,8 +43,29 @@ namespace ProcessM.NET.Import
             {
                 missingValues = new string[] { "NaN", "NA", "#N/A", ":", "-", "TBA", "TBD" }; // default value of ReadCsv
             }
+            if (separatorsString == null)
+            {
+                separatorsString = CsvSeparatorDetector(stream, new char[] { ';', '|', '\t', ',' }).ToString();
+            }
             Frame<int, string> data = Frame.ReadCsv(stream, hasHeaders: hasHeaders, inferTypes: inferTypes, separators: separatorsString, culture: culture, maxRows: maxRows, missingValues: missingValues);
             return new ImportedEventLog(data);
         }
+
+        private static char CsvSeparatorDetector(Stream stream, IEnumerable<char> candidates)
+        {
+            var buffer = new byte[1024];
+
+            stream.Read(buffer,0, 1024);
+            stream.Seek(0, SeekOrigin.Begin);
+         
+            var q = candidates.Select(sep => new
+                    {Separator = sep, Found = buffer.Count(ch => ch == sep)})
+                .OrderByDescending(res => res.Found)
+                .First();
+
+            return q.Separator;
+        }
     }
+    
+    
 }
