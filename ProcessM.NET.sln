@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProcessM.NET", "ProcessM.NE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProcessM.NET-tests", "ProcessM.NET-tests\ProcessM.NET-tests.csproj", "{B9E8BF73-C62F-4A23-9287-72C28A79EC27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessM.NET-Demo", "ProcessM.NET-Demo\ProcessM.NET-Demo.csproj", "{5593DBF9-E933-4A73-BCF7-22CBEF5E126B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
