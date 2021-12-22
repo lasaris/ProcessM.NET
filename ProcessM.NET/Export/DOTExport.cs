@@ -123,7 +123,7 @@ namespace ProcessM.NET.Export
             outStr.Append(GetTransitions(net.Transitions, indentation));
             outStr.Append(GetArcs(net.Transitions, indentation));
 
-            string filename = "petrinet" + DateTime.Now.ToString().Replace('.', '-').Replace(':', '-') + ".dot";
+            string filename = "petrinet" + DateTime.Now.ToString().Replace('.', '-').Replace(':', '-').Replace('/', '-') + ".dot";
             using (var fileStream = new FileStream(filename, FileMode.Create))
             {
                 using (var streamWriter = new StreamWriter(fileStream))
