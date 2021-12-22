@@ -11,7 +11,7 @@ namespace ProcessM.NET.Model.BasicPetriNet
         public List<IPlace> OutputPlaces { get; set;}
         public string Id { get; set; }
         public string Activity { get; set;}
-        public bool Invisible { get; private set; } = false;
+        public bool Invisible { get; set; } = false;
 
         public Transition(string id, string activity)
         {

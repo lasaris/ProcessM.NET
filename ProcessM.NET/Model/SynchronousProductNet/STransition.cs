@@ -30,7 +30,7 @@ namespace ProcessM.NET.Model.SynchronousProductNet
         /// <summary>
         /// Visibility
         /// </summary>
-        public bool Invisible { get; private set; }
+        public bool Invisible { get; set; }
 
 
         /// <param name="transition">Transition</param>
