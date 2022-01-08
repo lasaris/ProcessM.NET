@@ -1,0 +1,58 @@
+<div class="mat-layout-grid">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-2" style="text-align: center;">
+            <p>
+                <b>Type</b>
+            </p>
+        </div>
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5" style="text-align: center;">
+            <p>
+                <b>Description</b>
+            </p>
+        </div>
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3" style="text-align: center;">
+            <p>
+                <b>LTL expression</b>
+            </p>
+        </div>
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-2" style="text-align: center;">
+            <p>
+                <b>Activations</b>
+            </p>
+        </div>
+    </div>
+    @foreach (var t in Items)
+    {
+        <div class="mat-layout-grid-inner" style="background: #ffd5ff">
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12" style="text-align: center; background: #ffc0ff">
+                @t.ReadableName
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-2" style="text-align: center;">
+                <p>@t.Type</p>
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5" style="text-align: center;">
+                <p>@t.Description</p>
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3" style="text-align: center;">
+                <p>@t.LtlExpression</p>
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-2" style="text-align: center;">
+                <p>@t.Activations</p>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public List<Lib.Models.DeclareModels.TemplateDescription> Items { get; set; }
+
+    private string GetColour(int i, bool isHeader)
+    {
+        if (!isHeader)
+            return i % 2 == 0 ? "background: #ffd5ff" : "background: #f3f3f3";
+        return i % 2 == 0 ? "background: #ffc0ff" : "background: #d8d8d8";
+    }
+
+}
