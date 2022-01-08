@@ -1,0 +1,199 @@
+@page "/Conformance"
+@using DeclarativePM.UI.Data
+@using DeclarativePM.UI.Enums
+@using DeclarativePM.UI.Utils
+@using DeclarativePM.Lib.Utils
+@using DeclarativePM.Lib.Models.ConformanceModels
+@using DeclarativePM.Lib.Enums
+@inject StateContainer StateContainer
+@inject IMatDialogService MatDialogService
+@inject ConformanceEvaluator Evaluator;
+
+<div class="mat-layout-grid" style="height: auto">
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+            <span>
+                <MatButton OnClick="@SeeActivities" Icon="remove_red_eye" Label="@(seeActivities ? "See cases" : "See Activities")"/>
+                @if (seeActivities)
+                {
+                    <MatButton OnClick="AddActivity" Icon="add" Label="Add activity"/>
+                }
+                else
+                {
+                    <MatButton OnClick="AddCases" Icon="add" Label="Add trace"/>
+                }
+            </span>
+        </div>
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5">
+            <MatButton OnClick="ShowCase" Icon="remove_red_eye" Label="Show trace"/>
+        </div>
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
+            <MatButton OnClick="ChangeModel" Icon="import_export" Label="Add/Change model"/>
+        </div>
+    </div>
+    <div class="mat-layout-grid-inner">
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+            <!-- ====CASES=== -->
+            @if (!seeActivities)
+            {
+                <MatVirtualScroll style="height: auto" ItemType="TraceDTO" Items="@Traces" ItemHeight="50" Disabled="true">
+                    <ItemTemplate>
+                        <MatButton OnClick="@(() => ChooseTrace(context))" Style="@GetExpansionBackground(context)">
+                            @context.Case
+                        </MatButton>
+                        <MatButton OnClick="@(() => RemoveTrace(context))" Icon="remove" Label="Remove"/>
+                    </ItemTemplate>
+                </MatVirtualScroll>
+            }
+            else
+            {
+                <!-- ====ACTIVITIES=== -->
+                <MatVirtualScroll style="height: auto" ItemType="string" Items="@activities" ItemHeight="50" Disabled="true">
+                    <ItemTemplate>
+                        <div>
+                            @context
+                            <MatIconButton Icon="remove" OnClick="@(() => RemoveActivity(context))"></MatIconButton>
+                        </div>
+                    </ItemTemplate>
+                </MatVirtualScroll>
+            }
+        </div>
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5">
+            <!-- ====VIEW=== -->
+            @if (View == ConformancePageView.Conformance)
+            {
+                if (SelectedTrace is null || _declareModel is null)
+                {
+                    <p>Please select trace and declare model first!</p>
+                }
+                <MatButton OnClick="EvaluateWhole" Icon="add" Disabled="@(SelectedTrace is null || _declareModel is null)">Evaluate</MatButton>
+
+                if (showResults && _templateEvaluation is not null)
+                {
+                    <ExpansionTraceEvaluation TraceEvaluation="@_traceEvaluation"></ExpansionTraceEvaluation>
+
+                    <MatSelectValue Value="@_templateEvaluation" Items="@_traceEvaluation.TemplateEvaluations" ValueSelector="@(i => i)" ValueChanged="@((TemplateEvaluation o) => TemplateEvaluationChanged(o))">
+                        <ItemTemplate>
+                            <span>@context.Template.TemplateDescription.TemplateType.ToString()</span>
+                        </ItemTemplate>
+                    </MatSelectValue>
+                    if (_templateEvaluation is not null && _templateEvaluation.Template.TemplateDescription.TemplateParametersType == TemplateTypes.BiTemplate)
+                    {
+                        <MatSelectValue @bind-value="@_constraintEvaluation" Items="@_templateEvaluation.ConstraintEvaluations" ValueSelector="@(i => i)">
+                            <ItemTemplate>
+                                <span>@(context?.Constraint.ToString() ?? "None")</span>
+                            </ItemTemplate>
+                        </MatSelectValue>
+                        if (_constraintEvaluation is not null)
+                        {
+                            <MatChipSet>
+                                @foreach (var e in SelectedTrace.Events)
+                                {
+                                    <MatChip Label="@e.Activity" Style="@GetConformanceChipBackground(e)"></MatChip>
+                                }
+                            </MatChipSet>
+                        }
+                    }
+                }
+            }
+
+
+            else if (View == ConformancePageView.CreateTrace)
+            {
+                <h5>Create Trace</h5>
+                <MatTextField Label="Trace case" ValueChanged="@((string s) => CaseChanged(s))"/>
+                <MatSelectItem @bind-Value="@CurrentTraceEvent.Activity" Items="@activities" Label="Activity"/>
+                <MatDatePicker @bind-Value="@CurrentTraceEvent.TimeStamp" EnableTime="true" Enable24hours="true"/>
+                <MatButton OnClick="AddEvent" Icon="add" Label="Add event"/>
+                <MatButton OnClick="SaveTrace" Icon="save" Label="Save trace"/>
+
+                <MatTable Items="SelectedTrace.Events" class="mat-elevation-z5" AllowSelection="true" SelectionChanged="SelectionChangedEvent">
+                    <MatTableHeader>
+                        <th>Activity</th>
+                        <th>Case</th>
+                        <th>Timestamp</th>
+                        <th>Remove</th>
+                    </MatTableHeader>
+                    <MatTableRow>
+                        <td>@context.Activity</td>
+                        <td>@context.CaseId</td>
+                        @if (context.TimeStamp is not null)
+                        {
+                            <td>@context.TimeStamp</td>
+                        }
+                        else
+                        {
+                            <td>Undefined</td>
+                        }
+                        <td>
+                            <MatIconButton OnClick="@(() => RemoveEventFromSelectedTrace(context))" Icon="remove"/>
+                        </td>
+                    </MatTableRow>
+                </MatTable>
+            }
+            else if (View == ConformancePageView.SelectedTrace)
+            {
+                <h5>Trace</h5>
+                <MatTable Items="SelectedTrace.Events" class="mat-elevation-z5" AllowSelection="true" SelectionChanged="SelectionChangedEvent">
+                    <MatTableHeader>
+                        <th>Activity</th>
+                        <th>Case</th>
+                        <th>Timestamp</th>
+                        <th>Remove</th>
+                    </MatTableHeader>
+                    <MatTableRow>
+                        <td>@context.Activity</td>
+                        <td>@context.CaseId</td>
+                        @if (context.TimeStamp is not null)
+                        {
+                            <td>@context.TimeStamp</td>
+                        }
+                        else
+                        {
+                            <td>Undefined</td>
+                        }
+                        <td>
+                            <MatIconButton OnClick="@(() => RemoveEventFromSelectedTrace(context))" Icon="remove"/>
+                        </td>
+                    </MatTableRow>
+                </MatTable>
+            }
+            else if (View == ConformancePageView.SelectLog)
+            {
+                <ChooseLog EventLogs="@StateContainer.EventLogs" @bind-SelectedLog="_selectedLog"></ChooseLog>
+                <MatButton OnClick="OnLogSelected" Disabled="@(_selectedLog is null)">Continue</MatButton>
+            }
+            else if (View == ConformancePageView.SelectModel)
+            {
+                <h5>Select model</h5>
+                <ChooseModel DeclareModels="@StateContainer.DeclareModels" @bind-SelectedModel="_declareModel"></ChooseModel>
+                <MatButton OnClick="OnModelSelected" Disabled="@(_declareModel is null)">OK</MatButton>
+            }
+            else if (View == ConformancePageView.SelectTraces)
+            {
+                <h5>Select traces</h5>
+                <ChooseTrace Traces="@GetLogTraceDtos()" SelectedTraces="@_selectedTraces"></ChooseTrace>
+                <MatButton OnClick="OnTracesSelected">OK</MatButton>
+            }
+        </div>
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
+            <!-- ====TREE=== -->
+            @if (_declareModel is null)
+            {
+                <h4>Select a model</h4>
+            }
+            else
+            {
+                <MatTreeView TNode="TreeNodeModel"
+                             RootNode="@TreeNodeModel"
+                             GetChildNodesCallback="@(n => n.Nodes)">
+                    <NodeTemplate>
+                        <div Style="@Utilities.GetTreeBackground(context.Name, _traceEvaluation?.TemplateEvaluations)">
+                            @context.Name
+                        </div>
+                    </NodeTemplate>
+                </MatTreeView>
+            }
+        </div>
+    </div>
+</div>

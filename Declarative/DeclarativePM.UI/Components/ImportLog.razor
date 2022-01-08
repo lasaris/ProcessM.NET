@@ -1,0 +1,48 @@
+@using DeclarativePM.UI.Data
+@using DeclarativePM.UI.Enums
+@using DeclarativePM.Lib.IO.Import
+@implements IDisposable
+
+@inject IMatDialogService MatDialogService
+@inject StateContainer StateContainer
+@inject CsvLogImporter CsvLogImporter
+
+<MatFileUpload OnChange="@UploadLog" AllowMultiple="false" Label="Drop files here or Browse"></MatFileUpload>
+
+@if (uploadMode)
+{
+    <pre style="white-space: pre-line">
+        Filename: @file.Name
+        Size: @file.Size.ToString()
+        @content
+    </pre>
+
+    <MatTextField @bind-Value="@LogName" Label="Log name"></MatTextField>
+    <br/>
+    @foreach (var head in headersDict)
+    {
+        var key = head.Key;
+        <MatSelectItem value="@headersDict[key]" Items="@value2Items" ValueChanged="@((HeaderType ht) => EnumChanged(ht, key))" HelperText="@key"
+                       HelperTextPersistent="true">
+        </MatSelectItem>
+    }
+
+    <MatButton OnClick="Import">Import</MatButton>
+}
+
+<MatTable Items="StateContainer.EventLogs" class="mat-elevation-z5" AllowSelection="true">
+    <MatTableHeader>
+        <th>Name</th>
+        <th>Traces</th>
+        <th>Events</th>
+        <th>Remove</th>
+    </MatTableHeader>
+    <MatTableRow>
+        <td>@context.Name</td>
+        <td>@context.Cases().Count.ToString()</td>
+        <td>@context.Logs.Count.ToString()</td>
+        <td style="background: #ff0d00">
+            <MatIconButton OnClick="@(() => RemoveLog(context))" Icon="remove"></MatIconButton>
+        </td>
+    </MatTableRow>
+</MatTable>

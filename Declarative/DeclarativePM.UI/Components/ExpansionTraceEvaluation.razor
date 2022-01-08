@@ -1,0 +1,186 @@
+@using DeclarativePM.Lib.Models.ConformanceModels
+<div style="padding-bottom: 30px">
+    <MatAccordion>
+        <MatExpansionPanel Expanded="@true">
+            <MatExpansionPanelSummary>
+                <MatExpansionPanelHeader>
+                    <b>Overall trace healthiness</b>
+                </MatExpansionPanelHeader>
+            </MatExpansionPanelSummary>
+            <MatExpansionPanelDetails>
+                <span>
+                    <b>Activation sparsity:</b> @TraceEvaluation.Healthiness.ActivationSparsity
+                </span><br/>
+                <span>
+                    <b>Fulfillment ratio:</b>
+                    <p style="color:#13ff00; display: inline">@TraceEvaluation.Healthiness.FulfillmentRation</p>
+                </span><br/>
+                <span>
+                    <b>Conflict ratio:</b>
+                    <p style="color:#feb810; display: inline">@TraceEvaluation.Healthiness.ConflictRation</p>
+                </span><br/>
+                <span>
+                    <b>Violation ratio:</b>
+                    <p style="color:red; display: inline">@TraceEvaluation.Healthiness.ViolationRation</p>
+                </span><br/>
+            </MatExpansionPanelDetails>
+        </MatExpansionPanel>
+
+        <MatExpansionPanel>
+            <MatExpansionPanelSummary>
+                <MatExpansionPanelHeader>
+                    <b>Most violating template</b>
+                </MatExpansionPanelHeader>
+                <MatExpansionPanelSubHeader>
+                    <span>@GetMostViolatingTemplate().Template.TemplateDescription.ReadableName</span>
+                </MatExpansionPanelSubHeader>
+            </MatExpansionPanelSummary>
+            <MatExpansionPanelDetails>
+                <span>
+                    <b>Activation sparsity:</b> @GetMostViolatingTemplate().Healthiness.ActivationSparsity
+                </span><br/>
+                <span>
+                    <b>Fulfillment ratio:</b>
+                    <p style="color:#13ff00; display: inline">@GetMostViolatingTemplate().Healthiness.FulfillmentRation</p>
+                </span><br/>
+                <span>
+                    <b>Conflict ratio:</b>
+                    <p style="color:#feb810; display: inline">@GetMostViolatingTemplate().Healthiness.ConflictRation</p>
+                </span><br/>
+                <span>
+                    <b>Violation ratio:</b>
+                    <p style="color:#ff0000; display: inline">@GetMostViolatingTemplate().Healthiness.ViolationRation</p>
+                </span><br/>
+            </MatExpansionPanelDetails>
+        </MatExpansionPanel>
+
+        <MatExpansionPanel>
+            <MatExpansionPanelSummary>
+                <MatExpansionPanelHeader>
+                    <b>Most conflicting template</b>
+                </MatExpansionPanelHeader>
+                <MatExpansionPanelSubHeader>
+                    <span>@GetMostConflictingTemplate().Template.TemplateDescription.ReadableName</span>
+                </MatExpansionPanelSubHeader>
+            </MatExpansionPanelSummary>
+            <MatExpansionPanelDetails>
+                <span>
+                    <b>Activation sparsity:</b> @GetMostConflictingTemplate().Healthiness.ActivationSparsity
+                </span><br/>
+                <span>
+                    <b>Fulfillment ratio:</b>
+                    <p style="color:#13ff00; display: inline">@GetMostConflictingTemplate().Healthiness.FulfillmentRation</p>
+                </span><br/>
+                <span>
+                    <b>Conflict ratio:</b>
+                    <p style="color:#feb810; display: inline">@GetMostConflictingTemplate().Healthiness.ConflictRation</p>
+                </span><br/>
+                <span>
+                    <b>Violation ratio:</b>
+                    <p style="color:red; display: inline">@GetMostConflictingTemplate().Healthiness.ViolationRation</p>
+                </span><br/>
+            </MatExpansionPanelDetails>
+        </MatExpansionPanel>
+
+        <MatExpansionPanel>
+            <MatExpansionPanelSummary>
+                <MatExpansionPanelHeader>
+                    <b>Most violating constraint</b>
+                </MatExpansionPanelHeader>
+                <MatExpansionPanelSubHeader>
+                    <span>@GetMostViolatingConstraint().Constraint.ToString()</span>
+                </MatExpansionPanelSubHeader>
+            </MatExpansionPanelSummary>
+            <MatExpansionPanelDetails>
+                <span>
+                    <b>Activation sparsity:</b> @GetMostViolatingConstraint().Healthiness.ActivationSparsity
+                </span><br/>
+                <span>
+                    <b>Fulfillment ratio:</b>
+                    <p style="color:#13ff00; display: inline">@GetMostViolatingConstraint().Healthiness.FulfillmentRation</p>
+                </span><br/>
+                <span>
+                    <b>Conflict ratio:</b>
+                    <p style="color:#feb810; display: inline">@GetMostViolatingConstraint().Healthiness.ConflictRation</p>
+                </span><br/>
+                <span>
+                    <b>Violation ratio:</b>
+                    <p style="color:red; display: inline">@GetMostViolatingConstraint().Healthiness.ViolationRation</p>
+                </span><br/>
+            </MatExpansionPanelDetails>
+        </MatExpansionPanel>
+
+        <MatExpansionPanel>
+            <MatExpansionPanelSummary>
+                <MatExpansionPanelHeader>
+                    <b>Most conflicting constraint</b>
+                </MatExpansionPanelHeader>
+                <MatExpansionPanelSubHeader>
+                    <span>@GetMostConflictingConstraint().Constraint.ToString()</span>
+                </MatExpansionPanelSubHeader>
+            </MatExpansionPanelSummary>
+            <MatExpansionPanelDetails>
+                <span>
+                    <b>Activation sparsity:</b> @GetMostConflictingConstraint().Healthiness.ActivationSparsity
+                </span><br/>
+                <span>
+                    <b>Fulfillment ratio:</b>
+                    <p style="color:#13ff00; display: inline">@GetMostConflictingConstraint().Healthiness.FulfillmentRation</p>
+                </span><br/>
+                <span>
+                    <b>Conflict ratio:</b>
+                    <p style="color:#feb810; display: inline">@GetMostConflictingConstraint().Healthiness.ConflictRation</p>
+                </span><br/>
+                <span>
+                    <b>Violation ratio:</b>
+                    <p style="color:red; display: inline">@GetMostConflictingConstraint().Healthiness.ViolationRation</p>
+                </span><br/>
+            </MatExpansionPanelDetails>
+        </MatExpansionPanel>
+    </MatAccordion>
+</div>
+
+@code {
+
+    [Parameter]
+    public TraceEvaluation TraceEvaluation { get; set; }
+
+    private TemplateEvaluation _mostViolatingT;
+
+    public TemplateEvaluation GetMostViolatingTemplate()
+    {
+        _mostViolatingT ??= TraceEvaluation.TemplateEvaluations.Aggregate((t1, t2) =>
+            t1.Healthiness.ViolationRation > t2.Healthiness.ViolationRation ? t1 : t2);
+        return _mostViolatingT;
+    }
+
+    private TemplateEvaluation _mostConflictingT;
+
+    public TemplateEvaluation GetMostConflictingTemplate()
+    {
+        _mostConflictingT ??= TraceEvaluation.TemplateEvaluations.Aggregate((t1, t2) =>
+            t1.Healthiness.ConflictRation > t2.Healthiness.ConflictRation ? t1 : t2);
+        return _mostConflictingT;
+    }
+
+    private ConstraintEvaluation _mostViolatingC;
+
+    public ConstraintEvaluation GetMostViolatingConstraint()
+    {
+        _mostViolatingC ??= TraceEvaluation.TemplateEvaluations.SelectMany(t => t.ConstraintEvaluations)
+            .Aggregate((t1, t2) =>
+                t1.Healthiness.ViolationRation > t2.Healthiness.ViolationRation ? t1 : t2);
+        return _mostViolatingC;
+    }
+
+    private ConstraintEvaluation _mostConflictingC;
+
+    public ConstraintEvaluation GetMostConflictingConstraint()
+    {
+        _mostConflictingC ??= TraceEvaluation.TemplateEvaluations.SelectMany(t => t.ConstraintEvaluations)
+            .Aggregate((t1, t2) =>
+                t1.Healthiness.ConflictRation > t2.Healthiness.ConflictRation ? t1 : t2);
+        return _mostConflictingC;
+    }
+
+}

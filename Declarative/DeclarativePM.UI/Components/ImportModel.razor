@@ -1,0 +1,49 @@
+@using DeclarativePM.UI.Data
+@using DeclarativePM.Lib.IO.Import
+@using System.IO
+@implements IDisposable
+
+@inject IMatDialogService MatDialogService
+@inject StateContainer StateContainer
+@inject JsonModelImporter JsonModelImporter
+
+<MatFileUpload OnChange="@UploadModel" AllowMultiple="false" Label="Drop files here or Browse"></MatFileUpload>
+<ChooseModel DeclareModels="@StateContainer.DeclareModels"></ChooseModel>
+
+@code {
+
+    public async Task UploadModel(IMatFileUploadEntry[] files)
+    {
+        var file = files.FirstOrDefault();
+        if (file is null)
+            return;
+        if (file.Type != "application/json")
+        {
+            await MatDialogService.AlertAsync("Model is currently supported only in json");
+            return;
+        }
+        var stream = new MemoryStream();
+        try
+        {
+            await file.WriteToStreamAsync(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+            var model = await JsonModelImporter.LoadModelAsync(stream);
+
+            StateContainer.DeclareModels.Add(model);
+        }
+        catch
+        {
+            await MatDialogService.AlertAsync("Something went wrong during upload");
+        }
+        finally
+        {
+            await stream.DisposeAsync();
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    public void Dispose()
+    {
+    }
+
+}

@@ -1,0 +1,140 @@
+@page "/Create"
+@using DeclarativePM.Lib.Utils
+@using DeclarativePM.UI.Data
+@using DeclarativePM.UI.Enums
+@using DeclarativePM.Lib.Enums
+@inject StateContainer StateContainer
+@inject IMatDialogService MatDialogService
+
+@if (chooseMethod)
+{
+    <MatButton OnClick="() => ChooseMethod(CreateMethod.Create)">Create DECLARE model</MatButton>
+    <MatButton OnClick="() => ChooseMethod(CreateMethod.CreateWithLog)">Create DECLARE model from log</MatButton>
+    <MatButton OnClick="() => ChooseMethod(CreateMethod.Edit)">Edit existing DECLARE model</MatButton>
+}
+else if (method == CreateMethod.CreateWithLog && chooseLog)
+{
+    <ChooseLog EventLogs="@StateContainer.EventLogs" @bind-SelectedLog="_selectedLog"></ChooseLog>
+    <MatButton OnClick="LogContinueCreate" Disabled="@(_selectedLog is null)">Continue</MatButton>
+}
+else if (method == CreateMethod.Edit && chooseModel)
+{
+    <ChooseModel DeclareModels="@StateContainer.DeclareModels" @bind-SelectedModel="_declareModel"></ChooseModel>
+    <MatButton OnClick="ModelContinueCreate" Disabled="@(_declareModel is null)">Continue</MatButton>
+}
+else
+{
+    <MatChipSet Choice="true" SelectedChipChanged="SelectedPTemplateChanged">
+        <div class="ChipContainer">
+            <!-- CHIPS -->
+
+            <div class="Existential">
+                <div class="Text">Existential:</div>
+                <div class="Chip">
+                    @foreach (var tit in value2Items
+                        .Where(x => x.GetTemplateBookType() == TemplateBookType.Existential))
+                    {
+                        <MatChip Label="@tit.ToString()" IsCheckable="true" Value="@tit" Style="@GetChipBackground(tit)"></MatChip>
+                    }
+                </div>
+
+            </div>
+            <div class="Relational">
+                <div class="Text">Relational:</div>
+                <div class="Chip">
+                    @foreach (var tit in value2Items
+                        .Where(x => x.GetTemplateBookType() == TemplateBookType.Relational))
+                    {
+                        <MatChip Label="@tit.ToString()" IsCheckable="true" Value="@tit" Style="@GetChipBackground(tit)"></MatChip>
+                    }
+                </div>
+
+            </div>
+            <div class="NotRelational">
+                <div class="Text">Not Relational:</div>
+                <div class="Chip">
+                    @foreach (var tit in value2Items
+                        .Where(x => x.GetTemplateBookType() == TemplateBookType.NotRelational))
+                    {
+                        <MatChip Label="@tit.ToString()" IsCheckable="true" Value="@tit" Style="@GetChipBackground(tit)"></MatChip>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </MatChipSet>
+    <div class="MainContainer">
+        <div class="Activities">
+            <!-- ACTIVITIES -->
+            <MatButton OnClick="AddActivity" Icon="add" Label="Add activity"/>
+            <MatVirtualScroll style="height: auto" ItemType="string" Items="@activities" ItemHeight="50" Disabled="true">
+                <ItemTemplate>
+                    <div>
+                        @context
+                        <MatIconButton Icon="remove" OnClick="@(() => RemoveActivity(context))"></MatIconButton>
+                    </div>
+                </ItemTemplate>
+            </MatVirtualScroll>
+        </div>
+        <div class="Editor">
+            <!-- EDITOR -->
+            @if (current is null)
+            {
+                <h5>Please select a template to edit</h5>
+            }
+            else
+            {
+                <span>
+                    @if (CurrentlyEditedTemplate.TemplateTypes == TemplateTypes.Existence)
+                    {
+                        <MatSelectItem @bind-Value="@CurrentlyEditedTemplate.EventA" Items="@activities" Label="Event A"></MatSelectItem>
+                        <MatNumericUpDownField Label="Occurrences"
+                                               @bind-Value=@CurrentlyEditedTemplate.Occurrences
+                                               DecimalPlaces=0
+                                               Minimum=1>
+                        </MatNumericUpDownField>
+                    }
+                    else if (CurrentlyEditedTemplate.TemplateTypes == TemplateTypes.BiTemplate)
+                    {
+                        <MatSelectItem @bind-Value="@CurrentlyEditedTemplate.EventA" Items="@activities" Label="Event A"></MatSelectItem>
+                        <MatSelectItem @bind-Value="@CurrentlyEditedTemplate.EventB" Items="@activities" Label="Event B"></MatSelectItem>
+                    }
+                    else if (CurrentlyEditedTemplate.TemplateTypes == TemplateTypes.UniTemplate)
+                    {
+                        <MatSelectItem @bind-Value="@CurrentlyEditedTemplate.EventA" Items="@activities" Label="Event"></MatSelectItem>
+                    }
+
+                    <MatButton OnClick="SaveTemplate" Disabled="@DisableSave()">Save template</MatButton>
+
+                </span>
+            }
+            <MatTable Items="currentTemplates" class="mat-elevation-z5" AllowSelection="true" SelectionChanged="SelectionChangedEvent">
+                <MatTableHeader>
+                    <th>Name</th>
+                    <th>@GetHeader(true)</th>
+                    <th>@GetHeader(false)</th>
+                    <th>Remove</th>
+                </MatTableHeader>
+                <MatTableRow>
+                    <td>@current.TemplateDescription.TemplateType.ToString()</td>
+                    <td>@GetValue1(context)</td>
+                    <td>@GetValue2(context)</td>
+                    <td>
+                        <MatIconButton Icon="remove" OnClick="@(() => RemoveTemplate(context))"></MatIconButton>
+                    </td>
+                </MatTableRow>
+            </MatTable>
+        </div>
+        <div class="Tree">
+            <MatButton OnClick="SaveModel">Save DECLARE MODEL</MatButton>
+            <!-- TREE -->
+            <MatTreeView TNode="TreeNodeModel"
+                         RootNode="@treeTemplates"
+                         GetChildNodesCallback="@(n => n.Nodes)">
+                <NodeTemplate>
+                    @context.Name
+                </NodeTemplate>
+            </MatTreeView>
+        </div>
+    </div>
+}
