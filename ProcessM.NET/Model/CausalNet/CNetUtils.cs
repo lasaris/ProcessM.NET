@@ -28,7 +28,7 @@ namespace ProcessM.NET.Model.CausalNet
             
             foreach (var activity in causalNet.Activities) //CREATE INPUT AND OUTPUT PLACES
             {
-                var actTransition = new Transition("t" + ++transitionCount, causalNet.IndexToActivity[activity.Id]);
+                var actTransition = new Transition("t" + ++transitionCount, causalNet.IndexToActivity[activity.Id], activity.Frequency);
                 
                 var inputPlace = new Place("p" + ++placeCount);
                 places.Add(inputPlace);

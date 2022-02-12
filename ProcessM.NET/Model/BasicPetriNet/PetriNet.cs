@@ -8,13 +8,13 @@ namespace ProcessM.NET.Model.BasicPetriNet
     /// </summary>
     public class PetriNet : IPetriNet
     {
-        public List<ITransition> Transitions { get; }
+        public List<ITransition> Transitions { get; protected set; }
 
-        public List<IPlace> Places { get; }
+        public List<IPlace> Places { get; protected set; }
 
-        public IPlace StartPlace { get; }
+        public IPlace StartPlace { get; protected set;}
 
-        public IPlace EndPlace { get; }
+        public IPlace EndPlace { get; protected set; }
 
         /// <summary>
         /// Finds corresponding transition of a Petri net to given activity (the search is not case-sensitive). 

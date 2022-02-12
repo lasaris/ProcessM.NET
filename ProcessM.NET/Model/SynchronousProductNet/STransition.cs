@@ -32,6 +32,8 @@ namespace ProcessM.NET.Model.SynchronousProductNet
         /// </summary>
         public bool Invisible { get; set; }
 
+        public int Frequency { get; }
+
 
         /// <param name="transition">Transition</param>
         /// <param name="cost">Cost</param>

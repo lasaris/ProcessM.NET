@@ -1,4 +1,5 @@
-﻿using ProcessM.NET.Model;
+﻿using System;
+using ProcessM.NET.Model;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,8 +32,8 @@ namespace ProcessM.NET.Export
         {
             string doubleIndent = indentation + indentation;
             return indentation + "subgraph place {\n" +
-                doubleIndent + "graph [shape = circle, color = gray];\n" +
-                doubleIndent + "node [shape = circle, fixedsize = true, width = 0.5, label = \" \"];\n";
+                doubleIndent + "graph [shape = circle, color = gray]\n" +
+                doubleIndent + "node [shape = circle, fixedsize = true, width = 0.5, label = \" \"]\n";
         }
 
         /// <summary>
@@ -44,14 +45,14 @@ namespace ProcessM.NET.Export
         {
             string doubleIndent = indentation + indentation;
             return indentation + "subgraph transitions {\n" +
-                doubleIndent + "node [class = transition, shape = rect, style=filled, fillcolor = white, height = 0.1, width = 1, fontname=\"times-bold\"];\n";
+                doubleIndent + "node [class = transition, shape = rect, style=filled, fillcolor = white, height = 0.1, width = 1, fontname=\"times-bold\"]\n";
         }
         
         private static string GetInvisibleTransitionsHeader(string indentation)
         {
             string doubleIndent = indentation + indentation;
             return indentation + "subgraph invisible_transitions {\n" +
-                   doubleIndent + "node [shape = rect, height = 0.1, width = 1, label = \" \", fillcolor = black, style=filled];\n";
+                   doubleIndent + "node [shape = rect, height = 0.1, width = 1, label = \" \", fillcolor = black, style=filled]\n";
         }
 
         /// <summary>
@@ -60,7 +61,7 @@ namespace ProcessM.NET.Export
         /// <param name="places">A collection of places in exported Petri Net.</param>
         /// <param name="indentation">Indentation symbol, this class uses "\t" as default.</param>
         /// <returns>A StringBuilder containing a string .DOT representation of places in exported Petri Net.</returns>
-        private static StringBuilder GetPlaces(IEnumerable<DPlace> places, string indentation)
+        private static StringBuilder GetPlaces(IEnumerable<IPlace> places, string indentation)
         {
             string doubleIndent = indentation + indentation;
             StringBuilder outStr = new StringBuilder("");
@@ -79,27 +80,34 @@ namespace ProcessM.NET.Export
         /// <param name="transitions">A collection of transitions in exported Petri Net.</param>
         /// <param name="indentation">Indentation symbol, this class uses "\t" as default.</param>
         /// <returns>A StringBuilder containing a string .DOT representation of transitions in exported Petri Net.</returns>
-        private static StringBuilder GetTransitions(IEnumerable<DTransition> transitions, string indentation)
+        private static StringBuilder GetTransitions(List<ITransition> transitions, Dictionary<string, string> transitionColor, string indentation)
         {
             string doubleIndent = indentation + indentation;
             StringBuilder outStr = new StringBuilder("");
             outStr.Append(GetTransitionsHeader(indentation));
-            foreach (DTransition t in transitions.Where(tr => !tr.Invisible))
+            foreach (ITransition t in transitions.Where(tr => !tr.Invisible))
             {
-                outStr.Append(doubleIndent + "\"" + t.Activity + "\" [id=" + t.Id + ",fillcolor=" + t.Color + "];\n");
+                outStr.Append(doubleIndent + "\"" + t.Activity + "\" [");
+                outStr.Append("id=" + t.Id + ",");
+                outStr.Append("fillcolor=" + transitionColor.GetValueOrDefault(t.Id, "white"));
+                if (t.Frequency != 0)
+                {
+                    outStr.Append(", xlabel = <<FONT POINT-SIZE=\"10\">" + t.Frequency + "</FONT>>");
+                }
+                outStr.Append("];\n");
             }
             outStr.Append(indentation + "}\n");
             return outStr;
         }
 
-        private static StringBuilder GetInvisibleTransitions(IEnumerable<DTransition> transitions, string indentation)
+        private static StringBuilder GetInvisibleTransitions(IEnumerable<ITransition> transitions, string indentation)
         {
             string doubleIndent = indentation + indentation;
             StringBuilder outStr = new StringBuilder("");
             outStr.Append(GetInvisibleTransitionsHeader(indentation));
             foreach (ITransition t in transitions.Where(tr => tr.Invisible))
             {
-                outStr.Append(doubleIndent + "\"" + t.Id + "\";\n");
+                outStr.Append(doubleIndent + "\"" + t.Id + "\"\n");
             }
             outStr.Append(indentation + "}\n");
             return outStr;
@@ -111,49 +119,49 @@ namespace ProcessM.NET.Export
         /// <param name="transitions">A collection of transitions in exported Petri Net.</param>
         /// <param name="indentation">Indentation symbol, this class uses "\t" as default.</param>
         /// <returns>A StringBuilder containing a string .DOT representation of arcs in exported Petri Net.</returns>
-        private static StringBuilder GetArcs(List<DTransition> transitions, string indentation)
+        private static StringBuilder GetArcs(List<ITransition> transitions, string indentation)
         {
             StringBuilder outStr = new StringBuilder("");
-            foreach (DTransition t in transitions)
+            foreach (ITransition t in transitions)
             {
                 foreach (IPlace ip in t.InputPlaces)
                 {
-                    outStr.Append(indentation + "\"" + ip.Id + "\" -> \"" + (t.Invisible ? t.Id : t.Activity) + "\";\n");
+                    outStr.Append(indentation + "\"" + ip.Id + "\" -> \"" + (t.Invisible ? t.Id : t.Activity) + "\"\n");
                 }
                 foreach (IPlace op in t.OutputPlaces)
                 {
-                    outStr.Append(indentation + "\"" + (t.Invisible ? t.Id : t.Activity) + "\" -> \"" + op.Id + "\";\n");
+                    outStr.Append(indentation + "\"" + (t.Invisible ? t.Id : t.Activity) + "\" -> \"" + op.Id + "\"\n");
                 }
             }
             outStr.Append("}");
             return outStr;
         }
 
-        private static StringBuilder GetSimplifiedArcs(List<DTransition> transitions, string indentation)
+        private static StringBuilder GetSimplifiedArcs(List<ITransition> transitions, string indentation)
         {
             StringBuilder outStr = new StringBuilder("");
-            foreach (DTransition inT in transitions.Where(t => !t.Invisible))
+            foreach (ITransition inT in transitions.Where(t => !t.Invisible))
             {
                 var outTransitions = FindOutTransitions(inT, transitions).Distinct();
                 foreach (var outT in outTransitions)
                 {
-                    outStr.Append(indentation + "\"" + inT.Activity + "\" -> \"" + outT.Activity + "\";\n");
+                    outStr.Append(indentation + "\"" + inT.Activity + "\" -> \"" + outT.Activity + "\"\n");
                 }
             }
             outStr.Append("}");
             return outStr;
         }
 
-        private static IEnumerable<DTransition> FindOutTransitions(DTransition inT, List<DTransition> transitions)
+        private static IEnumerable<ITransition> FindOutTransitions(ITransition inT, List<ITransition> transitions)
         {
-            var outTransitions = new List<DTransition>();
+            var outTransitions = new List<ITransition>();
             foreach (var p in inT.OutputPlaces)
             {
                 foreach (var t in transitions.Where(t => t.InputPlaces.Contains(p)))
                 {
                     if (t.Invisible)
                     {
-                        outTransitions.AddRange(FindOutTransitions(t, transitions));
+                        outTransitions.AddRange(FindOutTransitions(t, transitions).ToList());
                     }
                     else
                     {
@@ -177,7 +185,7 @@ namespace ProcessM.NET.Export
             var net = sourceNet is DPetriNet ? (DPetriNet)sourceNet : new DPetriNet(sourceNet);
             StringBuilder outStr = new StringBuilder("");
             outStr.Append(GetGraphHeader());
-            outStr.Append(GetTransitions(net.Transitions, indentation));
+            outStr.Append(GetTransitions(net.Transitions, net.TransitionColor, indentation));
             if (simplified)
             {
                 outStr.Append(GetSimplifiedArcs(net.Transitions, indentation));

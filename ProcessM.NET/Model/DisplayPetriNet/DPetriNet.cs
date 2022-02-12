@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using ProcessM.NET.Model.BasicPetriNet;
@@ -11,32 +10,30 @@ namespace ProcessM.NET.Model.DisplayPetriNet
     /// </summary>
     public class DPetriNet : PetriNet
     {
-        public new List<DTransition> Transitions { get; }
-        public new List<DPlace> Places { get; }
 
-        public new DPlace StartPlace { get; }
+        public Dictionary<string, string> TransitionColor { get; } = new();
 
-        public new DPlace EndPlace { get; }
-        
+
         public DPetriNet(IPetriNet net)
         {
-            Transitions = new List<DTransition>();
+            Transitions = new List<ITransition>();
             foreach (var t in net.Transitions)
             {
-                Transitions.Add( new DTransition(
+                Transitions.Add( new Transition(
                     t.Id,
                     t.Activity,
-                    t.InputPlaces.Clone<List<DPlace>>(),
-                    t.OutputPlaces.Clone<List<DPlace>>(),
+                    t.Frequency,
+                    t.InputPlaces.Clone<List<Place>>().ToList<IPlace>(),
+                    t.OutputPlaces.Clone<List<Place>>().ToList<IPlace>(),
                     t.Invisible
                 ));
             }
-            Places = net.Places.Clone<List<DPlace>>();
-            StartPlace = net.StartPlace.Clone<DPlace>();
-            EndPlace = net.EndPlace.Clone<DPlace>();
+            Places = net.Places.Clone<List<Place>>().ToList<IPlace>();
+            StartPlace = net.StartPlace.Clone<Place>();
+            EndPlace = net.EndPlace.Clone<Place>();
             Preprocess();
         }
-        
+
         private void Preprocess()
         {
             var transform = new Dictionary<string, string>();
@@ -79,7 +76,18 @@ namespace ProcessM.NET.Model.DisplayPetriNet
             }
         }
         
+        public void ToggleActivityHidden(string transitionId)
+        {
+            var transition = Transitions.First(t => t.Id == transitionId);
+            transition.ChangeVisibility();
+        }
+        
+        public void ChangeActivityColor(string transitionId, string color)
+        {
+            TransitionColor[transitionId] = color;
+        }
     }
+    
     public static class ObjectExtension
     {
         public static T Clone<T>(this object objSource)
