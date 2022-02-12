@@ -34,6 +34,8 @@ namespace ProcessM.NET.Model.BasicPetriNet
             OutputPlaces = oPlaces;
             Invisible = invisible;
         }
+        
+        public Transition () {}
 
         public void ChangeVisibility()
         {
