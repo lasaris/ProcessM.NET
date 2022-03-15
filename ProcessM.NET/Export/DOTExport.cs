@@ -92,7 +92,7 @@ namespace ProcessM.NET.Export
                 outStr.Append("fillcolor=" + transitionColor.GetValueOrDefault(t.Id, "white"));
                 if (t.Frequency != 0)
                 {
-                    outStr.Append(", xlabel = <<FONT POINT-SIZE=\"10\">" + t.Frequency + "</FONT>>");
+                    outStr.Append(", shape=record, label =< <B>" + t.Activity + "</B> | <FONT POINT-SIZE=\"10\">" + t.Frequency + "</FONT>>");
                 }
                 outStr.Append("];\n");
             }
