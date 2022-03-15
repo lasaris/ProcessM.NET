@@ -45,7 +45,7 @@ namespace ProcessM.NET.Export
         {
             string doubleIndent = indentation + indentation;
             return indentation + "subgraph transitions {\n" +
-                doubleIndent + "node [class = transition, shape = rect, style=filled, fillcolor = white, height = 0.1, width = 1, fontname=\"times-bold\"]\n";
+                doubleIndent + "node [class = transition, shape = rect, style=filled, fillcolor = white, height = 0.1, width = 1]\n";
         }
         
         private static string GetInvisibleTransitionsHeader(string indentation)
