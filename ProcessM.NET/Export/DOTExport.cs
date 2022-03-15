@@ -142,7 +142,8 @@ namespace ProcessM.NET.Export
             StringBuilder outStr = new StringBuilder("");
             foreach (ITransition inT in transitions.Where(t => !t.Invisible))
             {
-                var outTransitions = FindOutTransitions(inT, transitions).Distinct();
+                var visited = new HashSet<ITransition>();
+                var outTransitions = FindOutTransitions(inT, transitions, visited).Distinct();
                 foreach (var outT in outTransitions)
                 {
                     outStr.Append(indentation + "\"" + inT.Activity + "\" -> \"" + outT.Activity + "\"\n");
@@ -152,16 +153,17 @@ namespace ProcessM.NET.Export
             return outStr;
         }
 
-        private static IEnumerable<ITransition> FindOutTransitions(ITransition inT, List<ITransition> transitions)
+        private static IEnumerable<ITransition> FindOutTransitions(ITransition inT, List<ITransition> transitions, HashSet<ITransition> visited)
         {
+            visited.Add(inT);
             var outTransitions = new List<ITransition>();
             foreach (var p in inT.OutputPlaces)
             {
-                foreach (var t in transitions.Where(t => t.InputPlaces.Contains(p)))
+                foreach (var t in transitions.Where(t => t.InputPlaces.Contains(p) && !visited.Contains(t)))
                 {
                     if (t.Invisible)
                     {
-                        outTransitions.AddRange(FindOutTransitions(t, transitions).ToList());
+                        outTransitions.AddRange(FindOutTransitions(t, transitions, visited).ToList());
                     }
                     else
                     {
