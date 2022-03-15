@@ -11,7 +11,7 @@ namespace ProcessM.NET.Model.DisplayPetriNet
     public class DPetriNet : PetriNet
     {
 
-        public Dictionary<string, string> TransitionColor { get; } = new();
+        public Dictionary<string, string> TransitionColor { get; set; } = new();
 
 
         public DPetriNet(IPetriNet net)
