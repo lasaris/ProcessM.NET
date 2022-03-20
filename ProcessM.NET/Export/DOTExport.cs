@@ -51,7 +51,7 @@ namespace ProcessM.NET.Export
         {
             string doubleIndent = indentation + indentation;
             return indentation + "subgraph invisible_transitions {\n" +
-                   doubleIndent + "node [shape = rect, height = 0.1, width = 1, label = \" \", fillcolor = black, style=filled]\n";
+                   doubleIndent + "node [shape = rect, height = 0.1, width = 1, label = \" \", fillcolor = lightgrey, style=filled]\n";
         }
 
         /// <summary>
@@ -88,10 +88,14 @@ namespace ProcessM.NET.Export
             {
                 outStr.Append(doubleIndent + "\"" + t.Activity + "\" [");
                 outStr.Append("id=" + t.Id + ",");
-                outStr.Append("fillcolor=" + transitionColor.GetValueOrDefault(t.Id, "white"));
+                outStr.Append("fillcolor=" + transitionColor.GetValueOrDefault(t.Id, "white") + ",");
                 if (t.Frequency != 0)
                 {
-                    outStr.Append(", shape=record, label =< <B>" + t.Activity + "</B> | <FONT POINT-SIZE=\"10\">" + t.Frequency + "</FONT>>");
+                    outStr.Append("shape=record, label =< <B>" + t.Activity + "</B> | <FONT POINT-SIZE=\"10\">" + t.Frequency + "</FONT>>");
+                }
+                else
+                {
+                    outStr.Append("label =< <B>" + t.Activity + "</B> >");
                 }
                 outStr.Append("];\n");
             }
@@ -106,7 +110,16 @@ namespace ProcessM.NET.Export
             outStr.Append(GetInvisibleTransitionsHeader(indentation));
             foreach (ITransition t in transitions.Where(tr => tr.Invisible))
             {
-                outStr.Append(doubleIndent + "\"" + t.Id + "\"\n");
+                outStr.Append(doubleIndent + "\"" + t.Id + "\" [");
+                if (!string.IsNullOrEmpty(t.Activity))
+                {
+                    outStr.Append("shape=record, label =< <B>" + t.Activity + "</B> | <FONT POINT-SIZE=\"10\">" + t.Frequency + "</FONT>>");
+                }
+                else
+                {
+                    outStr.Append("label = "+ t.Frequency);
+                }
+                outStr.Append("];\n");
             }
             outStr.Append(indentation + "}\n");
             return outStr;
@@ -141,38 +154,46 @@ namespace ProcessM.NET.Export
             StringBuilder outStr = new StringBuilder("");
             foreach (ITransition inT in transitions.Where(t => !t.Invisible))
             {
-                var visited = new HashSet<ITransition>();
-                var outTransitions = FindOutTransitions(inT, transitions, visited).Distinct();
-                foreach (var outT in outTransitions)
+                var outTransitions = new List<(ITransition, int)>();
+                foreach (var p in inT.OutputPlaces)
                 {
-                    outStr.Append(indentation + "\"" + inT.Activity + "\" -> \"" + outT.Activity + "\"\n");
+                    foreach (var outT in transitions.Where(t => t.InputPlaces.Contains(p)))
+                    {
+                        if (!outT.Invisible)
+                        {
+                            outTransitions.Add((outT, 0));
+                        }
+                        else
+                        {
+                            foreach (var arcTOutputPlace in outT.OutputPlaces)
+                            {
+                                foreach (var outTransition in transitions.Where(t => t.InputPlaces.Contains(arcTOutputPlace)))
+                                {
+                                    outTransitions.Add((outTransition, outT.Frequency));
+                                }
+                            }
+                        }
+                    }
+                }
+
+                outTransitions = outTransitions
+                    .GroupBy(t => t.Item1)
+                    .Select((g) => (g.Key, g.Sum(s => s.Item2)))
+                    .ToList();
+                
+                foreach (var (outT, freq) in outTransitions)
+                {
+                    outStr.Append(indentation + "\"" + inT.Activity + "\" -> \"" + outT.Activity + "\"");
+                    if (freq != 0) 
+                    {
+                        outStr.Append(" [label = \" " + freq + "\", fontsize = 10]");
+                    }
+                    outStr.Append('\n');
                 }
             }
             outStr.Append("}");
             return outStr;
         }
-
-        private static IEnumerable<ITransition> FindOutTransitions(ITransition inT, List<ITransition> transitions, HashSet<ITransition> visited)
-        {
-            visited.Add(inT);
-            var outTransitions = new List<ITransition>();
-            foreach (var p in inT.OutputPlaces)
-            {
-                foreach (var t in transitions.Where(t => t.InputPlaces.Contains(p) && !visited.Contains(t)))
-                {
-                    if (t.Invisible)
-                    {
-                        outTransitions.AddRange(FindOutTransitions(t, transitions, visited).ToList());
-                    }
-                    else
-                    {
-                        outTransitions.Add(t);
-                    }
-                }
-            }
-            return outTransitions;
-        }
-
 
         /// <summary>
         /// Serializes given Petri Net compliant with IPetriNet interface to a .DOT file string.
