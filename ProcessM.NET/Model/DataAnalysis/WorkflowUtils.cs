@@ -11,10 +11,14 @@ namespace ProcessM.NET.Model.DataAnalysis
         /// Creates same start activity and end activity for each trace in the Workflow log
         /// </summary>
         /// <param name="workflowLog">Workflow log</param>
-        public static void WorkflowLogPreprocessor(WorkflowLog workflowLog)
+        public static void WorkflowLogPreprocessor(WorkflowLog workflowLog, HashSet<string> filterActivities = null)
         {
             PreprocessStartActivity(workflowLog);
             PreprocessEndActivity(workflowLog);
+            if (filterActivities != null)
+            {
+                FilterActivities(workflowLog, filterActivities);
+            }
         }
 
         /// <summary>
@@ -63,6 +67,14 @@ namespace ProcessM.NET.Model.DataAnalysis
                     }
                 }
             // }
+        }
+
+        private static void FilterActivities(WorkflowLog workflowLog, HashSet<string> removedActivities)
+        {
+            foreach (var trace in workflowLog.WorkflowTraces)
+            {
+                trace.Activities.RemoveAll(removedActivities.Contains);
+            }
         }
     }
 }
