@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using Deedle;
 
 namespace ProcessM.NET.Model.DataAnalysis
@@ -137,5 +138,10 @@ namespace ProcessM.NET.Model.DataAnalysis
         }
         
         public WorkflowLog() {}
+
+        public WorkflowLog Clone()
+        {
+            return  JsonSerializer.Deserialize<WorkflowLog>(JsonSerializer.Serialize(this));
+        }
     }
 }
