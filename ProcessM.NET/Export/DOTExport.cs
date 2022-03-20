@@ -31,8 +31,7 @@ namespace ProcessM.NET.Export
         private static string GetPlacesHeader(string indentation)
         {
             string doubleIndent = indentation + indentation;
-            return indentation + "subgraph place {\n" +
-                doubleIndent + "graph [shape = circle, color = gray]\n" +
+            return indentation + "subgraph places {\n" +
                 doubleIndent + "node [shape = circle, fixedsize = true, width = 0.5, label = \" \"]\n";
         }
 
