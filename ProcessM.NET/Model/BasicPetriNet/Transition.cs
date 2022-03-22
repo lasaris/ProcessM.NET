@@ -12,8 +12,6 @@ namespace ProcessM.NET.Model.BasicPetriNet
         public string Id { get; set; }
         public string Activity { get; set;}
         public bool Invisible { get; set; } = false;
-        
-        public  int Frequency { get; }
 
         public Transition(string id, string activity)
         {
@@ -22,20 +20,6 @@ namespace ProcessM.NET.Model.BasicPetriNet
             Id = id;
             Activity = activity;
         }
-        
-        public Transition(string id, string activity, int frequency) : this(id, activity)
-        {
-            Frequency = frequency;
-        }
-
-        public Transition(string id, string activity, int frequency, List<IPlace> iPlaces, List<IPlace> oPlaces, bool invisible) : this(id, activity, frequency)
-        {
-            InputPlaces = iPlaces;
-            OutputPlaces = oPlaces;
-            Invisible = invisible;
-        }
-        
-        public Transition () {}
 
         public void ChangeVisibility()
         {

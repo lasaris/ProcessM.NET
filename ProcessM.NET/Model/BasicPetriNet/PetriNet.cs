@@ -64,7 +64,5 @@ namespace ProcessM.NET.Model.BasicPetriNet
             StartPlace = startPlace;
             EndPlace = endPlace;
         }
-
-        protected PetriNet() { }
     }
 }

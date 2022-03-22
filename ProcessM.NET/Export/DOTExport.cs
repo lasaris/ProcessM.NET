@@ -3,7 +3,7 @@ using ProcessM.NET.Model;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ProcessM.NET.Model.DisplayPetriNet;
+using ProcessM.NET.Model.GraphvizNet;
 
 namespace ProcessM.NET.Export
 {
@@ -60,12 +60,12 @@ namespace ProcessM.NET.Export
         /// <param name="places">A collection of places in exported Petri Net.</param>
         /// <param name="indentation">Indentation symbol, this class uses "\t" as default.</param>
         /// <returns>A StringBuilder containing a string .DOT representation of places in exported Petri Net.</returns>
-        private static StringBuilder GetPlaces(IEnumerable<IPlace> places, string indentation)
+        private static StringBuilder GetPlaces(IEnumerable<GPlace> places, string indentation)
         {
             string doubleIndent = indentation + indentation;
             StringBuilder outStr = new StringBuilder("");
             outStr.Append(GetPlacesHeader(indentation));
-            foreach (IPlace p in places)
+            foreach (var p in places)
             {
                 outStr.Append(doubleIndent + "\"" + p.Id + "\"\n");
             }
@@ -79,23 +79,23 @@ namespace ProcessM.NET.Export
         /// <param name="transitions">A collection of transitions in exported Petri Net.</param>
         /// <param name="indentation">Indentation symbol, this class uses "\t" as default.</param>
         /// <returns>A StringBuilder containing a string .DOT representation of transitions in exported Petri Net.</returns>
-        private static StringBuilder GetTransitions(List<ITransition> transitions, Dictionary<string, string> transitionColor, string indentation)
+        private static StringBuilder GetTransitions(IEnumerable<GTransition> transitions, string indentation)
         {
             string doubleIndent = indentation + indentation;
             StringBuilder outStr = new StringBuilder("");
             outStr.Append(GetTransitionsHeader(indentation));
-            foreach (ITransition t in transitions.Where(tr => !tr.Invisible))
+            foreach (var t in transitions.Where(tr => !tr.Invisible))
             {
-                outStr.Append(doubleIndent + "\"" + t.Activity + "\" [");
-                outStr.Append("id=" + t.Id + ",");
-                outStr.Append("fillcolor=" + transitionColor.GetValueOrDefault(t.Id, "white") + ",");
-                if (t.Frequency != 0)
+                outStr.Append(doubleIndent + "\"" + t.Id + "\" [");
+                outStr.Append("id=\"" + t.Id + "\",");
+                outStr.Append("fillcolor=" + t.Color + ",");
+                if (t.Frequency is not null)
                 {
-                    outStr.Append("shape=record, label =< <B>" + t.Activity + "</B> | <FONT POINT-SIZE=\"10\">" + t.Frequency + "</FONT>>");
+                    outStr.Append("shape=record, label =< <B>" + t.Label + "</B> | <FONT POINT-SIZE=\"10\">" + t.Frequency + "</FONT>>");
                 }
                 else
                 {
-                    outStr.Append("label =< <B>" + t.Activity + "</B> >");
+                    outStr.Append("label =< <B>" + t.Label + "</B> >");
                 }
                 outStr.Append("];\n");
             }
@@ -103,19 +103,19 @@ namespace ProcessM.NET.Export
             return outStr;
         }
 
-        private static StringBuilder GetInvisibleTransitions(IEnumerable<ITransition> transitions, string indentation)
+        private static StringBuilder GetInvisibleTransitions(IEnumerable<GTransition> transitions, string indentation)
         {
             string doubleIndent = indentation + indentation;
             StringBuilder outStr = new StringBuilder("");
             outStr.Append(GetInvisibleTransitionsHeader(indentation));
-            foreach (ITransition t in transitions.Where(tr => tr.Invisible))
+            foreach (var t in transitions.Where(tr => tr.Invisible))
             {
                 outStr.Append(doubleIndent + "\"" + t.Id + "\" [");
-                if (!string.IsNullOrEmpty(t.Activity))
+                if (!string.IsNullOrEmpty(t.Label))
                 {
-                    outStr.Append("shape=record, label =< <B>" + t.Activity + "</B> | <FONT POINT-SIZE=\"10\">" + t.Frequency + "</FONT>>");
+                    outStr.Append("shape=record, label =< <B>" + t.Label + "</B> | <FONT POINT-SIZE=\"10\">" + t.Frequency + "</FONT>>");
                 }
-                else
+                else if (t.Frequency is not null)
                 {
                     outStr.Append("label = "+ t.Frequency);
                 }
@@ -131,65 +131,17 @@ namespace ProcessM.NET.Export
         /// <param name="transitions">A collection of transitions in exported Petri Net.</param>
         /// <param name="indentation">Indentation symbol, this class uses "\t" as default.</param>
         /// <returns>A StringBuilder containing a string .DOT representation of arcs in exported Petri Net.</returns>
-        private static StringBuilder GetArcs(List<ITransition> transitions, string indentation)
+        private static StringBuilder GetArcs(IEnumerable<GEdge> edges, string indentation)
         {
             StringBuilder outStr = new StringBuilder("");
-            foreach (ITransition t in transitions)
+            foreach (var e in edges)
             {
-                foreach (IPlace ip in t.InputPlaces)
+                outStr.Append(indentation + "\"" + e.Start + "\" -> \"" + e.End + "\"");
+                if (e.Frequency is not null)
                 {
-                    outStr.Append(indentation + "\"" + ip.Id + "\" -> \"" + (t.Invisible ? t.Id : t.Activity) + "\"\n");
+                    outStr.Append(indentation + " [label = " + e.Frequency +"]");
                 }
-                foreach (IPlace op in t.OutputPlaces)
-                {
-                    outStr.Append(indentation + "\"" + (t.Invisible ? t.Id : t.Activity) + "\" -> \"" + op.Id + "\"\n");
-                }
-            }
-            outStr.Append("}");
-            return outStr;
-        }
-
-        private static StringBuilder GetSimplifiedArcs(List<ITransition> transitions, string indentation)
-        {
-            StringBuilder outStr = new StringBuilder("");
-            foreach (ITransition inT in transitions.Where(t => !t.Invisible))
-            {
-                var outTransitions = new List<(ITransition, int)>();
-                foreach (var p in inT.OutputPlaces)
-                {
-                    foreach (var outT in transitions.Where(t => t.InputPlaces.Contains(p)))
-                    {
-                        if (!outT.Invisible)
-                        {
-                            outTransitions.Add((outT, 0));
-                        }
-                        else
-                        {
-                            foreach (var arcTOutputPlace in outT.OutputPlaces)
-                            {
-                                foreach (var outTransition in transitions.Where(t => t.InputPlaces.Contains(arcTOutputPlace)))
-                                {
-                                    outTransitions.Add((outTransition, outT.Frequency));
-                                }
-                            }
-                        }
-                    }
-                }
-
-                outTransitions = outTransitions
-                    .GroupBy(t => t.Item1)
-                    .Select((g) => (g.Key, g.Sum(s => s.Item2)))
-                    .ToList();
-                
-                foreach (var (outT, freq) in outTransitions)
-                {
-                    outStr.Append(indentation + "\"" + inT.Activity + "\" -> \"" + outT.Activity + "\"");
-                    if (freq != 0) 
-                    {
-                        outStr.Append(" [label = \" " + freq + "\", fontsize = 10]");
-                    }
-                    outStr.Append('\n');
-                }
+                outStr.Append(indentation + "\n");
             }
             outStr.Append("}");
             return outStr;
@@ -202,23 +154,27 @@ namespace ProcessM.NET.Export
         /// <param name="simplified">Export simplified graph only</param>
         /// <param name="indentation">Indentation symbol, this class uses "\t" as default.</param>
         /// <returns>.dot file string</returns>
-        public static string Serialize(IPetriNet sourceNet, bool simplified = false, string indentation = "\t")
+        public static string Serialize(GraphvizNet net, bool simplified = false, string indentation = "\t")
         {
-            var net = sourceNet is DPetriNet ? (DPetriNet)sourceNet : new DPetriNet(sourceNet);
+            net.Simplify = simplified;
             StringBuilder outStr = new StringBuilder("");
             outStr.Append(GetGraphHeader());
-            outStr.Append(GetTransitions(net.Transitions, net.TransitionColor, indentation));
-            if (simplified)
-            {
-                outStr.Append(GetSimplifiedArcs(net.Transitions, indentation));
-            }
-            else
+            if (net.Places.Any())
             {
                 outStr.Append(GetPlaces(net.Places, indentation));
-                outStr.Append(GetInvisibleTransitions(net.Transitions, indentation));
-                outStr.Append(GetArcs(net.Transitions, indentation));
             }
+            outStr.Append(GetTransitions(net.Transitions, indentation));
+            if (net.Transitions.Any(t => t.Invisible))
+            {
+                outStr.Append(GetInvisibleTransitions(net.Transitions, indentation));
+            }
+            outStr.Append(GetArcs(net.Edges, indentation));
             return outStr.ToString();
+        }
+        
+        public static string Serialize(IPetriNet sourceNet, bool simplified = false, string indentation = "\t")
+        {
+            return Serialize(new GraphvizNet(sourceNet), simplified, indentation);
         }
     }
 }
