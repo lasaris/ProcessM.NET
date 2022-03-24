@@ -89,7 +89,7 @@ namespace ProcessM.NET.Export
                 outStr.Append(doubleIndent + "\"" + t.Id + "\" [");
                 outStr.Append("id=\"" + t.Id + "\",");
                 outStr.Append("fillcolor=" + t.Color + ",");
-                if (t.Frequency is not null)
+                if (t.Frequency != 0)
                 {
                     outStr.Append("shape=record, label =< <B>" + t.Label + "</B> | <FONT POINT-SIZE=\"10\">" + t.Frequency + "</FONT>>");
                 }
@@ -115,7 +115,7 @@ namespace ProcessM.NET.Export
                 {
                     outStr.Append("shape=record, label =< <B>" + t.Label + "</B> | <FONT POINT-SIZE=\"10\">" + t.Frequency + "</FONT>>");
                 }
-                else if (t.Frequency is not null)
+                else if (t.Frequency != 0)
                 {
                     outStr.Append("label = "+ t.Frequency);
                 }
@@ -137,7 +137,7 @@ namespace ProcessM.NET.Export
             foreach (var e in edges)
             {
                 outStr.Append(indentation + "\"" + e.Start + "\" -> \"" + e.End + "\"");
-                if (e.Frequency is not null)
+                if (e.Frequency != 0)
                 {
                     outStr.Append(indentation + " [label = " + e.Frequency +"]");
                 }

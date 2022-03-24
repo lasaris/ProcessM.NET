@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace ProcessM.NET.Model.GraphvizNet;
@@ -33,7 +32,7 @@ public class GraphvizNet
         edges = new List<GEdge>();
         foreach (var transition in petriNet.Transitions)
         {
-            transitions.Add(new GTransition{ Id = transition.Id, Label = transition.Activity, Invisible = transition.Invisible });
+            transitions.Add(new GTransition{ Id = transition.Id, Label = transition.Activity, Invisible = transition.Invisible, Frequency = transition.Frequency });
             foreach (var inPlace in transition.InputPlaces)
             {
                 edges.Add(new GEdge{ Start = inPlace.Id, End = transition.Id });
@@ -47,14 +46,14 @@ public class GraphvizNet
         simpleEdges = new List<GEdge>();
         foreach (var inT in petriNet.Transitions.Where(t => !t.Invisible))
         {
-            var outTransitions = new List<ITransition>();
+            var outTransitions = new List<(ITransition, int)>();
             foreach (var p in inT.OutputPlaces)
             {
                 foreach (var outT in petriNet.Transitions.Where(t => t.InputPlaces.Contains(p)))
                 {
                     if (!outT.Invisible)
                     {
-                        outTransitions.Add(outT);
+                        outTransitions.Add((outT, 0));
                     }
                     else
                     {
@@ -62,16 +61,21 @@ public class GraphvizNet
                         {
                             foreach (var outTransition in petriNet.Transitions.Where(t => t.InputPlaces.Contains(arcTOutputPlace)))
                             {
-                                outTransitions.Add(outTransition);
+                                outTransitions.Add((outTransition, outT.Frequency));
                             }
                         }
                     }
                 }
             }
 
-            foreach (var outT in outTransitions.Distinct())
+            outTransitions = outTransitions
+                .GroupBy(t => t.Item1)
+                .Select((g) => (g.Key, g.Sum(s => s.Item2)))
+                .ToList();
+
+            foreach (var (outT, freq) in outTransitions.Distinct())
             {
-                simpleEdges.Add(new GEdge{ Start = inT.Id, End = outT.Id });
+                simpleEdges.Add(new GEdge{ Start = inT.Id, End = outT.Id, Frequency = freq});
             }
         }
         TransformIds(petriNet);

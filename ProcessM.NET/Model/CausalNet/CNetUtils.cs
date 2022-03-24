@@ -28,7 +28,7 @@ namespace ProcessM.NET.Model.CausalNet
             
             foreach (var activity in causalNet.Activities) //CREATE INPUT AND OUTPUT PLACES
             {
-                var actTransition = new Transition("t" + ++transitionCount, causalNet.IndexToActivity[activity.Id]);
+                var actTransition = new Transition("t" + ++transitionCount, causalNet.IndexToActivity[activity.Id], activity.Frequency);
                 
                 var inputPlace = new Place("p" + ++placeCount);
                 places.Add(inputPlace);
@@ -49,7 +49,7 @@ namespace ProcessM.NET.Model.CausalNet
                 var placeOut = places[inputPlaces[aIdx]];
                 foreach (var bind in bindings.Where(t => t.Activities.Count > 1)) //ONLY MULTIPLE BINDS NEEDED (OTHERS COMES FROM OUT BINDINGS)
                 {
-                    var bindTransition = new Transition("t" + ++transitionCount, "");
+                    var bindTransition = new Transition("t" + ++transitionCount, "", bind.Frequency);
                     bindTransition.ChangeVisibility();
                     bindTransition.OutputPlaces.Add(placeOut);
                     foreach (var bIdx in bind.Activities) //PREDECESSOR ACTIVITY IDX
@@ -65,7 +65,7 @@ namespace ProcessM.NET.Model.CausalNet
                 var placeIn = places[outputPlaces[aIdx]];
                 foreach (var bind in bindings)
                 {
-                    var bindTransition = new Transition("t" + ++transitionCount, "");
+                    var bindTransition = new Transition("t" + ++transitionCount, "", bind.Frequency);
                     bindTransition.ChangeVisibility();
                     bindTransition.InputPlaces.Add(placeIn);
                     foreach (var bIdx in bind.Activities) //SUCCESSOR ACTIVITY IDX
