@@ -80,7 +80,42 @@ public class GraphvizNet
         }
         TransformIds(petriNet);
     }
-    
+
+    /*
+    public GraphvizNet(ICNet cNet)
+    {
+        Start = new INode { Id = cNet.IndexToActivity[cNet.StartActivity.Id], Frequency = cNet.StartActivity.Frequency};
+        End = new INode { Id = cNet.IndexToActivity[cNet.EndActivity.Id], Frequency = cNet.EndActivity.Frequency };
+
+        transitions = cNet.Activities.Select(a => new GTransition { Id = cNet.IndexToActivity[a.Id], Frequency = a.Frequency }).ToList();
+        edges = new List<GEdge>();
+        foreach (var (inId, bindings) in cNet.OutputBindings)
+        {
+            foreach (var binding in bindings)
+            {
+                foreach (var outId in binding.Activities)
+                {
+                    edges.Add(new GEdge{ Start = cNet.IndexToActivity[inId], End = cNet.IndexToActivity[outId], Frequency = binding.Frequency });
+                }
+            }
+        }
+
+        edges = edges.GroupBy(e => e.Start + e.End).Select((g) => new GEdge
+        {
+            Start = g.First().Start, 
+            End = g.First().End, 
+            Frequency = g.Sum(e => e.Frequency)
+        }).ToList();
+
+        foreach (var (inId, outId) in cNet.LongDependencies)
+        {
+            
+        }
+        simpleEdges = edges;
+        places = new List<GPlace>();
+    }
+    */
+
     private void TransformIds(IPetriNet net)
     {
         var transform = new Dictionary<string, string>();
