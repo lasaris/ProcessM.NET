@@ -227,9 +227,11 @@ namespace ProcessM.NET.Discovery.HeuristicMiner
             var toRemove = new HashSet<Tuple<int, int>>();
             foreach (var (i, j) in l2Loops)
             {
-                var strongest = strongestHashSet.First(o => (dirIn ? o.Item1 : o.Item2) == i);
+                var strongest = strongestHashSet.FirstOrDefault(o => (dirIn ? o.Item1 : o.Item2) == i);
+                if (strongest is null) continue;
                 var dependencyStrong = dependencyMatrix.DirectDependencyMatrix[strongest.Item1, strongest.Item2];
-                var strongestLoop = strongestHashSet.First(o => (dirIn ? o.Item2 : o.Item1) == j);
+                var strongestLoop = strongestHashSet.FirstOrDefault(o => (dirIn ? o.Item2 : o.Item1) == j);
+                if (strongestLoop is null) continue;
                 var dependencyLoop = dependencyMatrix.DirectDependencyMatrix[strongestLoop.Item1, strongestLoop.Item2];
                 if (dependencyStrong < Settings.DependencyThreshold &&
                     dependencyStrong - dependencyLoop > Settings.RelativeToBestThreshold)
