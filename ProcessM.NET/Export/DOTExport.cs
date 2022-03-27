@@ -139,7 +139,7 @@ namespace ProcessM.NET.Export
                 outStr.Append(indentation + "\"" + e.Start + "\" -> \"" + e.End + "\"");
                 if (e.Frequency != 0)
                 {
-                    outStr.Append(indentation + " [label = " + e.Frequency +"]");
+                    outStr.Append(indentation + " [label =<<FONT POINT-SIZE=\"10\">" + e.Frequency + "</FONT>>]");
                 }
                 outStr.Append(indentation + "\n");
             }
