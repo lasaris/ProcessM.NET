@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.Json;
 using Deedle;
@@ -85,11 +86,7 @@ namespace ProcessM.NET.Model.DataAnalysis
                 {
                     if (wft.CaseId == row.Value.Get(importedData.CaseId))
                     {
-                        bool parseSuccess = DateTime.TryParse(row.Value.Get(importedData.Timestamp), out DateTime timestamp);
-                        if (!parseSuccess && wft.Activities.Count > 0)
-                        {
-                            timestamp = new DateTime();
-                        }
+                        var timestamp = DateTime.ParseExact(row.Value.Get(importedData.Timestamp), importedData.TimestampFormat, CultureInfo.CurrentCulture);
                         wft.AddActivity(row.Value.Get(importedData.Activity), timestamp);
                     }
                 }

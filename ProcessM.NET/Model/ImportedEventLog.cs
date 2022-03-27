@@ -1,4 +1,6 @@
-﻿using Deedle;
+﻿using System;
+using System.Globalization;
+using Deedle;
 
 namespace ProcessM.NET.Model
 {
@@ -12,6 +14,7 @@ namespace ProcessM.NET.Model
         public string CaseId { get; protected set; } = null;
         public string Activity { get; protected set; } = null;
         public string Timestamp { get; protected set; } = null;
+        public string TimestampFormat { get; protected set; } = null;
 
 
         public ImportedEventLog(Frame<int, string> data)
@@ -83,6 +86,29 @@ namespace ProcessM.NET.Model
             }
 
             Timestamp = timestamp;
+            return true;
+        }
+        
+        public bool TrySetTimestampFormat(string timestamp, string timestampFormat, out string failedToParseTimestamp)
+        {
+            if (!KeyInColumns(timestamp))
+            {
+                failedToParseTimestamp = null;
+                return false;
+            }
+
+            for (int i = 0; i < Contents.RowCount; i++)
+            {
+                OptionalValue<Series<string, string>> row = Contents.TryGetRow<string>(i);
+                bool parseSuccess = DateTime.TryParseExact(row.Value.Get(timestamp), timestampFormat,  CultureInfo.CurrentCulture, DateTimeStyles.None, out _);
+                if (!parseSuccess)
+                {
+                    failedToParseTimestamp = row.Value.Get(timestamp);
+                    return false;
+                }
+            }
+            failedToParseTimestamp = null;
+            TimestampFormat = timestampFormat;
             return true;
         }
 
