@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ProcessM.NET.Model.BasicPetriNet;
+using ProcessM.NET.Model.DataAnalysis;
 
 namespace ProcessM.NET.Model.GraphvizNet;
 
@@ -80,6 +82,55 @@ public class GraphvizNet
         }
         TransformIds(petriNet);
     }
+
+    public GraphvizNet(IPetriNet petriNet, WorkflowLog workflowLog) : this(petriNet)
+    {
+        ComputeFrequency(workflowLog);
+    }
+
+    private void ComputeFrequency(WorkflowLog wLog)
+    {
+        var absoluteFrequency = new Dictionary<string, int>();
+        var caseFrequency = new Dictionary<string, int>();
+        var maxRepetitions = new Dictionary<string, int>();
+        var distinctTraces = new HashSet<List<string>>();
+        foreach (var trace in wLog.WorkflowTraces)
+        {
+            distinctTraces.Add(trace.Activities);
+            var traceFrequency = new Dictionary<string, int>();
+            foreach (var act in trace.Activities)
+            {
+                absoluteFrequency.TryGetValue(act, out var absFreq); 
+                absoluteFrequency[act] = absFreq + 1;
+                if (!traceFrequency.ContainsKey(act))
+                {
+                    caseFrequency.TryGetValue(act, out var caseFreq); 
+                    caseFrequency[act] = caseFreq + 1;
+                }
+                traceFrequency.TryGetValue(act, out var traceFreq); 
+                traceFrequency[act] = traceFreq + 1;
+            }
+            foreach (var (act, traceFreq) in traceFrequency)
+            {
+                maxRepetitions.TryGetValue(act, out var maxReq);
+                if (maxReq < traceFreq)
+                {
+                    maxRepetitions[act] = traceFreq;
+                }
+            }
+        }
+        var caseCount = distinctTraces.Count;
+        foreach (var gTransition in this.transitions.Where(t => !t.Invisible))
+        {
+            var act = gTransition.Label;
+            gTransition.AbsoluteFrequency = absoluteFrequency[act];
+            gTransition.CaseFrequency = caseFrequency[act];
+            gTransition.MaxRepetitions = maxRepetitions[act];
+            gTransition.CaseCoverage = caseFrequency[act] / (double)caseCount;
+        }
+    }
+    
+
 
     /*
     public GraphvizNet(ICNet cNet)
