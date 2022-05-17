@@ -1,6 +1,6 @@
 ﻿namespace ProcessM.NET.Model.GraphvizNet;
 
-public class GTransition : INode
+public class GTransition : Node
 {
     public string Color { get; set; } = "white";
 

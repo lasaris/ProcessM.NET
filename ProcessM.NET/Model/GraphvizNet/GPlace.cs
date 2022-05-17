@@ -1,6 +1,6 @@
 ﻿namespace ProcessM.NET.Model.GraphvizNet;
 
-public class GPlace : INode
+public class GPlace : Node
 {
     
 }

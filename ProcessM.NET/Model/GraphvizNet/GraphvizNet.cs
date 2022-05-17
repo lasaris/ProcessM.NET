@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ProcessM.NET.Model.BasicPetriNet;
 using ProcessM.NET.Model.DataAnalysis;
 
 namespace ProcessM.NET.Model.GraphvizNet;
@@ -8,25 +7,23 @@ namespace ProcessM.NET.Model.GraphvizNet;
 public class GraphvizNet
 {
     private IList<GTransition> transitions;
-    public IList<GTransition> Transitions => Simplify ? transitions.Where(t => !t.Invisible).ToList() : transitions;
-
     private IList<GPlace> places;
-    public IList<GPlace> Places => Simplify ? new List<GPlace>() : places;
-
     private IList<GEdge> edges;
     private IList<GEdge> simpleEdges;
-
+    
+    public  bool Simplify { get; set; } = false;
+    public IList<GTransition> Transitions => Simplify ? transitions.Where(t => !t.Invisible).ToList() : transitions;
+    public IList<GPlace> Places => Simplify ? new List<GPlace>() : places;
     public IList<GEdge> Edges => Simplify ? simpleEdges : edges;
 
-    public INode Start  { get; set; }
-    public INode End  { get; set; }
+    public GPlace Start  { get; set; }
+    public GPlace End  { get; set; }
 
-    public  bool Simplify { get; set; } = false;
 
     public GraphvizNet(IPetriNet petriNet)
     {
-        Start = new INode { Id = petriNet.StartPlace.Id };
-        End = new INode { Id = petriNet.EndPlace.Id };
+        Start = new GPlace { Id = petriNet.StartPlace.Id };
+        End = new GPlace { Id = petriNet.EndPlace.Id };
 
         places = petriNet.Places.Select(p => new GPlace { Id = p.Id }).ToList();
 
@@ -34,7 +31,7 @@ public class GraphvizNet
         edges = new List<GEdge>();
         foreach (var transition in petriNet.Transitions)
         {
-            transitions.Add(new GTransition{ Id = transition.Id, Label = transition.Activity, Invisible = transition.Invisible, Frequency = transition.Frequency });
+            transitions.Add(new GTransition{ Id = transition.Id, Label = transition.Activity, Invisible = transition.Invisible });
             foreach (var inPlace in transition.InputPlaces)
             {
                 edges.Add(new GEdge{ Start = inPlace.Id, End = transition.Id });
@@ -45,6 +42,17 @@ public class GraphvizNet
             }
         }
         
+        CreateSimpleEdges(petriNet);
+        TransformIds(petriNet);
+    }
+    
+    public GraphvizNet(IPetriNet petriNet, WorkflowLog workflowLog) : this(petriNet)
+    {
+        ComputeFrequency(workflowLog);
+    }
+
+    private void CreateSimpleEdges(IPetriNet petriNet)
+    {
         simpleEdges = new List<GEdge>();
         foreach (var inT in petriNet.Transitions.Where(t => !t.Invisible))
         {
@@ -61,7 +69,8 @@ public class GraphvizNet
                     {
                         foreach (var arcTOutputPlace in outT.OutputPlaces)
                         {
-                            foreach (var outTransition in petriNet.Transitions.Where(t => t.InputPlaces.Contains(arcTOutputPlace)))
+                            foreach (var outTransition in petriNet.Transitions.Where(t =>
+                                         t.InputPlaces.Contains(arcTOutputPlace)))
                             {
                                 outTransitions.Add((outTransition, outT.Frequency));
                             }
@@ -77,16 +86,11 @@ public class GraphvizNet
 
             foreach (var (outT, freq) in outTransitions.Distinct())
             {
-                simpleEdges.Add(new GEdge{ Start = inT.Id, End = outT.Id, Frequency = freq});
+                simpleEdges.Add(new GEdge { Start = inT.Id, End = outT.Id, Frequency = freq });
             }
         }
-        TransformIds(petriNet);
     }
 
-    public GraphvizNet(IPetriNet petriNet, WorkflowLog workflowLog) : this(petriNet)
-    {
-        ComputeFrequency(workflowLog);
-    }
 
     private void ComputeFrequency(WorkflowLog wLog)
     {
@@ -129,44 +133,10 @@ public class GraphvizNet
             gTransition.CaseCoverage = caseFrequency[act] / (double)caseCount;
         }
     }
-    
 
-
-    /*
-    public GraphvizNet(ICNet cNet)
-    {
-        Start = new INode { Id = cNet.IndexToActivity[cNet.StartActivity.Id], Frequency = cNet.StartActivity.Frequency};
-        End = new INode { Id = cNet.IndexToActivity[cNet.EndActivity.Id], Frequency = cNet.EndActivity.Frequency };
-
-        transitions = cNet.Activities.Select(a => new GTransition { Id = cNet.IndexToActivity[a.Id], Frequency = a.Frequency }).ToList();
-        edges = new List<GEdge>();
-        foreach (var (inId, bindings) in cNet.OutputBindings)
-        {
-            foreach (var binding in bindings)
-            {
-                foreach (var outId in binding.Activities)
-                {
-                    edges.Add(new GEdge{ Start = cNet.IndexToActivity[inId], End = cNet.IndexToActivity[outId], Frequency = binding.Frequency });
-                }
-            }
-        }
-
-        edges = edges.GroupBy(e => e.Start + e.End).Select((g) => new GEdge
-        {
-            Start = g.First().Start, 
-            End = g.First().End, 
-            Frequency = g.Sum(e => e.Frequency)
-        }).ToList();
-
-        foreach (var (inId, outId) in cNet.LongDependencies)
-        {
-            
-        }
-        simpleEdges = edges;
-        places = new List<GPlace>();
-    }
-    */
-
+    /// <summary>
+    /// Assigns each node a unique id, based on its neighbours.
+    /// </summary>
     private void TransformIds(IPetriNet net)
     {
         var transform = new Dictionary<string, string>();
