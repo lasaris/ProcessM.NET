@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace ProcessM.NET.Model.DataAnalysis
 {
@@ -11,13 +12,19 @@ namespace ProcessM.NET.Model.DataAnalysis
         /// Creates same start activity and end activity for each trace in the Workflow log
         /// </summary>
         /// <param name="workflowLog">Workflow log</param>
-        public static void WorkflowLogPreprocessor(WorkflowLog workflowLog, HashSet<string> filterActivities = null)
+        /// <param name="filterActivities">Activities to be filtered out of workflowLog</param>
+        /// <param name="filteredTraces">Traces to be filtered out of workflowLog</param>
+        public static void WorkflowLogPreprocessor(WorkflowLog workflowLog, HashSet<string> filterActivities = null, HashSet<List<string>> filteredTraces = null)
         {
             PreprocessStartActivity(workflowLog);
             PreprocessEndActivity(workflowLog);
             if (filterActivities != null)
             {
                 FilterActivities(workflowLog, filterActivities);
+            }
+            if (filteredTraces != null)
+            {
+                FilterTraces(workflowLog, filteredTraces);
             }
         }
 
@@ -69,12 +76,27 @@ namespace ProcessM.NET.Model.DataAnalysis
             // }
         }
 
+        /// <summary>
+        /// Remove selected activities from workflowLog
+        /// </summary>
+        /// <param name="workflowLog">Workflow log</param>
+        /// <param name="removedActivities">Activities to be removed</param>
         private static void FilterActivities(WorkflowLog workflowLog, HashSet<string> removedActivities)
         {
             foreach (var trace in workflowLog.WorkflowTraces)
             {
                 trace.Activities.RemoveAll(removedActivities.Contains);
             }
+        }
+
+        /// <summary>
+        /// Remove selected traces from workflowLog
+        /// </summary>
+        /// <param name="workflowLog">Workflow log</param>
+        /// <param name="removedTraces">Traces to be removed</param>
+        private static void FilterTraces(WorkflowLog workflowLog, HashSet<List<string>> removedTraces)
+        {
+            workflowLog.WorkflowTraces.RemoveAll(trace => removedTraces.Any(rt => rt.SequenceEqual(trace.Activities)));
         }
     }
 }

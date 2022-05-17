@@ -51,6 +51,13 @@ namespace ProcessM.NET.Import
             return new ImportedEventLog(data);
         }
 
+        /// <summary>
+        /// Takes stream of a .csv file and a array of chars.
+        /// By frequency of used characters tries to guess the separator character.
+        /// </summary>
+        /// <param name="stream">Stream containing data of .csv file</param>
+        /// <param name="candidates">Array containing candidates for SCV separator character.</param>
+        /// <returns>Character that is used as a separator in .csv file.</returns>
         private static char CsvSeparatorDetector(Stream stream, IEnumerable<char> candidates)
         {
             var buffer = new byte[1024];

@@ -89,6 +89,14 @@ namespace ProcessM.NET.Model
             return true;
         }
         
+        /// <summary>
+        /// Tries to set a key (column name) which should be considered as "timestamp" for the purposes of discovery algorithms.
+        /// Gives error error which string was not parsable by given format.
+        /// </summary>
+        /// <param name="timestamp">String value of a key (column name) to be set as "timestamp".</param>
+        /// <param name="timestampFormat">C# time format that is used to parse the values.</param>
+        /// <param name="failedToParseTimestamp">Out string that holds the value that was not possible to parse by given format.</param>
+        /// <returns>True if a key has been successfully set as activity, else returns false.</returns>
         public bool TrySetTimestampFormat(string timestamp, string timestampFormat, out string failedToParseTimestamp)
         {
             if (!KeyInColumns(timestamp))

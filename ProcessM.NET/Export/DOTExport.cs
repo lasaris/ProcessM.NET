@@ -36,7 +36,7 @@ namespace ProcessM.NET.Export
         }
 
         /// <summary>
-        /// Creates a .DOT subgraph header for transitions in given Petri Net (displayed as rectangles in Graphviz).
+        /// Creates a .DOT subgraph header for visible transitions in given Petri Net (displayed as rectangles in Graphviz).
         /// </summary>
         /// <param name="indentation">Indentation symbol, this class uses "\t" as default.</param>
         /// <returns>A string containing .DOT subgraph header of transitions in given Petri Net.</returns>
@@ -47,6 +47,11 @@ namespace ProcessM.NET.Export
                 doubleIndent + "node [class = transition, shape = rect, style=filled, fillcolor = white, height = 0.1, width = 1]\n";
         }
         
+        /// <summary>
+        /// Creates a .DOT subgraph header for invisible transitions in given Petri Net (displayed as rectangles in Graphviz).
+        /// </summary>
+        /// <param name="indentation">Indentation symbol, this class uses "\t" as default.</param>
+        /// <returns>A string containing .DOT subgraph header of invisible transitions in given Petri Net.</returns>
         private static string GetInvisibleTransitionsHeader(string indentation)
         {
             string doubleIndent = indentation + indentation;
@@ -74,11 +79,11 @@ namespace ProcessM.NET.Export
         }
 
         /// <summary>
-        /// Fills the .DOT subgraph of transitions with transition representation from exported Petri Net.
+        /// Fills the .DOT subgraph of visible transitions with transition representation from exported Petri Net.
         /// </summary>
         /// <param name="transitions">A collection of transitions in exported Petri Net.</param>
         /// <param name="indentation">Indentation symbol, this class uses "\t" as default.</param>
-        /// <returns>A StringBuilder containing a string .DOT representation of transitions in exported Petri Net.</returns>
+        /// <returns>A StringBuilder containing a string .DOT representation of visible transitions in exported Petri Net.</returns>
         private static StringBuilder GetTransitions(IEnumerable<GTransition> transitions, string indentation)
         {
             string doubleIndent = indentation + indentation;
@@ -103,6 +108,12 @@ namespace ProcessM.NET.Export
             return outStr;
         }
 
+        /// <summary>
+        /// Fills the .DOT subgraph of transitions with invisible transition representation from exported Petri Net.
+        /// </summary>
+        /// <param name="transitions">A collection of transitions in exported Petri Net.</param>
+        /// <param name="indentation">Indentation symbol, this class uses "\t" as default.</param>
+        /// <returns>A StringBuilder containing a string .DOT representation of invisible transitions in exported Petri Net.</returns>
         private static StringBuilder GetInvisibleTransitions(IEnumerable<GTransition> transitions, string indentation)
         {
             string doubleIndent = indentation + indentation;
@@ -148,7 +159,7 @@ namespace ProcessM.NET.Export
         }
 
         /// <summary>
-        /// Serializes given Petri Net compliant with IPetriNet interface to a .DOT file string.
+        /// Serializes given GraphvizNet to a .DOT file string.
         /// </summary>
         /// <param name="sourceNet">An IPetriNet compliant Petri Net.</param>
         /// <param name="simplified">Export simplified graph only</param>
@@ -172,6 +183,13 @@ namespace ProcessM.NET.Export
             return outStr.ToString();
         }
         
+        /// <summary>
+        /// Serializes given Petri Net compliant with IPetriNet interface to a .DOT file string.
+        /// </summary>
+        /// <param name="sourceNet">An IPetriNet compliant Petri Net.</param>
+        /// <param name="simplified">Export simplified graph only</param>
+        /// <param name="indentation">Indentation symbol, this class uses "\t" as default.</param>
+        /// <returns>.dot file string</returns>
         public static string Serialize(IPetriNet sourceNet, bool simplified = false, string indentation = "\t")
         {
             return Serialize(new GraphvizNet(sourceNet), simplified, indentation);
