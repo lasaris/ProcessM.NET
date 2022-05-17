@@ -24,5 +24,10 @@
             if (obj.GetType() != this.GetType()) return false;
             return Equals((IPlace)obj);
         }
+
+        public override int GetHashCode()
+        {
+            return (Id != null ? Id.GetHashCode() : 0);
+        }
     }
 }
