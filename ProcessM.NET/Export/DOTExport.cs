@@ -32,7 +32,7 @@ namespace ProcessM.NET.Export
         {
             string doubleIndent = indentation + indentation;
             return indentation + "subgraph places {\n" +
-                doubleIndent + "node [shape = circle, fixedsize = true, width = 0.5, label = \" \"]\n";
+                doubleIndent + "node [shape = circle, fixedsize = true, width = 0.5, label = \" \", tooltip = \" \"]\n";
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace ProcessM.NET.Export
         {
             string doubleIndent = indentation + indentation;
             return indentation + "subgraph invisible_transitions {\n" +
-                   doubleIndent + "node [shape = rect, height = 0.1, width = 1, label = \" \", fillcolor = lightgrey, style=filled]\n";
+                   doubleIndent + "node [shape = rect, height = 0.1, width = 1, label = \" \", tooltip = \" \", fillcolor = lightgrey, style=filled]\n";
         }
 
         /// <summary>
@@ -94,9 +94,15 @@ namespace ProcessM.NET.Export
                 outStr.Append(doubleIndent + "\"" + t.Id + "\" [");
                 outStr.Append("id=\"" + t.Id + "\",");
                 outStr.Append("fillcolor=" + t.Color + ",");
-                if (t.Frequency != 0)
+                if (t.AbsoluteFrequency != 0)
                 {
-                    outStr.Append("shape=record, label =< <B>" + t.Label + "</B> | <FONT POINT-SIZE=\"10\">" + t.Frequency + "</FONT>>");
+                    outStr.Append("shape=record, ");
+                    outStr.Append("label=< <B>" + t.Label + "</B> | <FONT POINT-SIZE=\"10\">" + t.AbsoluteFrequency + "</FONT>>, ");
+                    outStr.Append("tooltip=\"" +
+                                  "Absolute frequency: " + t.AbsoluteFrequency + "&#10;" +
+                                  "Case frequency: " + t.CaseFrequency + "&#10;" +
+                                  "Case coverage: " + Math.Round(t.CaseCoverage * 100) + " %&#10;" +
+                                  "Max repetitions: " + t.MaxRepetitions + "\"");
                 }
                 else
                 {
@@ -121,16 +127,7 @@ namespace ProcessM.NET.Export
             outStr.Append(GetInvisibleTransitionsHeader(indentation));
             foreach (var t in transitions.Where(tr => tr.Invisible))
             {
-                outStr.Append(doubleIndent + "\"" + t.Id + "\" [");
-                if (!string.IsNullOrEmpty(t.Label))
-                {
-                    outStr.Append("shape=record, label =< <B>" + t.Label + "</B> | <FONT POINT-SIZE=\"10\">" + t.Frequency + "</FONT>>");
-                }
-                else if (t.Frequency != 0)
-                {
-                    outStr.Append("label = "+ t.Frequency);
-                }
-                outStr.Append("];\n");
+                outStr.Append(doubleIndent + "\"" + t.Id + "\";\n");
             }
             outStr.Append(indentation + "}\n");
             return outStr;
