@@ -1,0 +1,54 @@
+﻿<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            @MudDialog.Title
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudContainer Style="max-height: 70vh; overflow-y: scroll">
+        <MudTable Items="Transitions" Bordered="false" Dense="true" Elevation="0">
+            <HeaderContent>
+                <MudTh>frequency</MudTh>
+                <MudTh>activity</MudTh>
+                <MudTh>visible</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="frequency">@context.Value</MudTd>
+                <MudTd DataLabel="activity">@context.Key</MudTd>
+                <MudTd DataLabel="visible">
+                    <MudToggleIconButton
+                        Toggled="HiddenTransitions.Contains(context.Key)"
+                        ToggledChanged="() => TransitionVisibilityChanged(context.Key, !HiddenTransitions.Contains(context.Key))"
+                        Icon="@Icons.Filled.Check"
+                        Color="@Color.Default"
+                        Title="Shown"
+                        ToggledIcon="@Icons.Filled.HideSource"
+                        ToggledColor="@Color.Error"
+                        ToggledTitle="Hidden"
+                        Size="Size.Small"
+                        ToggledSize="Size.Small"
+                         />
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public Dictionary<string, int> Transitions { get; set; } = new();
+    [Parameter] public HashSet<string> HiddenTransitions { get; set; } = new();
+    [Parameter] public EventCallback<Tuple<string, bool>> OnTransitionVisibilityChanged { get; set; }
+    
+    private async Task TransitionVisibilityChanged(string activity, bool hide)
+    {
+        await OnTransitionVisibilityChanged.InvokeAsync(Tuple.Create(activity, hide));
+        StateHasChanged();
+    }
+    
+    
+}

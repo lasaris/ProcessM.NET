@@ -3,6 +3,7 @@
 Process mining library for .NET Core
 
 ## Authors
-Martin Macák
-Radek Václavek
-Kamil Fňukal
+Martin Macák  
+Radek Václavek  
+Kamil Fňukal  
+Otakar Hirš

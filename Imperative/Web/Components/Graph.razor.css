@@ -1,0 +1,23 @@
+﻿::deep .node {
+    fill: #ccc;
+    stroke: #000;
+}
+
+::deep .node text {
+    fill: black;
+    stroke: none;
+}
+
+::deep .link {
+    stroke: #777;
+    stroke-width: 2px;
+}
+
+::deep .svg-container {
+    width: 100%;
+}
+
+::deep svg {
+    height: 100%;
+    width: 100%;
+}

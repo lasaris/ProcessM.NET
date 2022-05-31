@@ -1,0 +1,73 @@
+﻿@page "/"
+@using BakaMining.Utils
+@inject Services.Storage.EventLogStore EventLogStore
+@inject NavigationManager NavManager
+
+<h2>Logs</h2>
+<LogUpload OnLogUploaded="LoadLogs" />
+
+<MudSimpleTable Elevation="0" Hover="true">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Activity</th>
+            <th>CaseId</th>
+            <th>Timestamp</th>
+            <th>Mine</th>
+            <th>Size</th>
+            <th>Modified</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var logFile in _logs)
+        {
+            <tr>
+                <td>
+                    <MudText Typo="Typo.subtitle2">@logFile.Metadata.Name</MudText>
+                </td>
+                <td>
+                    <MudText>@logFile.Activity</MudText>
+                </td>
+                <td>
+                    <MudText>@logFile.CaseId</MudText>
+                </td>
+                <td>
+                    <MudText>@logFile.Timestamp</MudText>
+                </td>
+                <td>
+                    <MudFab Icon="@Icons.Material.Outlined.PrecisionManufacturing" Size="Size.Small" Color="Color.Primary" OnClick='() => NavManager.NavigateTo("/Mine/" + logFile.Key)'/>
+                </td>
+                <td>
+                    <MudText Typo="Typo.subtitle2">@Utils.GetBytesReadable(logFile.Metadata.Size)</MudText>
+                </td>
+                <td>
+                    <MudText Typo="Typo.subtitle2">@Utils.GetDateReadable(logFile.Metadata.Modified)</MudText>
+                </td>
+                <td>
+                    <MudFab Icon="@Icons.Material.Outlined.Delete" Size="Size.Small" OnClick="() => RemoveLog(logFile.Key)"/>
+                </td>
+            </tr>
+        }
+    </tbody>
+</MudSimpleTable>
+
+@code {
+    private List<EventLogFile> _logs = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadLogs();
+    }
+
+    private async Task LoadLogs()
+    {
+        _logs = await EventLogStore.GetAll();
+    }
+
+    private async Task RemoveLog(string key)
+    {
+        await EventLogStore.Remove(key);
+        await LoadLogs();
+    }
+}

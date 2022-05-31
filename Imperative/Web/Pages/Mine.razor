@@ -1,0 +1,420 @@
+﻿@page "/Mine"
+@page "/Mine/{Key}"
+@inject Services.Storage.EventLogStore EventLogStore
+@inject Services.Storage.PetriNetStore PetriNetStore
+@using ProcessM.NET.Discovery.HeuristicMiner
+@using ProcessM.NET.Discovery.Alpha
+@using ProcessM.NET.Export
+@using ProcessM.NET.Model.BasicPetriNet
+@using ProcessM.NET.Model.DataAnalysis
+@using Blazor.DownloadFileFast.Interfaces
+@using ProcessM.NET.ConformanceChecking.Alignments
+@using ProcessM.NET.Model.GraphvizNet
+@using BakaMining.Components.Dialogs
+@inject IBlazorDownloadFileService DownloadFileService
+@inject IDialogService DialogService
+
+@if (string.IsNullOrEmpty(Key))
+{
+    <MudAlert Severity="Severity.Info">Go to <MudLink Href="/">Logs</MudLink> to select a file to mine.</MudAlert>
+    return;
+}
+<MudGrid Style="height: calc(99vh - var(--mud-appbar-height));">
+    <MudItem xl="10" lg="9" xs="8" Style="display: flex; flex-direction: column;height: 100%;">
+        <MudPaper Elevation="0" Style="flex-grow: 1; height: 0;" Class="pa-2">
+            <Graph
+                @ref="_graph"
+                OnTransitionColorChanged="TransitionColorChanged"
+                OnTransitionVisibilityChanged="TransitionVisibilityChanged"
+                OnRenderingFinished="RemoveOverlay"/>
+        </MudPaper>
+    </MudItem>
+    <MudItem xl="2" lg="3" xs="4" Style="height: 100%; overflow-y: auto">
+        <MudCard Elevation="3">
+            <MudCardContent>
+                <EditForm Model="@_minerSettings" OnValidSubmit="UpdateGraph">
+                    <DataAnnotationsValidator/>
+                    <MudText Typo="Typo.h3">Miner</MudText>
+                    <MudSelect T="Miner" Label="Miner implementation" AnchorOrigin="Origin.BottomCenter" @bind-Value=@_selectedMiner Class="mb-4">
+                        @foreach (var m in Enum.GetValues<Miner>())
+                        {
+                            <MudSelectItem Value="@(m)"/>
+                        }
+                    </MudSelect>
+                    @if (_selectedMiner == Miner.Alpha)
+                    {
+                        <MudAlert Severity="Severity.Warning" Class="mb-4">Alpha miner implementation slows down exponentionaly in relation to distinct traces. You have been warned. Use Heuristic miner instead.</MudAlert>
+                    }
+                    @if (_selectedMiner == Miner.Heuristic)
+                    {
+                        <MudTooltip Text="Dependency measure between two activities a ⇒ b is calculated as a number between 0 and 1. Dependency value of zero -> no relation. Closer to one -> arc is present. We preserve only arcs that surpass the given threshold.">
+                            <MudChip Variant="Variant.Text" Icon="@Icons.Outlined.Lightbulb">dependency thresholds</MudChip>
+                        </MudTooltip>
+                        <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small">
+                            <MudButton OnClick="@(() => _minerSettings = new HeuristicMinerSettings())">Defaults</MudButton>
+                            <MudButton OnClick="@(() => _minerSettings = new HeuristicMinerSettings { DependencyThreshold = 0, L1LThreshold = 0, L2LThreshold = 0})">All arcs</MudButton>
+                        </MudButtonGroup>
+                        <MudNumericField T="double" Label="Direct (a ⇒ b) " Min="0" Max="1" Step="0.05" Format="N2" Variant="Variant.Outlined"
+                                         @bind-Value="_minerSettings.DependencyThreshold" For="@(() => _minerSettings.DependencyThreshold)"/>
+                        <MudNumericField T="double" Label="Loop length 1 (a ⇒ a)" Min="0" Max="1" Step="0.05" Format="N2" Variant="Variant.Outlined"
+                                         @bind-Value="_minerSettings.L1LThreshold" For="@(() => _minerSettings.L1LThreshold)"/>
+                        <MudNumericField T="double" Label="Loop len. 2 (a ⇒ b ⇒ a)" Min="0" Max="1" Step="0.05" Format="N2" Variant="Variant.Outlined"
+                                         @bind-Value="_minerSettings.L2LThreshold" For="@(() => _minerSettings.L2LThreshold)"/>
+                        <br/>
+                        <MudTooltip Text="Ensure each activity has at least one in and one out arcs, even if the default threshold is not met. Candidate with the biggest dependency value is selected.">
+                            <MudSwitch Color="Color.Primary" Label="All connected"
+                                       @bind-Checked="_minerSettings.AllTasksConnected" For="@(() => _minerSettings.AllTasksConnected)"/>
+                        </MudTooltip>
+                        @if (_minerSettings.AllTasksConnected)
+                        {
+                            <MudTooltip Text="Apart from the best candidate, also allow arcs where the dependency value does not differ from the best candidate more than the relative-to-best value.">
+                                <MudNumericField T="double" Label="Relative to best modifier" Min="0" Max="1" Step="0.05" Format="N2" Variant="Variant.Outlined"
+                                                 @bind-Value="_minerSettings.RelativeToBestThreshold" For="@(() => _minerSettings.RelativeToBestThreshold)"/>
+                            </MudTooltip>
+                        }
+                        <MudTooltip Text="Try to find long distance dependencies. Add dependencies that originate from choice made earlier in the process model.">
+                            <MudSwitch Color="Color.Primary" Label="Long distance"
+                                       @bind-Checked="_minerSettings.UseLongDistance" For="@(() => _minerSettings.UseLongDistance)"/>
+                        </MudTooltip>
+                        @if (_minerSettings.UseLongDistance)
+                        {
+                            <MudTooltip>
+                                <MudNumericField T="double" Label="Long distance (a {⇒}* b)" Min="0" Max="1" Step="0.05" Format="N2" Variant="Variant.Outlined"
+                                                 @bind-Value="_minerSettings.LongDistanceThreshold" For="@(() => _minerSettings.LongDistanceThreshold)"/>
+                            </MudTooltip>
+                        }
+                        
+                    }
+                    <MudButton ButtonType="ButtonType.Submit" FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Class="mt-2">Mine</MudButton>
+                </EditForm>
+            </MudCardContent>
+        </MudCard>
+        <MudCard Elevation="0" Class="my-4">
+            <MudCardContent>
+                <MudSlider T="double" Value="_slider" Variant="Variant.Filled" @onmouseup="UpdateGraph" ValueChanged="FilterLog" Min="0" Max="100" Step="0.05">
+                    Traces: @_tracesVisible / @_tracesMax <br/>
+                    Distinct: @_tracesDistinct
+                </MudSlider>
+            </MudCardContent>
+        </MudCard>
+        <MudCard Elevation="0" Class="my-4">
+            <MudCardContent>
+            @if (_alignmentFitness < 0)
+            {
+                <MudAlert Severity="Severity.Warning">All tasks are not connected, cannot compute fitness</MudAlert>
+            }
+            else
+            {
+                <MudText Typo="Typo.body1">Fitness: @string.Format("{0:0.00}", _alignmentFitness * 100) %</MudText>
+                <MudProgressLinear Color="Color.Info" Size="Size.Small" Min="0" Max="1" Value="@_alignmentFitness" Class="my-4"/>
+                <MudTooltip Text="Do not take traces frequency into account.">
+                    <MudSwitch Color="Color.Primary" Checked="_distinctFitness" T="bool" CheckedChanged="DistinctFitnessChanged" Label="ignore frequency" />
+                </MudTooltip>
+            }
+            </MudCardContent>
+        </MudCard>
+        <MudCard Elevation="0" Class="my-4">
+            <MudCardContent>
+                <MudButton OnClick="ShowTransitionsDialog" EndIcon="@Icons.Filled.Tab">Activities</MudButton>
+                <MudButton OnClick="ShowTracesDialog" EndIcon="@Icons.Filled.Tab">Traces</MudButton>
+            </MudCardContent>
+        </MudCard>
+        <MudCard Elevation="0" Class="my-4">
+            <MudCardContent>
+                <MudTooltip Text="Display source petri net instead of the simplified model.">
+                    <MudSwitch Color="Color.Primary" T="bool" Label="source petri net" Checked="!_simplifyGraph" CheckedChanged="SimplifyChanged"/>
+                </MudTooltip>
+            </MudCardContent>
+        </MudCard>
+        @if (_petriNet != null)
+        {
+            <MudCard Elevation="0" Class="mt-4">
+                <MudCardContent>
+                    <MudButton StartIcon="@Icons.Filled.Save" Variant="Variant.Outlined" Style="border: none" Class="mb-2" OnClick="SaveModel">Save to Models</MudButton><br />
+                    <MudButton StartIcon="@Icons.Filled.Download" Variant="Variant.Outlined" Style="border: none" OnClick="DownloadPNML">PNML</MudButton>
+                    <MudButton StartIcon="@Icons.Filled.Download" Variant="Variant.Outlined" Style="border: none" OnClick="DownloadDOT">DOT</MudButton>
+                </MudCardContent>
+            </MudCard>
+        }
+    </MudItem>
+</MudGrid>
+
+<MudOverlay @bind-Visible="_overlayActive" DarkBackground="true">
+    <MudText Typo="Typo.h1">Computation in progress</MudText>
+</MudOverlay>
+
+@code {
+    [Parameter]
+    public string Key { get; set; }
+
+    private string _filename;
+
+    private bool _overlayActive = true;
+    private Graph _graph = new();
+    private WorkflowLog _sourceLog;
+    private WorkflowLog _log;
+    private PetriNet _petriNet;
+    
+    enum Miner
+    {
+        Alpha,
+        Heuristic
+    }
+    private Miner _selectedMiner = Miner.Heuristic;
+    
+    private HeuristicMinerSettings _minerSettings = new();
+    
+    private int _tracesMax;
+    private int _tracesVisible;
+    private int _tracesDistinct;
+    private double _slider = 100;
+    
+    private double _alignmentFitness = 0;
+    private bool _distinctFitness = false;
+
+    private bool _simplifyGraph = true;
+    
+    private Dictionary<string, int> _activities = new(); // <activity, freq>
+    private HashSet<string> _hiddenActivities = new();
+    private Dictionary<string, Tuple<List<string>, int, AlignmentOnTrace>> _traces = new();  // <traces.join(), <trace, frequency, alignment>>
+    private Dictionary<string, List<string>> _hiddenTraces = new();
+    private Dictionary<string, string> _changedColors = new();
+
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (string.IsNullOrEmpty(Key))
+            {
+                return;
+            }
+            var logFile = await EventLogStore.Get(Key);
+            _filename = logFile.Metadata.Name;
+            _log = _sourceLog = logFile.EventLog;
+            _tracesMax = _tracesVisible = _log.WorkflowTraces.Count;
+            await UpdateGraph();
+        }
+    }
+
+    private async Task UpdateGraph()
+    {
+        _overlayActive = true;
+        await InvokeAsync(StateHasChanged); // to trigger overlay
+        var log = PreprocessLogCopy();
+        _petriNet = _selectedMiner switch {
+            Miner.Heuristic => HeuristicMiner.MinePetriNet(log, _minerSettings),
+            Miner.Alpha => Alpha.MakePetriNet(new RelationMatrix(log)),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+        UpdateActivities();
+        ComputeFitness(log, _petriNet);
+        await _graph.RenderGraph(new GraphvizNet(_petriNet, log), _changedColors);
+    }
+
+    // called later from JS after the graph is rendered
+    private void RemoveOverlay()
+    {
+        _overlayActive = false;
+    }
+
+    private async Task SimplifyChanged(bool displaySource)
+    {
+        _simplifyGraph = !displaySource;
+        await _graph.Simplify(_simplifyGraph);
+    }
+    
+    private void DistinctFitnessChanged(bool distinct)
+    {
+        _distinctFitness = distinct;
+        var log = PreprocessLogCopy();
+        ComputeFitness(log, _petriNet);
+    }
+
+    private void FilterLog(double visiblePercentage)
+    {
+        _slider = visiblePercentage;
+        var tracesCount = Convert.ToInt32(_tracesMax * visiblePercentage / 100) ;
+        _tracesVisible = tracesCount > 0 ? tracesCount : 1;
+        _log = new WorkflowLog(_sourceLog.WorkflowTraces.Take(_tracesVisible).ToList());
+        UpdateActivities();
+    }
+
+    private WorkflowLog PreprocessLogCopy()
+    {
+        var log = _log.Clone();
+        WorkflowLogUtils.WorkflowLogPreprocessor(log, _hiddenActivities, _hiddenTraces.Values.ToHashSet());
+        return log;
+    }
+
+    private void UpdateActivities()
+    {
+        _activities.Clear();
+        var count = 0;
+        var lastTrace = new List<string>();
+        foreach (var trace in _log.WorkflowTraces)
+        {
+            if (!trace.Activities.SequenceEqual(lastTrace))
+            {
+                count += 1;
+            }
+            lastTrace = trace.Activities;
+            foreach (var activity in trace.Activities.Where(a =>
+                !string.IsNullOrEmpty(a) &&
+                a != "<<start>>" &&
+                a != "<<end>>"))
+            {
+                _activities[activity] = 0;
+            }
+        }
+        _tracesDistinct = count;
+        UpdateActivitiesFreq();
+    }
+    
+    private void UpdateActivitiesFreq()
+    {
+        if (_petriNet != null)
+        {
+            foreach (var transition in _petriNet.Transitions.Where(t => !t.Invisible))
+            {
+                _activities[transition.Activity] = transition.Frequency;
+            }
+        }
+        _activities.Remove("<<start>>");
+        _activities.Remove("<<end>>");
+        _activities.Remove("");
+    }
+
+    private void ComputeFitness(WorkflowLog log, PetriNet  petriNet)
+    {
+        double optimalAlignments = 0;
+        double worstAlignments = 0;
+        try
+        {
+            var alignments = AlignmentUtils.OptimalAlignmentsOnLog(log, petriNet);
+            foreach (var (trace, (alignment, freq)) in alignments)
+            {
+                var key = string.Join(',', trace.Activities);
+                _traces[key] = Tuple.Create(trace.Activities, freq, alignment);
+                optimalAlignments += alignment.OptimalCost * (_distinctFitness ? 1 : freq);
+                worstAlignments += alignment.WorstCost * (_distinctFitness ? 1 : freq);
+            }
+            _alignmentFitness = 1 - optimalAlignments / worstAlignments;
+        }
+        catch (ArgumentException)
+        {
+            _alignmentFitness = -1;
+        }
+    }
+
+    private void TransitionColorChanged((string, string) args)
+    {
+        var transitionId = args.Item1;
+        var newColor = args.Item2;
+        _changedColors[transitionId] = newColor;
+    }
+
+    private async Task TransitionVisibilityChanged(Tuple<string, bool> args)
+    {
+        var activity = args.Item1;
+        var hidden = args.Item2;
+        if (hidden)
+        {
+            _hiddenActivities.Add(activity);
+        }
+        else
+        {
+            _hiddenActivities.Remove(activity);
+        }
+        if (_petriNet is not null)
+        {
+            await UpdateGraph();
+        }
+    }
+    
+    private async Task TraceVisibilityChanged(Tuple<string,List<string>, bool> args)
+    {
+        var key = args.Item1;
+        var trace = args.Item2;
+        var hidden = args.Item3;
+        if (hidden)
+        {
+            _hiddenTraces.Add(key, trace);
+        }
+        else
+        {
+            _hiddenTraces.Remove(key);
+        }
+        if (_petriNet is not null)
+        {
+            await UpdateGraph();
+        }
+    }
+    
+
+    // dialog parameters require manually created callback
+    private EventCallback<Tuple<string, List<string>,bool>> TraceVisibilityChangedHandler => new(this, (Action<Tuple<string, List<string>,bool>>)(async args =>
+    { await TraceVisibilityChanged(args); }));
+
+    private void ShowTracesDialog()
+    {
+        DialogService.Show<DialogTraces>("Traces", 
+            new DialogParameters
+        {
+            { "Traces", _traces },
+            { "HiddenTraces", _hiddenTraces },
+            { "OnTraceVisibilityChanged", TraceVisibilityChangedHandler }
+        }, new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.ExtraLarge
+        });
+    }
+
+    // dialog parameters require manually created callback
+    private EventCallback<Tuple<string,bool>> TransitionVisibilityChangedHandler => new(this, (Action<Tuple<string,bool>>)(async args =>
+    { await TransitionVisibilityChanged(args); }));
+    
+    private void ShowTransitionsDialog()
+    {
+        var parameters = new DialogParameters
+        {
+            { "Transitions", _activities },
+            { "HiddenTransitions", _hiddenActivities },
+            { "OnTransitionVisibilityChanged", TransitionVisibilityChangedHandler }
+        };
+        DialogService.Show<DialogTransitions>("Activities",  parameters, 
+            new DialogOptions
+            {
+                CloseButton = true,
+                MaxWidth = MaxWidth.ExtraLarge
+            });
+    }
+    
+    private async Task SaveModel()
+    {
+        var petriNetFile = new PetriNetFile
+        {
+            PetriNet = _petriNet,
+            Metadata = new FileMetadata()
+            {
+                Modified = DateTimeOffset.Now,
+                Size =  System.Text.Encoding.UTF8.GetBytes(PNMLExport.Serialize(_petriNet)).Length,
+                Name = _filename.Substring(0, _filename.Length - 4)
+            }
+        };
+        await PetriNetStore.Add(petriNetFile);
+    }
+
+    private async Task DownloadPNML()
+    {
+        var file = System.Text.Encoding.UTF8.GetBytes(PNMLExport.Serialize(_petriNet));
+        await DownloadFileService.DownloadFileAsync(_filename.Substring(0, _filename.Length - 3) + "pnml", file);
+    }
+    
+    private async Task DownloadDOT()
+    {
+        var file = System.Text.Encoding.UTF8.GetBytes(DOTExport.Serialize(_petriNet));
+        await DownloadFileService.DownloadFileAsync(_filename.Substring(0, _filename.Length - 3)  + "dot", file);
+    }
+}

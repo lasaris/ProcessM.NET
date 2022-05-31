@@ -1,0 +1,87 @@
+﻿@using ProcessM.NET.Model
+@using ProcessM.NET.Export
+@using ProcessM.NET.Model.BasicPetriNet
+@using System.Threading
+@using ProcessM.NET.Model.GraphvizNet
+@inject IJSRuntime JS
+
+@if (_graphvizNet == null)
+{
+    <MudText>Let's mine</MudText>
+}
+<div @ref="_graph" style="height: 100%"></div>
+
+
+@code {
+    private ElementReference _graph;
+    private DotNetObjectReference<Graph> _objeRef;
+
+    private GraphvizNet _graphvizNet;
+    private bool _simplify = true;
+
+    bool _graphInitiated = false;
+    
+
+    public async Task RenderGraph(GraphvizNet updatedNet, Dictionary<string, string> changedColors = null)
+    {
+        _graphvizNet = updatedNet;
+        if (!_graphInitiated)
+        {
+            _objeRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("InitGraph", _graph, _objeRef);
+            _graphInitiated = true;
+        }
+        if (changedColors is not null)
+        {
+            foreach (var (id, color) in changedColors)
+            {
+                _graphvizNet.ChangeTransitionColor(id, color);
+            }
+        }
+        var dotString = DOTExport.Serialize(_graphvizNet, _simplify);
+        await JS.InvokeVoidAsync("RenderGraph", dotString);
+        StateHasChanged();
+    }
+
+    public async Task Simplify(bool simplify)
+    {
+        _simplify = simplify;
+        if (_graphInitiated)
+        {
+            var dotString = DOTExport.Serialize(_graphvizNet, _simplify);
+            await JS.InvokeVoidAsync("RenderGraph", dotString);
+            await JS.InvokeVoidAsync("ResetZoom");
+        }
+    }
+    
+    [Parameter]
+    public EventCallback<(string, string)> OnTransitionColorChanged { get; set; }
+    
+    [JSInvokable]
+    public async Task ChangeTransitionColor(string id, string newColor)
+    {
+        _graphvizNet.ChangeTransitionColor(id, newColor);
+        var dotString = DOTExport.Serialize(_graphvizNet, _simplify);
+        await JS.InvokeVoidAsync("RenderGraph", dotString);
+        await OnTransitionColorChanged.InvokeAsync((id, newColor));
+    }
+    
+    [Parameter]
+    public EventCallback<Tuple<string, bool>> OnTransitionVisibilityChanged { get; set; }
+    
+    [JSInvokable]
+    public async Task HideTransition(string activity)
+    {
+        await OnTransitionVisibilityChanged.InvokeAsync(Tuple.Create(activity, true));
+    }
+
+    
+    [Parameter]
+    public EventCallback OnRenderingFinished { get; set; }
+    
+    [JSInvokable]
+    public async Task JsRenderingFinished()
+    {
+        await OnRenderingFinished.InvokeAsync();
+    }
+}
