@@ -1,0 +1,36 @@
+@using DeclarativePM.UI.Data
+@using BlazorDownloadFile
+@using DeclarativePM.Lib.IO.Export
+@using DeclarativePM.Lib.Models.DeclareModels
+@using System.Text
+@inject IMatDialogService MatDialogService
+@inject StateContainer StateContainer
+@inject IBlazorDownloadFileService BlazorDownloadFileService
+@inject JsonModelExporter JsonModelExporter
+
+<MatButton Label="Export selected model" Disabled="@(SelectedModel is null)" OnClick="Export"></MatButton>
+
+<ChooseModel DeclareModels="@StateContainer.DeclareModels" @bind-SelectedModel="SelectedModel"></ChooseModel>
+
+@code {
+    private DeclareModel SelectedModel { get; set; }
+
+    public async Task Export()
+    {
+        if (SelectedModel is null)
+        {
+            await MatDialogService.AlertAsync("Model has not been selected.");
+            return;
+        }
+        try
+        {
+            var json = await JsonModelExporter.ExportModelAsync(SelectedModel);
+            await BlazorDownloadFileService.DownloadFileFromText($"{SelectedModel.Name}.json", json, Encoding.UTF8, "application/octet-stream");
+        }
+        catch
+        {
+            await MatDialogService.AlertAsync("Export has failed, model might be corrupted.");
+        }
+    }
+
+}

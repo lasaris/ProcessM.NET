@@ -1,0 +1,51 @@
+@using DeclarativePM.UI.Data
+@using DeclarativePM.UI.Utils
+<MatTable Items="Traces" class="mat-elevation-z5" AllowSelection="true">
+    <MatTableHeader>
+        <th>Add/Remove</th>
+        <th>Case</th>
+        <th>Events</th>
+    </MatTableHeader>
+    <MatTableRow>
+        <td style="@Utilities.GetExpansionBackground(context, SelectedTraces)">
+            <span>
+                @if (!SelectedTraces.Contains(context))
+                {
+                    <MatIconButton OnClick="@(() => AddTrace(context))" Icon="add"/>
+                }
+                else
+                {
+                    <MatIconButton OnClick="@(() => RemoveTrace(context))" Icon="remove"/>
+                }
+            </span>
+        </td>
+        <td style="@Utilities.GetExpansionBackground(context, SelectedTraces)">@context.Case</td>
+        <td style="@Utilities.GetExpansionBackground(context, SelectedTraces)">@context.Events.Count.ToString()</td>
+    </MatTableRow>
+</MatTable>
+
+@code {
+
+    [Parameter]
+    public List<TraceDTO> Traces { get; set; }
+
+    [Parameter]
+    public List<TraceDTO> SelectedTraces { get; set; }
+
+    public void AddTrace(TraceDTO trace)
+    {
+        if (SelectedTraces.Contains(trace))
+            return;
+        SelectedTraces.Add(trace);
+        StateHasChanged();
+    }
+
+    public void RemoveTrace(TraceDTO trace)
+    {
+        if (!SelectedTraces.Contains(trace))
+            return;
+        SelectedTraces.Remove(trace);
+        StateHasChanged();
+    }
+
+}

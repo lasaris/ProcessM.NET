@@ -124,5 +124,28 @@ namespace ProcessM.NET.Import
 
             return new PetriNet(transitions, places, startAndEndPlace.Item1, startAndEndPlace.Item2);
         }
+        
+        /// <summary>
+        /// Takes a location of PNML file and builds a Petri Net according to its content.
+        /// The net is expected to have exactly one start place and exactly one end place.
+        /// </summary>
+        /// <param name="path">Path containing data of PNML file.</param>
+        /// <returns>PetriNet built from given PNML.</returns>
+        public static IPetriNet Deserialize(string path)
+        {
+            XElement pnmlRoot = XElement.Load(path);
+            XNamespace ns = pnmlRoot.Attribute("xmlns").Value;
+            XElement netNode = pnmlRoot.Element(ns + "net");
+            XElement pageNode = netNode.Element(ns + "page");
+            IEnumerable<XElement> xPlaces = pageNode.Elements(ns + "place");
+            IEnumerable<XElement> xTransitions = pageNode.Elements(ns + "transition");
+            IEnumerable<XElement> xArcs = pageNode.Elements(ns + "arc");
+
+            List<IPlace> places = GetPlaces(xPlaces);
+            List<ITransition> transitions = GetTransitions(xTransitions, xArcs, places, ns);
+            Tuple<IPlace, IPlace> startAndEndPlace = GetStartAndEndPlaces(xArcs, places);
+
+            return new PetriNet(transitions, places, startAndEndPlace.Item1, startAndEndPlace.Item2);
+        }
     }
 }
