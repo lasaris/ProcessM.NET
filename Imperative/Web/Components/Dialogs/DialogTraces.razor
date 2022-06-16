@@ -1,0 +1,93 @@
+﻿@using ProcessM.NET.ConformanceChecking.Alignments
+@inject IDialogService DialogService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            @MudDialog.Title
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudContainer Style="max-height: 70vh; overflow-y: scroll">
+            <MudTable Items="Traces" Bordered="false" Dense="true" Elevation="0">
+                <HeaderContent>
+                    <MudTh>frequency</MudTh>
+                    <MudTh>fitness</MudTh>
+                    <MudTh>trace</MudTh>
+                    <MudTh>visible</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    @{
+                        var (key, (trace, freq,alignment)) = context;
+                    }
+                    <MudTd DataLabel="frequency">@freq</MudTd>
+                    <MudTd DataLabel="fitness">@($"{alignment.Fitness:0.00}")</MudTd>
+                    <MudTd DataLabel="trace" style="white-space: nowrap;">
+                        &lt;
+                        @for (var i = 0; i < alignment.Transitions.Count; i++)
+                        {
+                            var transition = alignment.Transitions[i];
+                            if (transition.Activity == "" || transition.Activity == "<<start>>" || transition.Activity == "<<end>>")
+                            {
+                                continue;
+                            }
+                            @if (transition.Cost != 0)
+                            {
+                                <span style="color:red;">@transition.Activity</span>
+                            }
+                            else
+                            {
+                                @transition.Activity
+                            }
+                            if (i != alignment.Transitions.Count - 3)
+                            {
+                                <span>,&nbsp;</span>
+                            }
+                        }
+                        &gt;
+                    </MudTd>
+                    <MudTd DataLabel="visible">
+                        <MudToggleIconButton
+                            Toggled="HiddenTraces.ContainsKey(key)"
+                            ToggledChanged="() => TraceVisibilityChanged(key, trace, !HiddenTraces.ContainsKey(key))"
+                            Icon="@Icons.Filled.Check"
+                            Color="@Color.Default"
+                            Title="Shown"
+                            ToggledIcon="@Icons.Filled.HideSource"
+                            ToggledColor="@Color.Error"
+                            ToggledTitle="Hidden"
+                            Size="Size.Small"
+                            ToggledSize="Size.Small"
+                        />
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public Dictionary<string, Tuple<List<string>, int, AlignmentOnTrace>> Traces { get; set; } = new();
+    
+    [Parameter] public Dictionary<string, List<string>> HiddenTraces { get; set; } = new();
+    
+    [Parameter] public EventCallback<Tuple<string, List<string>, bool>> OnTraceVisibilityChanged { get; set; }
+    
+    private async Task TraceVisibilityChanged(string key, List<string> trace,  bool hide)
+    {
+        if (hide && Traces.Count == HiddenTraces.Count + 1)
+        {
+            await DialogService.ShowMessageBox("Cannot hide last activity", "");
+            return;
+        }
+        await OnTraceVisibilityChanged.InvokeAsync(Tuple.Create(key, trace, hide));
+        StateHasChanged();
+    }
+    
+    
+    
+}

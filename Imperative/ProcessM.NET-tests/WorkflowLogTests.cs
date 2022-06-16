@@ -21,7 +21,8 @@ namespace ProcessM.NETtests
         public void ImportedEventLogSetInvalidValuesTest()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(timestampedCsv);
+            using FileStream fs = File.Open(timestampedCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
 
             // Act and assert
             Assert.IsFalse(elog.SetActivity("thisIsNotValidActivity"));
@@ -36,7 +37,8 @@ namespace ProcessM.NETtests
         public void WorkflowLogBasicTest()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(easyCsv);
+            using FileStream fs = File.Open(easyCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
 
@@ -58,7 +60,8 @@ namespace ProcessM.NETtests
         public void WorkflowLogTimestampedTest()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(timestampedCsv);
+            using FileStream fs = File.Open(timestampedCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             elog.SetTimestamp("time");

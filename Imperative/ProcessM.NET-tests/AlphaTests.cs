@@ -59,7 +59,8 @@ namespace ProcessM.NETtests
         public void MakeEasyPetriNetTest()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(easyCsv);
+            using FileStream fs = File.Open(easyCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
@@ -93,12 +94,14 @@ namespace ProcessM.NETtests
         public void MakeHardPetriNetTest()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsv);
+            using FileStream hardCsvFs = File.Open(hardCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsvFs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
             RelationMatrix matrix = new RelationMatrix(wlog);
-            IPetriNet exampleNet = PNMLImport.Deserialize(hardPnml);
+            using FileStream hardPnmlFs = File.Open(hardPnml, FileMode.Open);
+            IPetriNet exampleNet = PNMLImport.Deserialize(hardPnmlFs);
 
             // Act
             IPetriNet madeNet = Alpha.MakePetriNet(matrix);
@@ -147,12 +150,14 @@ namespace ProcessM.NETtests
         public void MakeVeryHardPetriNetTest()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(veryHardCsv);
+            using FileStream csvFs = File.Open(veryHardCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(csvFs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
             RelationMatrix matrix = new RelationMatrix(wlog);
-            IPetriNet exampleNet = PNMLImport.Deserialize(veryHardPnml);
+            using FileStream pnmlFs = File.Open(veryHardPnml, FileMode.Open);
+            IPetriNet exampleNet = PNMLImport.Deserialize(pnmlFs);
 
             // Act
             IPetriNet madeNet = Alpha.MakePetriNet(matrix);
@@ -181,12 +186,14 @@ namespace ProcessM.NETtests
         public void MakePetriNetWithCycleTest()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(cycleNetCsv);
+            using FileStream cycleNetCsvfs = File.Open(cycleNetCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(cycleNetCsvfs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
             RelationMatrix matrix = new RelationMatrix(wlog);
-            IPetriNet exampleNet = PNMLImport.Deserialize(cycleNetPnml);
+            using FileStream cycleNetPnmlFs = File.Open(cycleNetPnml, FileMode.Open);
+            IPetriNet exampleNet = PNMLImport.Deserialize(cycleNetPnmlFs);
 
             // Act
             IPetriNet madeNet = Alpha.MakePetriNet(matrix);

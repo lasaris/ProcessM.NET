@@ -1,0 +1,28 @@
+﻿@using ProcessM.NET.Model.BasicPetriNet
+@using ProcessM.NET.Model.GraphvizNet
+
+<MudDialog>
+    <DialogContent>
+        <MudPaper Elevation="0" Style="background-color: white">
+            <Graph @ref="_graph"/>
+        </MudPaper>
+    </DialogContent>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+
+    [Parameter]
+    public PetriNet PetriNet { get; set; }
+
+    private Graph _graph = new Graph();
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await _graph.RenderGraph(new GraphvizNet(PetriNet));
+    }
+}

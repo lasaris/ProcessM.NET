@@ -17,7 +17,8 @@ namespace ProcessM.NETtests
         public void SimpleDependencyGraphDefaultSettings()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(heuristicCsv);
+            using FileStream fs = File.Open(heuristicCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
@@ -53,7 +54,8 @@ namespace ProcessM.NETtests
         public void SimpleDependencyGraphWithL1LLoop()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(heuristicCsv);
+            using FileStream fs = File.Open(heuristicCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
@@ -92,7 +94,8 @@ namespace ProcessM.NETtests
         public void HardDependencyGraphDefaultSettings()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsv);
+            using FileStream fs = File.Open(hardCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
@@ -137,7 +140,8 @@ namespace ProcessM.NETtests
         public void HardDependencyGraphLongDistance()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsv);
+            using FileStream fs = File.Open(hardCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
@@ -184,7 +188,8 @@ namespace ProcessM.NETtests
         public void HardDependencyGraphNoL1L()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsv);
+            using FileStream fs = File.Open(hardCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
@@ -229,7 +234,8 @@ namespace ProcessM.NETtests
         public void HardDependencyGraphNoL2LWithAllTaskConnected()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsv);
+            using FileStream fs = File.Open(hardCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
@@ -276,7 +282,8 @@ namespace ProcessM.NETtests
         public void HardDependencyGraphNoL2LL1LWithoutAllTaskConnected()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsv);
+            using FileStream fs = File.Open(hardCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);

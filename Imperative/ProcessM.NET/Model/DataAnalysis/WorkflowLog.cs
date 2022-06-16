@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text.Json;
 using Deedle;
 
 namespace ProcessM.NET.Model.DataAnalysis
@@ -10,7 +12,7 @@ namespace ProcessM.NET.Model.DataAnalysis
     /// </summary>
     public class WorkflowLog
     {
-        public List<WorkflowTrace> WorkflowTraces { get; }
+        public List<WorkflowTrace> WorkflowTraces { get; set; }
 
         /// <summary>
         /// Makes a collection of empty workflow trace shells, one for each unique "Case ID" in loaded data from an event log.
@@ -84,11 +86,7 @@ namespace ProcessM.NET.Model.DataAnalysis
                 {
                     if (wft.CaseId == row.Value.Get(importedData.CaseId))
                     {
-                        bool parseSuccess = DateTime.TryParse(row.Value.Get(importedData.Timestamp), out DateTime timestamp);
-                        if (!parseSuccess && wft.Activities.Count > 0)
-                        {
-                            timestamp = new DateTime();
-                        }
+                        var timestamp = DateTime.ParseExact(row.Value.Get(importedData.Timestamp), importedData.TimestampFormat, CultureInfo.CurrentCulture);
                         wft.AddActivity(row.Value.Get(importedData.Activity), timestamp);
                     }
                 }
@@ -130,10 +128,17 @@ namespace ProcessM.NET.Model.DataAnalysis
 
             return dictionary.Select(x => new Tuple<WorkflowTrace, int>(x.Key, x.Value)).ToList();
         }
-
+        
         public WorkflowLog(List<WorkflowTrace> workflowTraces)
         {
             WorkflowTraces = workflowTraces;
+        }
+        
+        public WorkflowLog() {}
+
+        public WorkflowLog Clone()
+        {
+            return  JsonSerializer.Deserialize<WorkflowLog>(JsonSerializer.Serialize(this));
         }
     }
 }

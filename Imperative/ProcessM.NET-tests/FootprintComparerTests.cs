@@ -23,7 +23,8 @@ namespace ProcessM.NETtests
 
         private RelationMatrix MakeEasyRelationMatrix()
         {
-            ImportedEventLog elog = CSVImport.MakeDataFrame(easyCsv);
+            using FileStream fs = File.Open(easyCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
@@ -51,7 +52,8 @@ namespace ProcessM.NETtests
 
         private RelationMatrix MakeHardRelationMatrix()
         {
-            ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsv);
+            using FileStream fs = File.Open(hardCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);

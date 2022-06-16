@@ -17,7 +17,8 @@ namespace ProcessM.NETtests
         public void MakeCNetEasyDefaultSettings()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(heuristicCsv);
+            using FileStream fs = File.Open(heuristicCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
@@ -57,7 +58,8 @@ namespace ProcessM.NETtests
         public void MakeCNetEasyCustomSettings()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(heuristicCsv);
+            using FileStream fs = File.Open(heuristicCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
@@ -105,7 +107,8 @@ namespace ProcessM.NETtests
         public void MakeCNetHardDefaultSettings()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsv);
+            using FileStream fs = File.Open(hardCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);
@@ -152,7 +155,8 @@ namespace ProcessM.NETtests
         public void MakeCNetHardLongDistanceSettings()
         {
             // Arrange
-            ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsv);
+            using FileStream fs = File.Open(hardCsv, FileMode.Open);
+            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.SetActivity("act");
             elog.SetCaseId("id");
             WorkflowLog wlog = new WorkflowLog(elog);

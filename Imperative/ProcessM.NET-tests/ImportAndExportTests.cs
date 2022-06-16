@@ -20,14 +20,6 @@ namespace ProcessM.NETtests
         readonly string CSVPath = projectDirectory + separator + "Files" + separator + "alpha2.csv";
         readonly string CSVPathSemicolon = projectDirectory + separator + "Files" + separator + "alpha1.csv";
         readonly string PNMLpath = projectDirectory + separator + "Files" + separator + "easynet.xml";
-        
-        private string MakeEasyDOT()
-        {
-            return "digraph G{\n\tsubgraph place {\n\t\tgraph [shape = circle, color = gray];\n\t\tnode [shape = circle, fixedsize = true, width = 2];\n\t\t"
-                    + "\"p0\";\n\t\t\"p1\";\n\t\t\"p2\";\n\t\t\"p3\";\n\t}\n\tsubgraph transitions {\n\t\tnode [shape = rect, height = 0.2, width = 2];\n\t\t"
-                    + "\"a\";\n\t\t\"b\";\n\t\t\"c\";\n\t\t\"d\";\n\t}\n\t\"p0\" -> \"a\";\n\t\"a\" -> \"p1\";\n\t\"p1\" -> \"b\";\n\t\"b\" -> \"p2\";\n\t"
-                    + "\"p2\" -> \"c\";\n\t\"c\" -> \"p3\";\n\t\"p1\" -> \"d\";\n\t\"d\" -> \"p2\";\n}";
-        }
 
         private IPetriNet MakeEasyPetriNet()
         {
@@ -62,22 +54,13 @@ namespace ProcessM.NETtests
         {
             // Arrange
             ImportedEventLog importedEventLog;
+            using FileStream fs = File.Open(CSVPath, FileMode.Open);
 
             // Act
-            importedEventLog = CSVImport.MakeDataFrame(CSVPath);
+            importedEventLog = CSVImport.MakeDataFrame(fs);
 
             // Assert
             Assert.IsNotNull(importedEventLog);
-        }
-
-        [TestMethod]
-        public void CSVImportInvalidTest()
-        {
-            // Arrange
-            string path = "." + separator + "thisFileDoesNotExist.csv";
-
-            // Act and Assert
-            Assert.ThrowsException<ArgumentException>(() => CSVImport.MakeDataFrame(path));
         }
 
         [TestMethod]
@@ -85,9 +68,10 @@ namespace ProcessM.NETtests
         {
             // Arrange
             ImportedEventLog importedEventLog;
+            using FileStream fs = File.Open(CSVPath, FileMode.Open);
 
             // Act
-            importedEventLog = CSVImport.MakeDataFrame(CSVPath, hasHeaders: false);
+            importedEventLog = CSVImport.MakeDataFrame(fs, hasHeaders: false);
 
             // Assert
             Assert.IsNotNull(importedEventLog);
@@ -99,9 +83,10 @@ namespace ProcessM.NETtests
         {
             // Arrange
             ImportedEventLog importedEventLog;
+            using FileStream fs = File.Open(CSVPath, FileMode.Open);
 
             // Act
-            importedEventLog = CSVImport.MakeDataFrame(CSVPath, culture: "en-US");
+            importedEventLog = CSVImport.MakeDataFrame(fs, culture: "en-US");
 
             // Assert
             Assert.IsNotNull(importedEventLog);
@@ -112,9 +97,10 @@ namespace ProcessM.NETtests
         {
             // Arrange
             ImportedEventLog importedEventLog;
+            using FileStream fs = File.Open(CSVPath, FileMode.Open);
 
             // Act
-            importedEventLog = CSVImport.MakeDataFrame(CSVPath, inferTypes: false);
+            importedEventLog = CSVImport.MakeDataFrame(fs, inferTypes: false);
 
             // Assert
             Assert.IsNotNull(importedEventLog);
@@ -126,9 +112,10 @@ namespace ProcessM.NETtests
         {
             // Arrange
             ImportedEventLog importedEventLog;
+            using FileStream fs = File.Open(CSVPathSemicolon, FileMode.Open);
 
             // Act
-            importedEventLog = CSVImport.MakeDataFrame(CSVPathSemicolon, separatorsString: ";");
+            importedEventLog = CSVImport.MakeDataFrame(fs, separatorsString: ";");
 
             // Assert
             Assert.IsNotNull(importedEventLog);
@@ -139,9 +126,10 @@ namespace ProcessM.NETtests
         {
             // Arrange
             ImportedEventLog importedEventLog;
+            using FileStream fs = File.Open(CSVPath, FileMode.Open);
 
             // Act
-            importedEventLog = CSVImport.MakeDataFrame(CSVPath, maxRows: 2);
+            importedEventLog = CSVImport.MakeDataFrame(fs, maxRows: 2);
 
             // Assert
             Assert.IsNotNull(importedEventLog);
@@ -155,9 +143,10 @@ namespace ProcessM.NETtests
             // Arrange
             IPetriNet loadedNet;
             IPetriNet exampleNet = MakeEasyPetriNet();
+            using FileStream fs = File.Open(PNMLpath, FileMode.Open);
 
             // Act
-            loadedNet = PNMLImport.Deserialize(PNMLpath);
+            loadedNet = PNMLImport.Deserialize(fs);
 
             // Assert
             Assert.IsNotNull(loadedNet);
@@ -180,15 +169,16 @@ namespace ProcessM.NETtests
         }
 
         [TestMethod]
-        public void PNMLExportTest()
+        public void PNMLExportImportTest()
         {
             // Arrange
             IPetriNet loadedNet;
             IPetriNet exampleNet = MakeEasyPetriNet();
 
             // Act
-            string filepath = "." + separator + PNMLExport.Serialize(exampleNet);
-            loadedNet = PNMLImport.Deserialize(filepath);
+            string pnmlString = PNMLExport.Serialize(exampleNet);
+            var stream = new MemoryStream(Encoding.UTF8.GetBytes(pnmlString));
+            loadedNet = PNMLImport.Deserialize(stream);
 
             // Assert
             Assert.IsNotNull(loadedNet);
@@ -208,28 +198,6 @@ namespace ProcessM.NETtests
                 a.InputPlaces.Count == t.InputPlaces.Count &&
                 a.OutputPlaces.Count == t.OutputPlaces.Count);
             }
-
-            // Cleanup
-            File.Delete(filepath);
-        }
-
-        [TestCategory("DOTExport tests")]
-        [TestMethod]
-        public void DOTExportImportTest()
-        {
-            // Arrange
-            IPetriNet exampleNet = MakeEasyPetriNet();
-            string exampleDot = MakeEasyDOT();
-
-            // Act
-            string filepath = DOTExport.Serialize(exampleNet);
-            string loadedDot = File.ReadAllText("." + separator + filepath);
-
-            // Assert
-            Assert.AreEqual(exampleDot, loadedDot);
-
-            // Cleanup
-            File.Delete(filepath);
         }
     }
 }

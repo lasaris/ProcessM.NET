@@ -27,6 +27,7 @@ namespace ProcessM.NET.ConformanceChecking.TokenBasedReplay
             if (Tokens == 0)
             {
                 Missing++;
+                Produced++;
                 return;
             }
             Tokens--;
