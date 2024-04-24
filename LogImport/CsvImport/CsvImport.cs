@@ -1,101 +1,75 @@
 
+using LogImport.Exceptions;
+using LogImport.Interfaces;
 using LogImport.Models;
+using Microsoft.VisualBasic.FileIO;
 
 namespace LogImport.CsvImport
 {
     /// <summary>
-    ///    Class responsible for importing of csv files
+    ///    Class responsible for importing of CSV files
     /// </summary>
-    public static class CsvImport
+    public class CsvImport : ILogImporter
     {
-        /// <summary>
-        ///     Imports a csv log from the path
-        /// </summary>
-        /// <param name="path">Path to a CSV file to be parsed into an Event Log</param>
-        /// <returns>ImportedEventLog based on the file content</returns>
-        public static ImportedEventLog LoadLog(string path, bool hasHeaders = true, char separator = ';')
-        {
-            Stream stream = new FileStream(path, FileMode.Open);
+        private char _delimiter = ',';
+        private string[] _missing = new[] { "none", "null", "nan", "na", "-", "" };
+        private bool _hasHeaders = true;
 
-            return LoadLog(stream, hasHeaders, separator);
+        public char Delimiter { get => _delimiter; set => _delimiter = value; }
+        public string[] Missing { get => _missing; set => _missing = value; }
+        public bool HasHeaders { get => _hasHeaders; set => _hasHeaders = value; }
+
+        public CsvImport() { }
+
+        public ImportedEventLog LoadLog(string filePath)
+        {
+            var stream = File.OpenRead(filePath);
+            return LoadLog(stream);
         }
 
-        /// <summary>
-        ///     Imports a csv log from the file stream
-        /// </summary>
-        /// <param name="stream">CSV file parsed as Stream</param>
-        /// <returns>ImportedEventLog</returns>
-        public static ImportedEventLog LoadLog(Stream stream, bool hasHeaders = true, char separator = ';')
+        public ImportedEventLog LoadLog(Stream stream)
         {
-            var columns = new List<LogColumn>();
+            var logRows = new List<string[]>();
 
-            using var reader = new StreamReader(stream);
-
-            while (!reader.EndOfStream)
+            using (var parser = new TextFieldParser(stream))
             {
-                var line = reader.ReadLine();
+                parser.TextFieldType = FieldType.Delimited;
+                parser.SetDelimiters(_delimiter.ToString());
 
-                if (string.IsNullOrWhiteSpace(line))
+                while (!parser.EndOfData)
                 {
-                    continue;
-                }
+                    var row = parser.ReadFields();
 
-                if (!columns.Any() && hasHeaders)
-                {
-                    columns = ProcessHeaders(line, separator);
-                    continue;
-                }
-
-                var parsedLine = ParseLine(line, separator);
-
-                if (columns.Count == 0)
-                {
-                    for (int i = 0; i < parsedLine.Length; i++)
+                    if (row == null)
                     {
-                        columns.Add(new LogColumn(i.ToString(), new List<string>()));
+                        continue;
                     }
-                }
 
-                for (int i = 0; i < columns.Count; i++)
-                {
-                    var column = columns.ElementAt(i);
-                    column.Values = column.Values.Append(parsedLine[i]);
+                    logRows.Add(row);
                 }
             }
 
-            return new ImportedEventLog(columns);
-        }
-
-
-        /// <summary>
-        ///     Processes a csv line with headers
-        /// </summary>
-        /// <param name="line">String line with headers</param>
-        /// <param name="separator">Character separating the CSV headers</param>
-        /// <returns>Returns a list of new LogColumns with empty values</returns>
-        private static List<LogColumn> ProcessHeaders(string line, char separator)
-        {
-            var columns = new List<LogColumn>();
-            string[] headers = ParseLine(line, separator);
-
-            foreach (var header in headers)
+            if (_hasHeaders)
             {
-                columns.Add(new LogColumn(header, new List<string>()));
+                var fileHeaders = logRows[0];
+                logRows.RemoveAt(0);
+
+                return new ImportedEventLog(logRows, fileHeaders);
             }
 
-            return columns;
-        }
+            if (logRows.Count == 0)
+            {
+                throw new CannotParseFileException("Unable to parse file. No rows found.");
+            }
 
+            var firstLineLength = logRows[0].Length;
+            var headers = new string[firstLineLength];
+            for (var i = 0; i < firstLineLength; i++)
+            {
+                headers[i] = $"Column {i + 1}";
+            }
 
-        /// <summary>
-        ///     Processes a CSV line
-        /// </summary>
-        /// <param name="line">String line with headers</param>
-        /// <param name="separator">Character separating the CSV headers</param>
-        /// <returns>Returns an array of strings, which are the csv values for each column</returns>
-        private static string[] ParseLine(string line, char separator)
-        {
-            return line.Split(separator);
+            return new ImportedEventLog(logRows, headers);
         }
     }
 }
