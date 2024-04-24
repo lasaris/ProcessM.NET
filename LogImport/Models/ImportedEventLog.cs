@@ -1,3 +1,5 @@
+using System.Text;
+using LogImport.Exceptions;
 
 namespace LogImport.Models
 {
@@ -34,8 +36,7 @@ namespace LogImport.Models
             {
                 if (value < 0 || value >= ColumnCount)
                 {
-                    // TODO: Replace with custom exception
-                    throw new ArgumentOutOfRangeException("CaseId must be a valid column index");
+                    throw new IncorrectIndexException("CaseId must be a valid column index");
                 }
                 else
                 {
@@ -43,6 +44,7 @@ namespace LogImport.Models
                 }
             }
         }
+
         public int Activity
         {
             get { return _activity; }
@@ -50,8 +52,7 @@ namespace LogImport.Models
             {
                 if (value < 0 || value >= ColumnCount)
                 {
-                    // TODO: Replace with custom exception
-                    throw new ArgumentOutOfRangeException("Activity must be a valid column index");
+                    throw new IncorrectIndexException("Activity must be a valid column index");
                 }
                 else
                 {
@@ -59,6 +60,7 @@ namespace LogImport.Models
                 }
             }
         }
+
         public int? Timestamp
         {
             get { return _timestamp; }
@@ -66,8 +68,7 @@ namespace LogImport.Models
             {
                 if (value.HasValue && (value < 0 || value >= ColumnCount))
                 {
-                    // TODO: Replace with custom exception
-                    throw new ArgumentOutOfRangeException("Timestamp must be a valid column index");
+                    throw new IncorrectIndexException("Timestamp must be a valid column index");
                 }
                 else
                 {
@@ -75,6 +76,7 @@ namespace LogImport.Models
                 }
             }
         }
+
         public List<int>? Resources
         {
             get { return _resources; }
@@ -86,8 +88,7 @@ namespace LogImport.Models
                     {
                         if (resource < 0 || resource >= ColumnCount)
                         {
-                            // TODO: Replace with custom exception
-                            throw new ArgumentOutOfRangeException("Resource must be a valid column index");
+                            throw new IncorrectIndexException("Resource must be a valid column index");
                         }
                     }
                 }
@@ -116,8 +117,7 @@ namespace LogImport.Models
         {
             if (n < 0 || n >= ColumnCount)
             {
-                // TODO: Replace with custom exception
-                throw new ArgumentOutOfRangeException("Column index out of range");
+                throw new IncorrectIndexException("Column index out of range");
             }
 
             List<string> column = new List<string>();
@@ -134,11 +134,62 @@ namespace LogImport.Models
         {
             if (n < 0 || n >= RowCount)
             {
-                // TODO: Replace with custom exception
-                throw new ArgumentOutOfRangeException("Row index out of range");
+                throw new IncorrectIndexException("Row index out of range");
             }
 
             return new List<string>(Rows[n]);
+        }
+
+        private int[] GetLongestFieldsInColumns()
+        {
+            int[] longestFieldsInColumns = new int[ColumnCount];
+
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                longestFieldsInColumns[i] = Headers[i].Length;
+            }
+
+            foreach (var row in Rows)
+            {
+                for (int i = 0; i < ColumnCount; i++)
+                {
+                    if (row[i].Length > longestFieldsInColumns[i])
+                    {
+                        longestFieldsInColumns[i] = row[i].Length;
+                    }
+                }
+            }
+
+            return longestFieldsInColumns;
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            var longestFieldsInColumns = GetLongestFieldsInColumns();
+
+            for (int i = 0; i < ColumnCount; i++)
+            {
+                sb.Append(Headers[i].PadRight(longestFieldsInColumns[i] + 1));
+                sb.Append("| ");
+            }
+
+            sb.AppendLine();
+            sb.Append('-', longestFieldsInColumns.Sum() + 3 * ColumnCount - 1);
+            sb.AppendLine();
+
+            foreach (var row in Rows)
+            {
+                for (int i = 0; i < ColumnCount; i++)
+                {
+                    sb.Append(row[i].PadRight(longestFieldsInColumns[i] + 1));
+                    sb.Append("| ");
+                }
+
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
         }
     }
 }
