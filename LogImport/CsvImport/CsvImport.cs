@@ -15,18 +15,43 @@ namespace LogImport.CsvImport
         private string[] _missing = new[] { "none", "null", "nan", "na", "-", "" };
         private bool _hasHeaders = true;
 
+        /// <summary>
+        ///   Delimiter used in the CSV file
+        /// </summary>
         public char Delimiter { get => _delimiter; set => _delimiter = value; }
+
+        /// <summary>
+        ///   Array of strings that are considered as missing values
+        /// </summary>
         public string[] Missing { get => _missing; set => _missing = value; }
+
+        /// <summary>
+        ///   Flag indicating whether the CSV file has headers
+        /// </summary>
         public bool HasHeaders { get => _hasHeaders; set => _hasHeaders = value; }
 
+        /// <summary>
+        ///  Default constructor
+        /// </summary>
         public CsvImport() { }
 
+        /// <summary>
+        ///  Overriden method from the interface <see cref="ILogImporter"/>
+        /// </summary>
+        /// <param name="filePath">string path to the file, that is being imported</param>
+        /// <returns><see cref="ImportedEventLog"/></returns>
         public ImportedEventLog LoadLog(string filePath)
         {
             var stream = File.OpenRead(filePath);
             return LoadLog(stream);
         }
 
+        /// <summary>
+        ///     Method containing the logic of loading an event log from a stream
+        /// </summary>
+        /// <param name="stream">Opened stream</param>
+        /// <returns><see cref="ImportedEventLog"/></returns>
+        /// <exception cref="CannotParseFileException">This exception is thrown, if the file doesn't contain headers, and we cannot create custom ones by the first row (for headers creation I need their length)</exception>
         public ImportedEventLog LoadLog(Stream stream)
         {
             var logRows = new List<string[]>();

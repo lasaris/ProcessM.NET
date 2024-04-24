@@ -3,6 +3,11 @@ using LogImport.Exceptions;
 
 namespace LogImport.Models
 {
+    /// <summary>
+    ///    Class representing an imported event log.
+    ///    
+    ///    The class is used to store the imported event log in a structured way.
+    /// </summary>
     public class ImportedEventLog
     {
         private string[] _headers;
@@ -23,12 +28,18 @@ namespace LogImport.Models
             set { _headers = value; }
         }
 
+        /// <summary>
+        ///    Represents CSV rows (without headers)
+        /// </summary>
         public List<string[]> Rows
         {
             get { return _rows; }
             set { _rows = value; }
         }
 
+        /// <summary>
+        ///   Represents the index of the column containing the case identifier
+        /// </summary>
         public int CaseId
         {
             get { return _caseId; }
@@ -45,6 +56,9 @@ namespace LogImport.Models
             }
         }
 
+        /// <summary>
+        ///   Represents the index of the column containing the activity
+        /// </summary>
         public int Activity
         {
             get { return _activity; }
@@ -61,6 +75,9 @@ namespace LogImport.Models
             }
         }
 
+        /// <summary>
+        ///  Represents the index of the column containing the timestamp
+        /// </summary>
         public int? Timestamp
         {
             get { return _timestamp; }
@@ -77,6 +94,9 @@ namespace LogImport.Models
             }
         }
 
+        /// <summary>
+        ///   Represents the indices of the columns containing the resources
+        /// </summary>
         public List<int>? Resources
         {
             get { return _resources; }
@@ -96,10 +116,21 @@ namespace LogImport.Models
             }
         }
 
+        /// <summary>
+        ///    Represents the number of columns in the log
+        /// </summary>
         public int ColumnCount { get { return Headers.Length; } }
 
+        /// <summary>
+        ///   Represents the number of rows in the log
+        /// </summary>
         public int RowCount { get { return Rows.Count; } }
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ImportedEventLog" /> class.
+        /// </summary>
+        /// <param name="rows">Represents CSV rows (without headers)</param>
+        /// <param name="headers">Represents CSV headers row</param> 
         public ImportedEventLog(List<string[]> rows, string[] headers)
         {
             this._headers = headers;
@@ -111,8 +142,20 @@ namespace LogImport.Models
             this._resources = null;
         }
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ImportedEventLog" /> class.
+        ///     
+        ///     The Rows property is initialized as an empty list.
+        /// </summary>
+        /// <param name="headers">Array of headers</param>
         public ImportedEventLog(string[] headers) : this(new List<string[]>(), headers) { }
 
+        /// <summary>
+        ///     Method to get the n-th column of the log
+        /// </summary>
+        /// <param name="n">Specifies which column will be returned</param>
+        /// <returns>A list of fields in the given column</returns>
+        /// <exception cref="IncorrectIndexException">Thrown, if `n` is out of bounds</exception>
         public List<string> GetNthColumn(int n)
         {
             if (n < 0 || n >= ColumnCount)
@@ -130,6 +173,12 @@ namespace LogImport.Models
             return column;
         }
 
+        /// <summary>
+        ///    Method to get the n-th row of the log
+        /// </summary>
+        /// <param name="n">Specifies which row will be returned</param>
+        /// <returns>Nth row as List of strings</returns>
+        /// <exception cref="IncorrectIndexException">Thrown, if `n` is out of bounds</exception>
         public List<string> GetNthRow(int n)
         {
             if (n < 0 || n >= RowCount)
@@ -140,6 +189,10 @@ namespace LogImport.Models
             return new List<string>(Rows[n]);
         }
 
+        /// <summary>
+        ///     Utility method used by ToString() to calculate the width needed to display a column
+        /// </summary>
+        /// <returns>Array of lengths of fields in each row</returns>
         private int[] GetLongestFieldsInColumns()
         {
             int[] longestFieldsInColumns = new int[ColumnCount];
@@ -163,6 +216,10 @@ namespace LogImport.Models
             return longestFieldsInColumns;
         }
 
+        /// <summary>
+        ///    Method to convert the log to a string
+        /// </summary>
+        /// <returns>Stringified CSV log</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
