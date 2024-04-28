@@ -9,7 +9,7 @@ namespace LogImport.CsvImport
     /// <summary>
     ///    Class responsible for importing of CSV files
     /// </summary>
-    public class CsvImport : ILogImporter
+    public class CsvImporter : ILogImporter
     {
         private char _delimiter = ',';
         private string[] _missing = new[] { "none", "null", "nan", "na", "-", "" };
@@ -33,7 +33,7 @@ namespace LogImport.CsvImport
         /// <summary>
         ///  Default constructor
         /// </summary>
-        public CsvImport() { }
+        public CsvImporter() { }
 
         /// <summary>
         ///  Overriden method from the interface <see cref="ILogImporter"/>
@@ -42,8 +42,27 @@ namespace LogImport.CsvImport
         /// <returns><see cref="ImportedEventLog"/></returns>
         public ImportedEventLog LoadLog(string filePath)
         {
-            var stream = File.OpenRead(filePath);
-            return LoadLog(stream);
+            try
+            {
+                var stream = File.OpenRead(filePath);
+                return LoadLog(stream);
+            }
+            catch (FileNotFoundException)
+            {
+                throw new CannotParseFileException("File not found.");
+            }
+            catch (IOException)
+            {
+                throw new CannotParseFileException("File is in use.");
+            }
+            catch (UnauthorizedAccessException)
+            {
+                throw new CannotParseFileException("Access denied.");
+            }
+            catch (Exception e)
+            {
+                throw new CannotParseFileException(e.Message);
+            }
         }
 
         /// <summary>
@@ -74,7 +93,7 @@ namespace LogImport.CsvImport
                 }
             }
 
-            if (_hasHeaders)
+            if (_hasHeaders && logRows.Count > 0)
             {
                 var fileHeaders = logRows[0];
                 logRows.RemoveAt(0);
