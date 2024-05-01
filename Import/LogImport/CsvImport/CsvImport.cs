@@ -12,6 +12,7 @@ namespace LogImport.CsvImport
     public class CsvImporter : ILogImporter
     {
         private char _delimiter = ',';
+        private char[] _delimiterCandidates = new[] { ';', '|', '\t', ',' };
         private string[] _missing = new[] { "none", "null", "nan", "na", "-", "" };
         private bool _hasHeaders = true;
 
@@ -73,6 +74,8 @@ namespace LogImport.CsvImport
         /// <exception cref="CannotParseFileException">This exception is thrown, if the file doesn't contain headers, and we cannot create custom ones by the first row (for headers creation I need their length)</exception>
         public ImportedEventLog LoadLog(Stream stream)
         {
+            _delimiter = DetectCsvDelimiter(stream, _delimiterCandidates);
+
             var logRows = new List<string[]>();
 
             using (var parser = new TextFieldParser(stream))
@@ -114,6 +117,25 @@ namespace LogImport.CsvImport
             }
 
             return new ImportedEventLog(logRows, headers);
+        }
+
+        /// <summary>
+        ///    Method responsible for detecting the delimiter of the CSV file
+        /// </summary>
+        /// <param name="stream">Open stream</param>
+        /// <param name="candidates">Candidate delimiters</param>
+        /// <returns>Delimiter character</returns>
+        private static char DetectCsvDelimiter(Stream stream, IEnumerable<char> candidates)
+        {
+            var buffer = new byte[1024];
+
+            stream.Read(buffer, 0, 1024);
+            stream.Seek(0, SeekOrigin.Begin);
+
+            var q = candidates.Select(sep => new
+            { Separator = sep, Found = buffer.Count(ch => ch == sep) });
+
+            return q.OrderByDescending(x => x.Found).First().Separator;
         }
     }
 }
