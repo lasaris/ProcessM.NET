@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 using LogImport.Exceptions;
 
@@ -19,6 +20,8 @@ namespace LogImport.Models
         private int _activity;
 
         private int? _timestamp;
+
+        private string? _timestampFormat;
 
         private List<int>? _resources;
 
@@ -91,6 +94,18 @@ namespace LogImport.Models
                 {
                     _timestamp = value;
                 }
+            }
+        }
+
+        /// <summary>
+        ///  Represents the format of the timestamp
+        /// </summary>
+        public string? TimestampFormat
+        {
+            get { return _timestampFormat; }
+            protected set
+            {
+                _timestampFormat = value;
             }
         }
 
@@ -247,6 +262,39 @@ namespace LogImport.Models
             }
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        ///   Method to set the column index of the case identifier
+        /// </summary>
+        /// <param name="timestamp">Name of column to be set as timestamp</param>
+        /// <param name="timestampFormat">TimeStamp format</param>
+        /// <param name="failedToParseTimestamp">Output parameter for return message</param>
+        /// <returns>True if TimeStamp format matches all rows</returns>
+        public bool TrySetTimestampFormat(string timestamp, string timestampFormat, out string failedToParseTimestamp)
+        {
+            var timeStampIndex = this.Headers.ToList().IndexOf(timestamp);
+            if (timeStampIndex == -1)
+            {
+                failedToParseTimestamp = "";
+                return false;
+            }
+
+            foreach (var row in Rows)
+            {
+                var rowTimeStamp = row[timeStampIndex];
+                bool parseSuccess = DateTime.TryParseExact(rowTimeStamp, timestampFormat, CultureInfo.CurrentCulture, DateTimeStyles.None, out _);
+
+                if (!parseSuccess)
+                {
+                    failedToParseTimestamp = rowTimeStamp;
+                    return false;
+                }
+            }
+
+            failedToParseTimestamp = "";
+            TimestampFormat = timestampFormat;
+            return true;
         }
     }
 }

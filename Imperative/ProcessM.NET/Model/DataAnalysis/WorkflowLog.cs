@@ -70,6 +70,98 @@ namespace ProcessM.NET.Model.DataAnalysis
         }
 
         /// <summary>
+        /// Makes a collection of empty workflow trace shells, one for each unique "Case ID" in loaded data from an event log.
+        /// </summary>
+        /// <param name="ids">A "Case ID" column from the data frame, representation of a loaded event log.</param>
+        /// <returns>A list of empty workflow traces, one for each unique "Case ID" in given data.</returns>
+        private List<WorkflowTrace> MakeEmptyWftsV2(List<string> ids)
+        {
+            List<WorkflowTrace> traces = new List<WorkflowTrace>();
+            HashSet<string> uniqueIds = new HashSet<string>(ids);
+            foreach (var id in uniqueIds)
+            {
+                traces.Add(new WorkflowTrace("" + id));
+            }
+            return traces;
+        }
+
+        /// <summary>
+        /// Makes a collection of empty timestamped workflow trace shells, one for each unique "Case ID" in loaded data from an event log.
+        /// </summary>
+        /// <param name="ids">A "Case ID" column from the data frame, representation of a loaded event log.</param>
+        /// <returns>A list of empty timestamped workflow traces, one for each unique "Case ID" in given data.</returns>
+        private List<TimestampedWorkflowTrace> MakeEmptyTimestampedWftsV2(List<string> ids)
+        {
+            List<TimestampedWorkflowTrace> traces = new List<TimestampedWorkflowTrace>();
+            HashSet<string> uniqueIds = new HashSet<string>(ids);
+            foreach (var id in uniqueIds)
+            {
+                traces.Add(new TimestampedWorkflowTrace("" + id));
+            }
+            return traces;
+        }
+
+        /// <summary>
+        /// Fills workflow trace shells stored in WorkflowTraces field with activities based on how they are ordered in loaded data from an event log.
+        /// </summary>
+        /// <param name="importedData">Loaded data from an event log.</param>
+        /// <returns>List of filled workflow traces.</returns>
+        private List<WorkflowTrace> MakeWftsBasedOnOrderV2(LogImport.Models.ImportedEventLog importedData)
+        {
+            List<WorkflowTrace> traces = MakeEmptyWftsV2(importedData.GetNthColumn(importedData.CaseId));
+
+            foreach (var row in importedData.Rows)
+            {
+                foreach (WorkflowTrace wft in traces)
+                {
+                    var rowCaseId = row[importedData.CaseId];
+                    if (wft.CaseId == rowCaseId)
+                    {
+                        var rowActivity = row[importedData.Activity];
+                        wft.AddActivity(rowActivity);
+                    }
+                }
+            }
+
+            return traces;
+        }
+
+        /// <summary>
+        /// Fills workflow trace shells stored in WorkflowTraces field with with activities from loaded data, then sorts them based on given timestamp
+        /// and converts them into ordinary workflow traces.
+        /// </summary>
+        /// <param name="importedData">Loaded data from an event log.</param>
+        /// <returns>List of filled workflow traces.</returns>
+        private List<WorkflowTrace> MakeWftsBasedOnTimestampV2(LogImport.Models.ImportedEventLog importedData)
+        {
+            List<TimestampedWorkflowTrace> traces = MakeEmptyTimestampedWftsV2(importedData.GetNthRow(importedData.CaseId));
+
+            foreach (var row in importedData.Rows)
+            {
+                foreach (TimestampedWorkflowTrace wft in traces)
+                {
+                    var rowCaseId = row[importedData.CaseId];
+                    if (wft.CaseId == rowCaseId)
+                    {
+                        var timeStampValue = row[importedData.Timestamp.Value];
+                        var timestamp = DateTime.ParseExact(timeStampValue, importedData.TimestampFormat, CultureInfo.CurrentCulture);
+
+                        var activity = row[importedData.Activity];
+                        wft.AddActivity(activity, timestamp);
+                    }
+                }
+            }
+
+            List<WorkflowTrace> outTraces = new List<WorkflowTrace>();
+
+            foreach (TimestampedWorkflowTrace twft in traces)
+            {
+                outTraces.Add(twft.ConvertToWorkflowTrace());
+            }
+            return outTraces;
+        }
+
+        /// <summary>
         /// Fills workflow trace shells stored in WorkflowTraces field with with activities from loaded data, then sorts them based on given timestamp
         /// and converts them into ordinary workflow traces.
         /// </summary>
@@ -101,6 +193,20 @@ namespace ProcessM.NET.Model.DataAnalysis
             return outTraces;
         }
 
+        public WorkflowLog(LogImport.Models.ImportedEventLog importedData)
+        {
+
+            if (importedData.Timestamp == null)
+            {
+                WorkflowTraces = MakeWftsBasedOnOrderV2(importedData);
+            }
+            else
+            {
+                WorkflowTraces = MakeWftsBasedOnTimestampV2(importedData);
+            }
+
+        }
+
         public WorkflowLog(Model.ImportedEventLog importedData)
         {
             if (importedData.Timestamp == null)
@@ -128,17 +234,17 @@ namespace ProcessM.NET.Model.DataAnalysis
 
             return dictionary.Select(x => new Tuple<WorkflowTrace, int>(x.Key, x.Value)).ToList();
         }
-        
+
         public WorkflowLog(List<WorkflowTrace> workflowTraces)
         {
             WorkflowTraces = workflowTraces;
         }
-        
-        public WorkflowLog() {}
+
+        public WorkflowLog() { }
 
         public WorkflowLog Clone()
         {
-            return  JsonSerializer.Deserialize<WorkflowLog>(JsonSerializer.Serialize(this));
+            return JsonSerializer.Deserialize<WorkflowLog>(JsonSerializer.Serialize(this));
         }
     }
 }

@@ -2,42 +2,49 @@
 
 <MudDialog>
     <DialogContent>
-            <MudForm @bind-IsValid="@_form.IsValid">
-                <MudSelect T="string" Label="CaseId" AnchorOrigin="Origin.BottomCenter" Required="true" @bind-Value=@_form.caseId>
-                    @foreach (var it in Log.Contents.ColumnKeys)
-                    {
-                        <MudSelectItem Value="@(it)"/>
-                    }
-                </MudSelect>
-                <MudSelect T="string" Label="Activity" AnchorOrigin="Origin.BottomCenter" Required="true" @bind-Value=@_form.activity>
-                    @foreach (var it in Log.Contents.ColumnKeys)
-                    {
-                        <MudSelectItem Value="@(it)"/>
-                    }
-                </MudSelect>
-                
-                <MudSwitch Label="Timestamp" Color="Color.Primary" @bind-Checked="_form.hasTimestamp" />
-                @if (_form.hasTimestamp){
-                    <MudSelect T="string" Label="Timestamp" Required="_form.hasTimestamp" AnchorOrigin="Origin.BottomCenter" @bind-Value=@_form.timestamp>
-                        @foreach (var it in Log.Contents.ColumnKeys)
-                        {
-                            <MudSelectItem Value="@(it)"/>
-                        }
-                    </MudSelect>
-                    <MudTextField HelperText="C# DateTime string format" T="string" Placeholder="d/M/yyyy h:mm:ss tt" Required="_form.hasTimestamp" Immediate="true" Validation="(string f) => TimestampFormatChanged(f)"  @bind-Value="@_form.timestampFormat"  />
+        <MudForm @bind-IsValid="@_form.IsValid">
+            <MudSelect T="string" Label="CaseId" AnchorOrigin="Origin.BottomCenter" Required="true"
+                @bind-Value=@_form.caseId>
+                @foreach (var header in Log.Headers)
+                {
+                    <MudSelectItem Value="@(header)" />
                 }
-            </MudForm>
+            </MudSelect>
+            <MudSelect T="string" Label="Activity" AnchorOrigin="Origin.BottomCenter" Required="true"
+                @bind-Value=@_form.activity>
+                @foreach (var header in Log.Headers)
+                {
+                    <MudSelectItem Value="@(header)" />
+                }
+            </MudSelect>
+
+            <MudSwitch Label="Timestamp" Color="Color.Primary" @bind-Checked="_form.hasTimestamp" />
+            @if (_form.hasTimestamp)
+            {
+                <MudSelect T="string" Label="Timestamp" Required="_form.hasTimestamp" AnchorOrigin="Origin.BottomCenter"
+                    @bind-Value=@_form.timestamp>
+                    @foreach (var header in Log.Headers)
+                    {
+                        <MudSelectItem Value="@(header)" />
+                    }
+                </MudSelect>
+                <MudTextField HelperText="C# DateTime string format" T="string" Placeholder="d/M/yyyy h:mm:ss tt"
+                    Required="_form.hasTimestamp" Immediate="true" Validation="(string f) => TimestampFormatChanged(f)"
+                    @bind-Value="@_form.timestampFormat" />
+            }
+        </MudForm>
     </DialogContent>
     <DialogActions>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!_form.IsValid)" Class="ml-auto" OnClick="SetColumns">Confirm</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!_form.IsValid)" Class="ml-auto"
+            OnClick="SetColumns">Confirm</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    
+
     [Parameter]
-    public ImportedEventLog Log { get; set; }
+    public LogImport.Models.ImportedEventLog Log { get; set; }
     Form _form;
 
     public struct Form
@@ -51,17 +58,17 @@
 
         public Form()
         {
-            
+
         }
     }
 
     private void SetColumns()
     {
-        Log.SetActivity(_form.activity);
-        Log.SetCaseId(_form.caseId);
+        Log.Activity = Array.IndexOf(Log.Headers, _form.activity);
+        Log.CaseId = Array.IndexOf(Log.Headers, _form.caseId);
         if (_form.hasTimestamp)
         {
-            Log.SetTimestamp(_form.timestamp);
+            Log.Timestamp = Array.IndexOf(Log.Headers, _form.timestamp);
         }
         MudDialog.Close(DialogResult.Ok(true));
     }
@@ -73,6 +80,7 @@
         {
             return null;
         }
+
         if (string.IsNullOrEmpty(_form.timestamp))
         {
             return "select timestamp column first";

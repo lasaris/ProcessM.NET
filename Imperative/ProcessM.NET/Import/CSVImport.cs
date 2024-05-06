@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Deedle;
 using ProcessM.NET.Model;
+using LogImport.CsvImport;
 
 namespace ProcessM.NET.Import
 {
@@ -27,10 +28,10 @@ namespace ProcessM.NET.Import
         /// <param name="maxRows">Integer value indicating how many rows of .csv file should be loaded. Default is maximal value of integer.</param>
         /// <param name="missingValues">String array containing representation of missing values in .csv file. Default is ["NaN", "NA", "#N/A", ":", "-", "TBA", "TBD"].</param>
         /// <returns>ImportedEventLog object with its Contents field loaded with data from .csv file.</returns>
-        public static ImportedEventLog MakeDataFrame(Stream stream, 
-            bool hasHeaders = true, 
-            bool inferTypes = true, 
-            string culture = "", 
+        public static LogImport.Models.ImportedEventLog MakeDataFrame(Stream stream,
+            bool hasHeaders = true,
+            bool inferTypes = true,
+            string culture = "",
             string separatorsString = null,
             int maxRows = int.MaxValue,
             string[] missingValues = null)
@@ -47,10 +48,13 @@ namespace ProcessM.NET.Import
             {
                 separatorsString = CsvSeparatorDetector(stream, new char[] { ';', '|', '\t', ',' }).ToString();
             }
-            Frame<int, string> data = Frame.ReadCsv(stream, hasHeaders: hasHeaders, inferTypes: inferTypes, separators: separatorsString, culture: culture, maxRows: maxRows, missingValues: missingValues);
-            return new ImportedEventLog(data);
+            var logImporter = new CsvImporter();
+            logImporter.HasHeaders = hasHeaders;
+            return logImporter.LoadLog(stream);
+            // Frame<int, string> data = Frame.ReadCsv(stream, hasHeaders: hasHeaders, inferTypes: inferTypes, separators: separatorsString, culture: culture, maxRows: maxRows, missingValues: missingValues);
+            // return new ImportedEventLog(importedLog);
         }
-        
+
         /// <summary>
         /// Takes path of a .csv file as well as other optional parameters for ReadCsv method of Deedle library 
         /// (a few being ommitted due to being unnecessary for the needs of this library).
@@ -65,10 +69,10 @@ namespace ProcessM.NET.Import
         /// <param name="maxRows">Integer value indicating how many rows of .csv file should be loaded. Default is maximal value of integer.</param>
         /// <param name="missingValues">String array containing representation of missing values in .csv file. Default is ["NaN", "NA", "#N/A", ":", "-", "TBA", "TBD"].</param>
         /// <returns>ImportedEventLog object with its Contents field loaded with data from .csv file.</returns>
-        public static ImportedEventLog MakeDataFrame(string path, 
-            bool hasHeaders = true, 
-            bool inferTypes = true, 
-            string culture = "", 
+        public static LogImport.Models.ImportedEventLog MakeDataFrame(string path,
+            bool hasHeaders = true,
+            bool inferTypes = true,
+            string culture = "",
             string separatorsString = ",",
             int maxRows = int.MaxValue,
             string[] missingValues = null)
@@ -81,10 +85,14 @@ namespace ProcessM.NET.Import
             {
                 missingValues = new string[] { "NaN", "NA", "#N/A", ":", "-", "TBA", "TBD" }; // default value of ReadCsv
             }
-            Frame<int, string> data = Frame.ReadCsv(path, hasHeaders: hasHeaders, inferTypes: inferTypes, separators: separatorsString, culture: culture, maxRows: maxRows, missingValues: missingValues);
-            return new ImportedEventLog(data);
+
+            var logImporter = new CsvImporter();
+            logImporter.HasHeaders = hasHeaders;
+            return logImporter.LoadLog(path);
+            // Frame<int, string> data = Frame.ReadCsv(path, hasHeaders: hasHeaders, inferTypes: inferTypes, separators: separatorsString, culture: culture, maxRows: maxRows, missingValues: missingValues);
+            // return new ImportedEventLog(data);
         }
-        
+
         /// <summary>
         /// Takes stream of a .csv file and a array of chars.
         /// By frequency of used characters tries to guess the separator character.
@@ -96,11 +104,11 @@ namespace ProcessM.NET.Import
         {
             var buffer = new byte[1024];
 
-            stream.Read(buffer,0, 1024);
+            stream.Read(buffer, 0, 1024);
             stream.Seek(0, SeekOrigin.Begin);
-         
+
             var q = candidates.Select(sep => new
-                    {Separator = sep, Found = buffer.Count(ch => ch == sep)})
+            { Separator = sep, Found = buffer.Count(ch => ch == sep) })
                 .OrderByDescending(res => res.Found)
                 .First();
 
