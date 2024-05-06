@@ -37,7 +37,7 @@ namespace ProcessM.NET.ConformanceChecking.TokenBasedReplay
             }
 
             if (sumConsumed == 0 && sumProduced == sumRemaining && sumProduced == sumMissing) // this should only be true if compared log is 100% different from given Petri Net.
-            { 
+            {
                 return 0.0;
             }
 
