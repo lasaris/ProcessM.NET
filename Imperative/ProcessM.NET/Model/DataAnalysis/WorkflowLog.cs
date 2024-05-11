@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.Json;
+using LogImport.Models;
 
 namespace ProcessM.NET.Model.DataAnalysis
 {
@@ -49,7 +51,7 @@ namespace ProcessM.NET.Model.DataAnalysis
         /// </summary>
         /// <param name="importedData">Loaded data from an event log.</param>
         /// <returns>List of filled workflow traces.</returns>
-        private List<WorkflowTrace> MakeWftsBasedOnOrder(LogImport.Models.ImportedEventLog importedData)
+        private List<WorkflowTrace> MakeWftsBasedOnOrder(ImportedEventLog importedData)
         {
             List<WorkflowTrace> traces = MakeEmptyWfts(importedData.GetNthColumn(importedData.CaseId));
 
@@ -75,7 +77,7 @@ namespace ProcessM.NET.Model.DataAnalysis
         /// </summary>
         /// <param name="importedData">Loaded data from an event log.</param>
         /// <returns>List of filled workflow traces.</returns>
-        private List<WorkflowTrace> MakeWftsBasedOnTimestamp(LogImport.Models.ImportedEventLog importedData)
+        private List<WorkflowTrace> MakeWftsBasedOnTimestamp(ImportedEventLog importedData)
         {
             List<TimestampedWorkflowTrace> traces = MakeEmptyTimestampedWfts(importedData.GetNthRow(importedData.CaseId));
 
@@ -104,7 +106,7 @@ namespace ProcessM.NET.Model.DataAnalysis
             return outTraces;
         }
 
-        public WorkflowLog(LogImport.Models.ImportedEventLog importedData)
+        public WorkflowLog(ImportedEventLog importedData)
         {
             if (importedData.Timestamp == null)
             {
@@ -114,6 +116,18 @@ namespace ProcessM.NET.Model.DataAnalysis
             {
                 WorkflowTraces = MakeWftsBasedOnTimestamp(importedData);
             }
+        }
+
+        public WorkflowLog(List<WorkflowTrace> workflowTraces)
+        {
+            WorkflowTraces = workflowTraces;
+        }
+
+        public WorkflowLog() { }
+
+        public WorkflowLog Clone()
+        {
+            return JsonSerializer.Deserialize<WorkflowLog>(JsonSerializer.Serialize(this));
         }
 
         public List<Tuple<WorkflowTrace, int>> GetTracesWithOccurrence()

@@ -3,7 +3,6 @@
 @using BakaMining.Utils
 @using ProcessM.NET.Import
 @using LogImport.Models
-@using ProcessM.NET.Model
 @using ProcessM.NET.Model.DataAnalysis
 @inject Services.Storage.EventLogStore EventLogStore
 @inject IDialogService DialogService
@@ -36,7 +35,7 @@
     [Parameter]
     public EventCallback OnLogUploaded { get; set; }
 
-    LogImport.Models.ImportedEventLog _importedLog;
+    ImportedEventLog _importedLog;
     IBrowserFile _file;
     string _error;
 

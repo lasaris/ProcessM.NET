@@ -1,4 +1,4 @@
-﻿@using ProcessM.NET.Model
+﻿@using LogImport.Models;
 
 <MudDialog>
     <DialogContent>
@@ -44,7 +44,7 @@
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
     [Parameter]
-    public LogImport.Models.ImportedEventLog Log { get; set; }
+    public ImportedEventLog Log { get; set; }
     Form _form;
 
     public struct Form
