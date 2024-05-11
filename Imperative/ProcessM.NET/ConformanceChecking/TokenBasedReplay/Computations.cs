@@ -1,4 +1,5 @@
-﻿using ProcessM.NET.Model;
+﻿using LogImport.Models;
+using ProcessM.NET.Model;
 using ProcessM.NET.Model.DataAnalysis;
 
 namespace ProcessM.NET.ConformanceChecking.TokenBasedReplay

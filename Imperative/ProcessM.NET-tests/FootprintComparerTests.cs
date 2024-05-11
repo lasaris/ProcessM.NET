@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using LogImport.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProcessM.NET.ConformanceChecking.CausalFootprint;
 using ProcessM.NET.Discovery.Alpha;
 using ProcessM.NET.Import;
@@ -21,12 +22,17 @@ namespace ProcessM.NETtests
         readonly string hardCsv = projectDirectory + separator + "Files" + separator + "alpha.csv";
         readonly string easyCsv = projectDirectory + separator + "Files" + separator + "alpha2.csv";
 
+        readonly int easyCsvCaseIdCol = 0;
+        readonly int easyCsvActivityCol = 1;
+        readonly int hardCsvCaseIdCol = 0;
+        readonly int hardCsvActivityCol = 1;
+
         private RelationMatrix MakeEasyRelationMatrix()
         {
             using FileStream fs = File.Open(easyCsv, FileMode.Open);
-            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            var elog = CSVImport.MakeDataFrame(fs);
+            elog.Activity = easyCsvActivityCol;
+            elog.CaseId = easyCsvCaseIdCol;
             WorkflowLog wlog = new WorkflowLog(elog);
             return new RelationMatrix(wlog);
         }
@@ -53,9 +59,9 @@ namespace ProcessM.NETtests
         private RelationMatrix MakeHardRelationMatrix()
         {
             using FileStream fs = File.Open(hardCsv, FileMode.Open);
-            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            var elog = CSVImport.MakeDataFrame(fs);
+            elog.Activity = hardCsvActivityCol;
+            elog.CaseId = hardCsvCaseIdCol;
             WorkflowLog wlog = new WorkflowLog(elog);
             return new RelationMatrix(wlog);
         }

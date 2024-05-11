@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
+using LogImport.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProcessM.NET.ConformanceChecking.Alignments;
 using ProcessM.NET.Discovery.HeuristicMiner;
@@ -26,8 +22,8 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(heuristicCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = heuristicCsvActivity;
+            elog.CaseId = heuristicCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             var tNet = AlignmentUtils.MakePNetFromTrace(wlog.WorkflowTraces[23]);
             var pNet = CNetUtils.ConvertCNetToPetriNet(HeuristicMiner.MineCNet(wlog));
@@ -48,8 +44,8 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(hardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = hardCsvActivity;
+            elog.CaseId = hardCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             var tNet = AlignmentUtils.MakePNetFromTrace(wlog.WorkflowTraces[23]);
             var pNet = CNetUtils.ConvertCNetToPetriNet(HeuristicMiner.MineCNet(wlog));
@@ -78,9 +74,9 @@ namespace ProcessM.NETtests
 
             List<ITransition> transitions = new List<ITransition>();
             List<IPlace> places = new List<IPlace>();
-            for(int i = 1; i < 13; i++)
+            for (int i = 1; i < 13; i++)
                 places.Add(new Place("p" + i));
-            
+
             transitions.Add(new Transition("t1", "register"));
             transitions[^1].InputPlaces.Add(places[0]);
             transitions[^1].OutputPlaces.Add(places[1]);
@@ -135,7 +131,7 @@ namespace ProcessM.NETtests
             // Assert
             Assert.AreEqual(syncNet.Places.Count, pNet.Places.Count + tNet.Places.Count);
             Assert.AreEqual(pNet.Transitions.Count + 2 * tNet.Transitions.Count, syncNet.Transitions.Count);
-            Assert.IsTrue(syncNet.EndPlaces.SetEquals(new HashSet<IPlace> {tNet.EndPlace, pNet.EndPlace}));
+            Assert.IsTrue(syncNet.EndPlaces.SetEquals(new HashSet<IPlace> { tNet.EndPlace, pNet.EndPlace }));
             Assert.IsTrue(syncNet.StartPlaces.SetEquals(new HashSet<IPlace> { tNet.StartPlace, pNet.StartPlace }));
         }
     }

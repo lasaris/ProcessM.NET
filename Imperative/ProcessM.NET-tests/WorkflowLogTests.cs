@@ -1,22 +1,15 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using LogImport.Exceptions;
+using LogImport.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProcessM.NET.Import;
-using ProcessM.NET.Model;
 using ProcessM.NET.Model.DataAnalysis;
-using System;
 using System.IO;
 
 namespace ProcessM.NETtests
 {
     [TestClass]
-    public class WorkflowLogTests
+    public class WorkflowLogTests : TestBase
     {
-        static readonly string workingDirectory = Environment.CurrentDirectory;
-        static readonly string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
-
-        static readonly string separator = System.IO.Path.DirectorySeparatorChar.ToString();
-        readonly string easyCsv = projectDirectory + separator + "Files" + separator + "alpha2.csv";
-        readonly string timestampedCsv = projectDirectory + separator + "Files" + separator + "alpha3.csv";
-
         [TestMethod]
         public void ImportedEventLogSetInvalidValuesTest()
         {
@@ -25,11 +18,9 @@ namespace ProcessM.NETtests
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
 
             // Act and assert
-            Assert.IsFalse(elog.SetActivity("thisIsNotValidActivity"));
-            Assert.IsFalse(elog.SetCaseId("thisIsNotValidCaseId"));
-            Assert.IsFalse(elog.SetTimestamp("thisIsNotValidTimestamp"));
-            Assert.IsNull(elog.Activity);
-            Assert.IsNull(elog.CaseId);
+            Assert.ThrowsException<IncorrectIndexException>(() => elog.Activity = 4);
+            Assert.ThrowsException<IncorrectIndexException>(() => elog.CaseId = 4);
+            Assert.ThrowsException<IncorrectIndexException>(() => elog.Timestamp = 4);
             Assert.IsNull(elog.Timestamp);
         }
 
@@ -39,8 +30,8 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(easyCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = easyCsvActivity;
+            elog.CaseId = easyCsvCaseId;
 
             // Act
             WorkflowLog wlog = new WorkflowLog(elog);
@@ -62,9 +53,9 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(timestampedCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
-            elog.SetTimestamp("time");
+            elog.Activity = timestampedCsvActivity;
+            elog.CaseId = timestampedCsvCaseId;
+            elog.Timestamp = timestampedCsvTimestamp;
 
             // Act
             WorkflowLog wlog = new WorkflowLog(elog);

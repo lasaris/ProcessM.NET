@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using LogImport.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProcessM.NET.Discovery.HeuristicMiner;
 using ProcessM.NET.Import;
@@ -19,8 +20,8 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(heuristicCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = heuristicCsvActivity;
+            elog.CaseId = heuristicCsvActivity;
             WorkflowLog wlog = new WorkflowLog(elog);
             var successorMatrix = new SuccessorMatrix(wlog);
 
@@ -60,15 +61,17 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(heuristicCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = heuristicCsvActivity;
+            elog.CaseId = heuristicCsvActivity;
             WorkflowLog wlog = new WorkflowLog(elog);
             var successorMatrix = new SuccessorMatrix(wlog);
 
             // Act
             HeuristicMinerSettings settings = new HeuristicMinerSettings
             {
-                DependencyThreshold = 0.7, RelativeToBestThreshold = 0.15, L1LThreshold = 0.7
+                DependencyThreshold = 0.7,
+                RelativeToBestThreshold = 0.15,
+                L1LThreshold = 0.7
             };
             CNet causalNet = HeuristicMiner.MineCNet(wlog, settings);
 
@@ -109,8 +112,8 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(hardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = hardCsvActivity;
+            elog.CaseId = hardCsvActivity;
             WorkflowLog wlog = new WorkflowLog(elog);
 
             // Act
@@ -157,12 +160,12 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(hardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = hardCsvActivity;
+            elog.CaseId = hardCsvActivity;
             WorkflowLog wlog = new WorkflowLog(elog);
 
             // Act
-            HeuristicMinerSettings settings = new HeuristicMinerSettings {UseLongDistance = true};
+            HeuristicMinerSettings settings = new HeuristicMinerSettings { UseLongDistance = true };
             CNet causalNet = HeuristicMiner.MineCNet(wlog, settings);
 
             // Assert

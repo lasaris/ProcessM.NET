@@ -1,8 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using LogImport.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProcessM.NET.Import;
-using ProcessM.NET.Model;
 using ProcessM.NET.Model.DataAnalysis;
-using System;
 using System.IO;
 using System.Linq;
 
@@ -98,8 +97,8 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(heuristicCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = heuristicCsvActivity;
+            elog.CaseId = heuristicCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             var expectedSuccessor = MakeExpectedSuccessorMatrix();
 
@@ -110,7 +109,7 @@ namespace ProcessM.NETtests
             Assert.AreEqual(expectedSuccessor.GetLength(1), successorMatrix.Activities.Count);
             CollectionAssert.AreEqual(expectedSuccessor, successorMatrix.DirectMatrix);
             CollectionAssert.AreEqual(new int[5, 5], successorMatrix.L2LMatrix);
-            CollectionAssert.AreEqual(new int[] {40, 40, 21, 21, 17}, successorMatrix.ActivityOccurrences);
+            CollectionAssert.AreEqual(new int[] { 40, 40, 21, 21, 17 }, successorMatrix.ActivityOccurrences);
             Assert.AreEqual(1, successorMatrix.StartActivities.Count);
             Assert.AreEqual(1, successorMatrix.EndActivities.Count);
             Assert.AreEqual("a", successorMatrix.StartActivities.First());
@@ -123,8 +122,8 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(hardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = hardCsvActivity;
+            elog.CaseId = hardCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             var expectedSuccessor = MakeExpectedHardSuccessorMatrix();
             var expectedL2L = MakeExpectedHardL2LMatrix();
@@ -136,7 +135,7 @@ namespace ProcessM.NETtests
             Assert.AreEqual(expectedSuccessor.GetLength(0), successorMatrix.Activities.Count);
             CollectionAssert.AreEqual(expectedSuccessor, successorMatrix.DirectMatrix);
             CollectionAssert.AreEqual(expectedL2L, successorMatrix.L2LMatrix);
-            CollectionAssert.AreEqual(new int[]{129, 130, 130, 57, 100, 57, 100, 43, 43}, successorMatrix.ActivityOccurrences);
+            CollectionAssert.AreEqual(new int[] { 129, 130, 130, 57, 100, 57, 100, 43, 43 }, successorMatrix.ActivityOccurrences);
             CollectionAssert.AreEqual(expectedLong, successorMatrix.LongDistanceMatrix);
             Assert.AreEqual(1, successorMatrix.StartActivities.Count);
             Assert.AreEqual(1, successorMatrix.EndActivities.Count);

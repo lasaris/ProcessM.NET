@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using LogImport.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProcessM.NET.Export;
 using ProcessM.NET.Import;
 using ProcessM.NET.Model;
@@ -11,14 +12,8 @@ using System.Text;
 namespace ProcessM.NETtests
 {
     [TestClass]
-    public class ImportAndExportTests
+    public class ImportAndExportTests : TestBase
     {
-        static readonly string workingDirectory = Environment.CurrentDirectory;
-        static readonly string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
-
-        static readonly string separator = System.IO.Path.DirectorySeparatorChar.ToString();
-        readonly string CSVPath = projectDirectory + separator + "Files" + separator + "alpha2.csv";
-        readonly string CSVPathSemicolon = projectDirectory + separator + "Files" + separator + "alpha1.csv";
         readonly string PNMLpath = projectDirectory + separator + "Files" + separator + "easynet.xml";
 
         private IPetriNet MakeEasyPetriNet()
@@ -54,7 +49,7 @@ namespace ProcessM.NETtests
         {
             // Arrange
             ImportedEventLog importedEventLog;
-            using FileStream fs = File.Open(CSVPath, FileMode.Open);
+            using FileStream fs = File.Open(easyCsv, FileMode.Open);
 
             // Act
             importedEventLog = CSVImport.MakeDataFrame(fs);
@@ -68,43 +63,14 @@ namespace ProcessM.NETtests
         {
             // Arrange
             ImportedEventLog importedEventLog;
-            using FileStream fs = File.Open(CSVPath, FileMode.Open);
+            using FileStream fs = File.Open(easyCsv, FileMode.Open);
 
             // Act
             importedEventLog = CSVImport.MakeDataFrame(fs, hasHeaders: false);
 
             // Assert
             Assert.IsNotNull(importedEventLog);
-            Assert.AreEqual(importedEventLog.Contents.GetRow<string>(0).GetAt(0), "id");
-        }
-
-        [TestMethod]
-        public void CSVImportValidDefinedCultureTest()
-        {
-            // Arrange
-            ImportedEventLog importedEventLog;
-            using FileStream fs = File.Open(CSVPath, FileMode.Open);
-
-            // Act
-            importedEventLog = CSVImport.MakeDataFrame(fs, culture: "en-US");
-
-            // Assert
-            Assert.IsNotNull(importedEventLog);
-        }
-
-        [TestMethod]
-        public void CSVImportValidNoInferenceTest()
-        {
-            // Arrange
-            ImportedEventLog importedEventLog;
-            using FileStream fs = File.Open(CSVPath, FileMode.Open);
-
-            // Act
-            importedEventLog = CSVImport.MakeDataFrame(fs, inferTypes: false);
-
-            // Assert
-            Assert.IsNotNull(importedEventLog);
-            Assert.AreEqual(importedEventLog.Contents.GetRow<string>(0).GetAt(0), "1");
+            Assert.AreEqual(importedEventLog.GetNthColumn(0)[0], "id");
         }
 
         [TestMethod]
@@ -112,29 +78,15 @@ namespace ProcessM.NETtests
         {
             // Arrange
             ImportedEventLog importedEventLog;
-            using FileStream fs = File.Open(CSVPathSemicolon, FileMode.Open);
+            using FileStream fs = File.Open(semicolonCsv, FileMode.Open);
 
             // Act
-            importedEventLog = CSVImport.MakeDataFrame(fs, separatorsString: ";");
+            importedEventLog = CSVImport.MakeDataFrame(fs);
 
             // Assert
             Assert.IsNotNull(importedEventLog);
         }
 
-        [TestMethod]
-        public void CSVImportValidLimitedRowsTest()
-        {
-            // Arrange
-            ImportedEventLog importedEventLog;
-            using FileStream fs = File.Open(CSVPath, FileMode.Open);
-
-            // Act
-            importedEventLog = CSVImport.MakeDataFrame(fs, maxRows: 2);
-
-            // Assert
-            Assert.IsNotNull(importedEventLog);
-            Assert.AreEqual(importedEventLog.Contents.RowCount, 2);
-        }
 
         [TestCategory("PNMLImport/Export tests")]
         [TestMethod]
@@ -161,9 +113,9 @@ namespace ProcessM.NETtests
             }
             foreach (ITransition t in loadedNet.Transitions)
             {
-                Assert.IsTrue(exampleNet.Transitions.Exists(a => a.Id == t.Id && 
-                a.Activity == t.Activity && 
-                a.InputPlaces.Count == t.InputPlaces.Count && 
+                Assert.IsTrue(exampleNet.Transitions.Exists(a => a.Id == t.Id &&
+                a.Activity == t.Activity &&
+                a.InputPlaces.Count == t.InputPlaces.Count &&
                 a.OutputPlaces.Count == t.OutputPlaces.Count));
             }
         }

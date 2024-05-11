@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using LogImport.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProcessM.NET.ConformanceChecking.CausalFootprint;
 using ProcessM.NET.Discovery.Alpha;
 using ProcessM.NET.Import;
@@ -12,25 +13,17 @@ using System.Text;
 namespace ProcessM.NETtests
 {
     [TestClass]
-    public class PetriNetAnalyzerTests
+    public class PetriNetAnalyzerTests : TestBase
     {
-        static readonly string workingDirectory = Environment.CurrentDirectory;
-        static readonly string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
-
-        static readonly string separator = System.IO.Path.DirectorySeparatorChar.ToString();
-        readonly string hardCsv = projectDirectory + separator + "Files" + separator + "alpha.csv";
-        readonly string easyCsv = projectDirectory + separator + "Files" + separator + "alpha2.csv";
         readonly string extremelyEasyCsv = projectDirectory + separator + "Files" + separator + "easyalpha.csv";
-        readonly string veryHardCsv = projectDirectory + separator + "Files" + separator + "alphaHard.csv";
-        readonly string cycleNetCsv = projectDirectory + separator + "Files" + separator + "cycleNet.csv";
         readonly string cycleNetCorrectPnml = projectDirectory + separator + "Files" + separator + "cycleNetCorrect.xml";
 
         private RelationMatrix MakeExtremelyEasyRelationMatrix()
         {
             using FileStream fs = File.Open(extremelyEasyCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = extremelyEasyCsvActivity;
+            elog.CaseId = extremelyEasyCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             return new RelationMatrix(wlog);
         }
@@ -39,8 +32,8 @@ namespace ProcessM.NETtests
         {
             using FileStream fs = File.Open(easyCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = easyCsvActivity;
+            elog.CaseId = easyCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             return new RelationMatrix(wlog);
         }
@@ -49,8 +42,8 @@ namespace ProcessM.NETtests
         {
             using FileStream fs = File.Open(hardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = hardCsvActivity;
+            elog.CaseId = hardCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             return new RelationMatrix(wlog);
         }
@@ -59,8 +52,8 @@ namespace ProcessM.NETtests
         {
             using FileStream fs = File.Open(veryHardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = veryHardCsvActivity;
+            elog.CaseId = veryHardCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             return new RelationMatrix(wlog);
         }
@@ -132,7 +125,7 @@ namespace ProcessM.NETtests
 
             // Assert
             Assert.AreEqual(4, matrix.Activities.Count);
-            foreach(string act in matrix.Activities)
+            foreach (string act in matrix.Activities)
             {
                 Assert.IsTrue(originalMatrix.Activities.Contains(act));
             }

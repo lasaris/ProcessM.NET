@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using LogImport.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProcessM.NET.Discovery.HeuristicMiner;
 using ProcessM.NET.Import;
@@ -22,8 +23,8 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(heuristicCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = heuristicCsvActivity;
+            elog.CaseId = heuristicCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             CNet causalNet = new CNet(wlog, new HeuristicMinerSettings());
 
@@ -45,8 +46,8 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(hardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = hardCsvActivity;
+            elog.CaseId = hardCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             CNet causalNet = HeuristicMiner.MineCNet(wlog);
 
@@ -68,13 +69,13 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(hardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = hardCsvActivity;
+            elog.CaseId = hardCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             CNet causalNet = new CNet(wlog, new HeuristicMinerSettings());
 
             // Act
-            PetriNet petriNet = HeuristicMiner.MinePetriNet(wlog, new HeuristicMinerSettings{UseLongDistance = true});
+            PetriNet petriNet = HeuristicMiner.MinePetriNet(wlog, new HeuristicMinerSettings { UseLongDistance = true });
 
             // Assert
             Assert.AreEqual("p0", petriNet.StartPlace.Id);
