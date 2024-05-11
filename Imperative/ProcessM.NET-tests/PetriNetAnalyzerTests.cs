@@ -15,7 +15,6 @@ namespace ProcessM.NETtests
     [TestClass]
     public class PetriNetAnalyzerTests : TestBase
     {
-        readonly string extremelyEasyCsv = projectDirectory + separator + "Files" + separator + "easyalpha.csv";
         readonly string cycleNetCorrectPnml = projectDirectory + separator + "Files" + separator + "cycleNetCorrect.xml";
 
         private RelationMatrix MakeExtremelyEasyRelationMatrix()

@@ -24,7 +24,7 @@ namespace DeclarativePM.UI.Pages
         public List<string> activities = new();
         public Event CurrentTraceEvent;
         public bool seeActivities;
-        private MatChip selectedChip;
+        private readonly MatChip selectedChip;
         public TraceDTO SelectedTrace;
         private bool showResults;
         public List<TraceDTO> Traces = new();
@@ -34,7 +34,7 @@ namespace DeclarativePM.UI.Pages
         public async Task AddCases()
         {
             var result = await MatDialogService.AskAsync("Would you like to:",
-                new[] {"Create new trace", "Import traces from log", "Close"});
+                new[] { "Create new trace", "Import traces from log", "Close" });
             if (result == "Close") return;
 
             if (result == "Create new trace")
@@ -149,7 +149,7 @@ namespace DeclarativePM.UI.Pages
             if (e is null)
                 CurrentTraceEvent = new Event(activities?.FirstOrDefault() ?? "", SelectedTrace.Case);
             else
-                CurrentTraceEvent = (Event) e;
+                CurrentTraceEvent = (Event)e;
             StateHasChanged();
         }
 
