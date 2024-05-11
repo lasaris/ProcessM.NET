@@ -24,7 +24,6 @@ namespace DeclarativePM.UI.Pages
         public List<string> activities = new();
         public Event CurrentTraceEvent;
         public bool seeActivities;
-        private readonly MatChip selectedChip;
         public TraceDTO SelectedTrace;
         private bool showResults;
         public List<TraceDTO> Traces = new();

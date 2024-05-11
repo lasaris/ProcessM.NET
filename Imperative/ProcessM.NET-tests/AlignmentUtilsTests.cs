@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using LogImport.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProcessM.NET.ConformanceChecking.Alignments;
-using ProcessM.NET.Discovery.Alpha;
 using ProcessM.NET.Discovery.HeuristicMiner;
 using ProcessM.NET.Import;
-using ProcessM.NET.Model;
 using ProcessM.NET.Model.BasicPetriNet;
 using ProcessM.NET.Model.CausalNet;
 using ProcessM.NET.Model.DataAnalysis;
 
 namespace ProcessM.NETtests
 {
-
 
     [TestClass]
     public class AlignmentUtilsTests : TestBase

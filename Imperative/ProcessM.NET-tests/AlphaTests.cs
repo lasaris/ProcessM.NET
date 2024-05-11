@@ -1,14 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProcessM.NET.Discovery.Alpha;
-using ProcessM.NET.Export;
 using ProcessM.NET.Import;
-using ProcessM.NET;
 using ProcessM.NET.Model.BasicPetriNet;
 using ProcessM.NET.Model.DataAnalysis;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using ProcessM.NET.Model;
 using LogImport.Models;
 

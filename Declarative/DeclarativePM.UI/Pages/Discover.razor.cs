@@ -19,7 +19,6 @@ namespace DeclarativePM.UI.Pages
         private EventLog _selectedLog;
 
         private List<TemplateDescription> _templateDescriptions;
-        private readonly bool abort = false;
         private bool configureTemplates;
 
         private MatChip[] selectedTemplates;

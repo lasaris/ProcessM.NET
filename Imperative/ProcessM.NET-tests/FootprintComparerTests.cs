@@ -1,5 +1,4 @@
-﻿using LogImport.Models;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProcessM.NET.ConformanceChecking.CausalFootprint;
 using ProcessM.NET.Discovery.Alpha;
 using ProcessM.NET.Import;
@@ -8,7 +7,6 @@ using ProcessM.NET.Model.DataAnalysis;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace ProcessM.NETtests
 {

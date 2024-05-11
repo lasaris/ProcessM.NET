@@ -4,7 +4,6 @@ using ProcessM.NET.Export;
 using ProcessM.NET.Import;
 using ProcessM.NET.Model;
 using ProcessM.NET.Model.BasicPetriNet;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
