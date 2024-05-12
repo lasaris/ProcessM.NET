@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using LogImport.Models;
 
@@ -145,6 +146,24 @@ namespace ProcessM.NET.Model.DataAnalysis
 
             return dictionary.Select(x => new Tuple<WorkflowTrace, int>(x.Key, x.Value)).ToList();
         }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("These are the workflow traces:");
+            foreach (var wft in this.WorkflowTraces)
+            {
+                sb.Append($"Case id: {wft.CaseId} - ");
+                foreach (var activity in wft.Activities)
+                {
+                    sb.Append($"{activity}, ");
+                }
+                sb.Append("\n");
+            }
+
+            return sb.ToString();
+        }
+
 
     }
 }

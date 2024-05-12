@@ -17,10 +17,10 @@ namespace ProcessM.NETtests
         public void CompareLogWithAccordingPetriNetTest()
         {
             // Arrange
-            using FileStream fs = File.Open(hardCsv, FileMode.Open);
+            using FileStream fs = File.Open(alphaCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.Activity = hardCsvActivity;
-            elog.CaseId = hardCsvCaseId;
+            elog.Activity = alphaCsvActivity;
+            elog.CaseId = alphaCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             RelationMatrix matrix = new RelationMatrix(wlog);
             IPetriNet madeNet = Alpha.MakePetriNet(matrix);
@@ -36,10 +36,10 @@ namespace ProcessM.NETtests
         public void CompareMildlyTamperedLogWithHardPetriNetTest()
         {
             // Arrange
-            using FileStream hardFs = File.Open(hardCsv, FileMode.Open);
+            using FileStream hardFs = File.Open(alphaCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(hardFs);
-            elog.Activity = hardCsvActivity;
-            elog.CaseId = hardCsvCaseId;
+            elog.Activity = alphaCsvActivity;
+            elog.CaseId = alphaCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             RelationMatrix matrix = new RelationMatrix(wlog);
             IPetriNet madeNet = Alpha.MakePetriNet(matrix);
@@ -60,10 +60,10 @@ namespace ProcessM.NETtests
         public void CompareCompletelyDifferentLogWithHardPetriNetTest()
         {
             // Arrange
-            using FileStream fs = File.Open(hardCsv, FileMode.Open);
+            using FileStream fs = File.Open(alphaCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.Activity = hardCsvActivity;
-            elog.CaseId = hardCsvCaseId;
+            elog.Activity = alphaCsvActivity;
+            elog.CaseId = alphaCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             RelationMatrix matrix = new RelationMatrix(wlog);
             IPetriNet madeNet = Alpha.MakePetriNet(matrix);

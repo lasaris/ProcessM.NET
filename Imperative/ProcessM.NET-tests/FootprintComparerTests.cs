@@ -11,26 +11,15 @@ using System.IO;
 namespace ProcessM.NETtests
 {
     [TestClass]
-    public class FootprintComparerTests
+    public class FootprintComparerTests : TestBase
     {
-        static readonly string workingDirectory = Environment.CurrentDirectory;
-        static readonly string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
-
-        static readonly string separator = System.IO.Path.DirectorySeparatorChar.ToString();
-        readonly string hardCsv = projectDirectory + separator + "Files" + separator + "alpha.csv";
-        readonly string easyCsv = projectDirectory + separator + "Files" + separator + "alpha2.csv";
-
-        readonly int easyCsvCaseIdCol = 0;
-        readonly int easyCsvActivityCol = 1;
-        readonly int hardCsvCaseIdCol = 0;
-        readonly int hardCsvActivityCol = 1;
 
         private RelationMatrix MakeEasyRelationMatrix()
         {
             using FileStream fs = File.Open(easyCsv, FileMode.Open);
             var elog = CSVImport.MakeDataFrame(fs);
-            elog.Activity = easyCsvActivityCol;
-            elog.CaseId = easyCsvCaseIdCol;
+            elog.Activity = easyCsvActivity;
+            elog.CaseId = easyCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             return new RelationMatrix(wlog);
         }
@@ -56,10 +45,10 @@ namespace ProcessM.NETtests
 
         private RelationMatrix MakeHardRelationMatrix()
         {
-            using FileStream fs = File.Open(hardCsv, FileMode.Open);
+            using FileStream fs = File.Open(alphaCsv, FileMode.Open);
             var elog = CSVImport.MakeDataFrame(fs);
-            elog.Activity = hardCsvActivityCol;
-            elog.CaseId = hardCsvCaseIdCol;
+            elog.Activity = alphaCsvActivity;
+            elog.CaseId = alphaCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             return new RelationMatrix(wlog);
         }

@@ -79,7 +79,7 @@ namespace ProcessM.NETtests
         public void MakeHardPetriNetTest()
         {
             // Arrange
-            using FileStream hardCsvFs = File.Open(hardCsv, FileMode.Open);
+            using FileStream hardCsvFs = File.Open(alphaCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsvFs);
             elog.Activity = hardCsvActivity;
             elog.CaseId = hardCsvCaseId;

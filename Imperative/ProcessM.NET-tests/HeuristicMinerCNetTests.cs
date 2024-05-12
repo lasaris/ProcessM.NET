@@ -60,7 +60,7 @@ namespace ProcessM.NETtests
             using FileStream fs = File.Open(heuristicCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.Activity = heuristicCsvActivity;
-            elog.CaseId = heuristicCsvActivity;
+            elog.CaseId = heuristicCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             var successorMatrix = new SuccessorMatrix(wlog);
 
@@ -111,7 +111,7 @@ namespace ProcessM.NETtests
             using FileStream fs = File.Open(hardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.Activity = hardCsvActivity;
-            elog.CaseId = hardCsvActivity;
+            elog.CaseId = hardCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
 
             // Act
@@ -159,7 +159,7 @@ namespace ProcessM.NETtests
             using FileStream fs = File.Open(hardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
             elog.Activity = hardCsvActivity;
-            elog.CaseId = hardCsvActivity;
+            elog.CaseId = hardCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
 
             // Act

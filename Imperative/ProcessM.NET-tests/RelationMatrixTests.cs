@@ -93,10 +93,10 @@ namespace ProcessM.NETtests
         public void MakeRelationMatrixFromHardEventLogTest()
         {
             // Arrange
-            using FileStream fs = File.Open(hardCsv, FileMode.Open);
+            using FileStream fs = File.Open(alphaCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.Activity = hardCsvActivity;
-            elog.CaseId = hardCsvCaseId;
+            elog.Activity = alphaCsvActivity;
+            elog.CaseId = alphaCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             List<string> exampleActivities = new List<string>() { "a", "b", "c", "d", "e", "g", "f" };
             Relation[,] exampleFootprint = MakeHardRelationMatrix();

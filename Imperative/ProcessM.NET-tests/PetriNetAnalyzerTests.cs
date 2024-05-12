@@ -37,10 +37,10 @@ namespace ProcessM.NETtests
 
         private RelationMatrix MakeHardRelationMatrix()
         {
-            using FileStream fs = File.Open(hardCsv, FileMode.Open);
+            using FileStream fs = File.Open(alphaCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.Activity = hardCsvActivity;
-            elog.CaseId = hardCsvCaseId;
+            elog.Activity = alphaCsvActivity;
+            elog.CaseId = alphaCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             return new RelationMatrix(wlog);
         }
@@ -173,15 +173,12 @@ namespace ProcessM.NETtests
 
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void AnalyzeHardPetriNetTest()
         {
             // Arrange
-            System.Console.WriteLine("1");
             RelationMatrix originalMatrix = MakeHardRelationMatrix();
-            System.Console.WriteLine("2");
             IPetriNet originalNet = MakeHardPetriNet();
-            System.Console.WriteLine("3");
 
             // Act
             RelationMatrix matrix = PetriNetAnalyzer.MakeRelationMatrix(originalNet);
@@ -207,7 +204,7 @@ namespace ProcessM.NETtests
             }
         }
 
-        [TestMethod]
+        [TestMethod, Timeout(1000)]
         public void AnalyzeVeryHardPetriNetTest()
         {
             // Arrange

@@ -20,8 +20,12 @@ namespace ProcessM.NETtests
         public static readonly int extremelyEasyCsvActivity = 1;
         public static readonly int extremelyEasyCsvCaseId = 0;
 
-        // Easy CSV
+        // Alpha CSV
+        public static readonly string alphaCsv = projectDirectory + separator + "Files" + separator + "alpha.csv";
+        public static readonly int alphaCsvActivity = 1;
+        public static readonly int alphaCsvCaseId = 0;
 
+        // Easy CSV
         public static readonly string easyCsv = projectDirectory + separator + "Files" + separator + "alpha2.csv";
         public static readonly int easyCsvActivity = 1;
         public static readonly int easyCsvCaseId = 0;
@@ -61,8 +65,6 @@ namespace ProcessM.NETtests
         public static readonly int timestampedCsvCaseId = 0;
         public static readonly int timestampedCsvActivity = 1;
         public static readonly int timestampedCsvTimestamp = 2;
-
-
 
         public static readonly string veryHardPnml = projectDirectory + separator + "Files" + separator + "hardPetriNet.xml";
         public static readonly string hardPnml = projectDirectory + separator + "Files" + separator + "net.xml";
