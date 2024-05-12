@@ -76,14 +76,6 @@ namespace ProcessM.NET.Model.DataAnalysis
 
             FindSuccession(log.WorkflowTraces);
             UpdateRelations();
-            for (int i = 0; i < Activities.Count; i++)
-            {
-                for (int j = 0; j < Activities.Count; j++)
-                {
-                    System.Console.Write(Footprint[i, j] + " ");
-                }
-                System.Console.WriteLine();
-            }
         }
     }
 }

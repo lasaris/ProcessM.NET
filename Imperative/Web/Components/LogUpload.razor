@@ -72,9 +72,7 @@
 
     private async void UploadLog()
     {
-        Console.WriteLine("Starting the Log upload (creating a workflow log)");
         var workflowLog = new WorkflowLog(_importedLog);
-        Console.WriteLine("Finished creating a workflow log");
 
         var logFile = new EventLogFile()
             {
