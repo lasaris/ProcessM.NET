@@ -35,6 +35,14 @@ window.InitGraph = (element, csharpObjectRef) => {
             });
 
             rebuildContextMenu();
+            
+            // Adjust the viewBox of the rendered SVG to match the size of the element
+            const svg = element.querySelector('svg');
+            if (svg) {
+                svg.setAttribute('width', '100%');
+                svg.setAttribute('height', '100%');
+            }
+            
         });
 };
 
