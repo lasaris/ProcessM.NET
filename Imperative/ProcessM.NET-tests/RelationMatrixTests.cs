@@ -1,23 +1,16 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using LogImport.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProcessM.NET.Import;
-using ProcessM.NET.Model;
 using ProcessM.NET.Model.DataAnalysis;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace ProcessM.NETtests
 {
     [TestClass]
-    public class RelationMatrixTests
+    public class RelationMatrixTests : TestBase
     {
-        static readonly string workingDirectory = Environment.CurrentDirectory;
-        static readonly string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
-
-        static readonly string separator = System.IO.Path.DirectorySeparatorChar.ToString();
-        readonly string hardCsv = projectDirectory + separator + "Files" + separator + "alpha.csv";
-        readonly string easyCsv = projectDirectory + separator + "Files" + separator + "alpha2.csv";
 
         private Relation[,] MakeEasyRelationMatrix()
         {
@@ -66,8 +59,8 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(easyCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = easyCsvActivity;
+            elog.CaseId = easyCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             List<string> exampleActivities = new List<string>() { "a", "b", "c", "d" };
             Relation[,] exampleFootprint = MakeEasyRelationMatrix();
@@ -100,10 +93,10 @@ namespace ProcessM.NETtests
         public void MakeRelationMatrixFromHardEventLogTest()
         {
             // Arrange
-            using FileStream fs = File.Open(hardCsv, FileMode.Open);
+            using FileStream fs = File.Open(alphaCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = alphaCsvActivity;
+            elog.CaseId = alphaCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             List<string> exampleActivities = new List<string>() { "a", "b", "c", "d", "e", "g", "f" };
             Relation[,] exampleFootprint = MakeHardRelationMatrix();

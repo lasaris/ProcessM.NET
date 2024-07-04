@@ -19,7 +19,6 @@ namespace DeclarativePM.UI.Pages
         private EventLog _selectedLog;
 
         private List<TemplateDescription> _templateDescriptions;
-        private bool abort = false;
         private bool configureTemplates;
 
         private MatChip[] selectedTemplates;
@@ -103,7 +102,7 @@ namespace DeclarativePM.UI.Pages
             if (!isNew)
                 templates = templates
                     .Where(x => selectedTemplates
-                        .Any(y => x.TemplateDescription.TemplateType == (TemplateInstanceType) y.Value))
+                        .Any(y => x.TemplateDescription.TemplateType == (TemplateInstanceType)y.Value))
                     .ToList();
 
             foreach (var tit in selectedTemplates.Select(x => x.Value).Cast<TemplateInstanceType>())

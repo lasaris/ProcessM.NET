@@ -61,7 +61,7 @@ namespace ProcessM.NET.Model.DataAnalysis
         /// <param name="startActivities">A set of activities which can appear at the beginning of traces.</param>
         /// <param name="endActivities">A set of activities which can appear at the end of traces.</param>
         public RelationMatrix(List<string> activities, HashSet<string> startActivities, HashSet<string> endActivities)
-            :base(activities, startActivities, endActivities)
+            : base(activities, startActivities, endActivities)
         {
             Footprint = new Relation[activities.Count, activities.Count];
         }

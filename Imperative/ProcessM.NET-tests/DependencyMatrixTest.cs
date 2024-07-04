@@ -1,9 +1,8 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using LogImport.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProcessM.NET.Discovery.HeuristicMiner;
 using ProcessM.NET.Import;
-using ProcessM.NET.Model;
 using ProcessM.NET.Model.DataAnalysis;
 
 namespace ProcessM.NETtests
@@ -17,8 +16,8 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(heuristicCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = heuristicCsvActivity;
+            elog.CaseId = heuristicCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             SuccessorMatrix successorMatrix = new SuccessorMatrix(wlog);
 
@@ -27,7 +26,7 @@ namespace ProcessM.NETtests
 
             // Assert
             Assert.AreEqual(successorMatrix.Activities.Count, dependencyMatrix.L1LDependencyMatrix.Length);
-            for(int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++)
                 Assert.IsTrue(dependencyMatrix.L1LDependencyMatrix[i] == 0);
             //1 self loop with dependency 0.8
             Assert.IsTrue(dependencyMatrix.L1LDependencyMatrix[4] == 0.8);
@@ -44,8 +43,8 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(hardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = hardCsvActivity;
+            elog.CaseId = hardCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             SuccessorMatrix successorMatrix = new SuccessorMatrix(wlog);
 

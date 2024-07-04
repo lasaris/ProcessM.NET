@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using LogImport.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProcessM.NET.Discovery.HeuristicMiner;
 using ProcessM.NET.Import;
-using ProcessM.NET.Model;
 using ProcessM.NET.Model.DataAnalysis;
 
 namespace ProcessM.NETtests
@@ -19,8 +18,8 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(heuristicCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = heuristicCsvActivity;
+            elog.CaseId = heuristicCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             var successorMatrix = new SuccessorMatrix(wlog);
 
@@ -39,7 +38,7 @@ namespace ProcessM.NETtests
             //NO OUTPUT FOR END ACT
             Assert.IsTrue(dependencyGraph.OutputActivities[end].Count == 0);
             //ARCS CORRECT IN
-            Assert.IsTrue(dependencyGraph.InputActivities[1].SetEquals(new HashSet<int>{ 2, 3, 4 }));
+            Assert.IsTrue(dependencyGraph.InputActivities[1].SetEquals(new HashSet<int> { 2, 3, 4 }));
             Assert.IsTrue(dependencyGraph.InputActivities[2].SetEquals(new HashSet<int> { 0 }));
             Assert.IsTrue(dependencyGraph.InputActivities[3].SetEquals(new HashSet<int> { 0 }));
             Assert.IsTrue(dependencyGraph.InputActivities[4].SetEquals(new HashSet<int> { 0 }));
@@ -56,13 +55,13 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(heuristicCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = heuristicCsvActivity;
+            elog.CaseId = heuristicCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             var successorMatrix = new SuccessorMatrix(wlog);
 
             // Act
-            HeuristicMinerSettings settings = new HeuristicMinerSettings {L1LThreshold = 0.7};
+            HeuristicMinerSettings settings = new HeuristicMinerSettings { L1LThreshold = 0.7 };
             DependencyGraph dependencyGraph = new DependencyGraph(successorMatrix, settings);
 
             // Assert
@@ -81,13 +80,13 @@ namespace ProcessM.NETtests
             Assert.IsTrue(dependencyGraph.InputActivities[2].SetEquals(new HashSet<int> { 0 }));
             Assert.IsTrue(dependencyGraph.InputActivities[3].SetEquals(new HashSet<int> { 0 }));
             //SELF LOOP
-            Assert.IsTrue(dependencyGraph.InputActivities[4].SetEquals(new HashSet<int> { 0 , 4 }));
+            Assert.IsTrue(dependencyGraph.InputActivities[4].SetEquals(new HashSet<int> { 0, 4 }));
             //ARCS CORRECT OUT
             Assert.IsTrue(dependencyGraph.OutputActivities[0].SetEquals(new HashSet<int> { 2, 3, 4 }));
             Assert.IsTrue(dependencyGraph.OutputActivities[2].SetEquals(new HashSet<int> { 1 }));
             Assert.IsTrue(dependencyGraph.OutputActivities[3].SetEquals(new HashSet<int> { 1 }));
             //SELF LOOP
-            Assert.IsTrue(dependencyGraph.OutputActivities[4].SetEquals(new HashSet<int> { 1 , 4 }));
+            Assert.IsTrue(dependencyGraph.OutputActivities[4].SetEquals(new HashSet<int> { 1, 4 }));
         }
 
         [TestMethod]
@@ -96,8 +95,8 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(hardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = hardCsvActivity;
+            elog.CaseId = hardCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             var successorMatrix = new SuccessorMatrix(wlog);
 
@@ -142,13 +141,13 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(hardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = hardCsvActivity;
+            elog.CaseId = hardCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             var successorMatrix = new SuccessorMatrix(wlog);
 
             // Act
-            HeuristicMinerSettings settings = new HeuristicMinerSettings {UseLongDistance = true};
+            HeuristicMinerSettings settings = new HeuristicMinerSettings { UseLongDistance = true };
             DependencyGraph dependencyGraph = new DependencyGraph(successorMatrix, settings);
 
             // Assert
@@ -190,13 +189,13 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(hardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = hardCsvActivity;
+            elog.CaseId = hardCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             var successorMatrix = new SuccessorMatrix(wlog);
 
             // Act
-            HeuristicMinerSettings settings = new HeuristicMinerSettings {L1LThreshold = 1};
+            HeuristicMinerSettings settings = new HeuristicMinerSettings { L1LThreshold = 1 };
             DependencyGraph dependencyGraph = new DependencyGraph(successorMatrix, settings);
 
             // Assert
@@ -236,13 +235,13 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(hardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = hardCsvActivity;
+            elog.CaseId = hardCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             var successorMatrix = new SuccessorMatrix(wlog);
 
             // Act
-            HeuristicMinerSettings settings = new HeuristicMinerSettings {L2LThreshold = 1};
+            HeuristicMinerSettings settings = new HeuristicMinerSettings { L2LThreshold = 1 };
             DependencyGraph dependencyGraph = new DependencyGraph(successorMatrix, settings);
 
             // Assert
@@ -284,15 +283,17 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(hardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = hardCsvActivity;
+            elog.CaseId = hardCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             var successorMatrix = new SuccessorMatrix(wlog);
 
             // Act
             HeuristicMinerSettings settings = new HeuristicMinerSettings
             {
-                L2LThreshold = 1, L1LThreshold = 1, AllTasksConnected = false
+                L2LThreshold = 1,
+                L1LThreshold = 1,
+                AllTasksConnected = false
             };
             DependencyGraph dependencyGraph = new DependencyGraph(successorMatrix, settings);
 
@@ -311,7 +312,7 @@ namespace ProcessM.NETtests
             //NO BACK ARC FROM C->B and A->A
             Assert.IsTrue(dependencyGraph.InputActivities[1].SetEquals(new HashSet<int> { 0 }));
             //NO ARC FROM B->C
-            Assert.IsTrue(dependencyGraph.InputActivities[2].SetEquals(new HashSet<int> {  }));
+            Assert.IsTrue(dependencyGraph.InputActivities[2].SetEquals(new HashSet<int> { }));
             Assert.IsTrue(dependencyGraph.InputActivities[3].SetEquals(new HashSet<int> { 2 }));
             Assert.IsTrue(dependencyGraph.InputActivities[4].SetEquals(new HashSet<int> { 3, 7 }));
             Assert.IsTrue(dependencyGraph.InputActivities[5].SetEquals(new HashSet<int> { 4 }));
@@ -322,7 +323,7 @@ namespace ProcessM.NETtests
             //NO ARC A->A
             Assert.IsTrue(dependencyGraph.OutputActivities[0].SetEquals(new HashSet<int> { 1 }));
             //NO ARC B->C
-            Assert.IsTrue(dependencyGraph.OutputActivities[1].SetEquals(new HashSet<int> {  }));
+            Assert.IsTrue(dependencyGraph.OutputActivities[1].SetEquals(new HashSet<int> { }));
             //NO BACK ARC FROM C->B
             Assert.IsTrue(dependencyGraph.OutputActivities[2].SetEquals(new HashSet<int> { 7, 3 }));
             Assert.IsTrue(dependencyGraph.OutputActivities[3].SetEquals(new HashSet<int> { 4 }));

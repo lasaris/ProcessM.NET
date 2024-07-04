@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
-using Deedle;
+using LogImport.Models;
 
 namespace ProcessM.NET.Model.DataAnalysis
 {
@@ -19,10 +20,10 @@ namespace ProcessM.NET.Model.DataAnalysis
         /// </summary>
         /// <param name="ids">A "Case ID" column from the data frame, representation of a loaded event log.</param>
         /// <returns>A list of empty workflow traces, one for each unique "Case ID" in given data.</returns>
-        private List<WorkflowTrace> MakeEmptyWfts(Deedle.Series<int, string> ids)
+        private List<WorkflowTrace> MakeEmptyWfts(List<string> ids)
         {
             List<WorkflowTrace> traces = new List<WorkflowTrace>();
-            HashSet<string> uniqueIds = new HashSet<string>(ids.Values);
+            HashSet<string> uniqueIds = new HashSet<string>(ids);
             foreach (var id in uniqueIds)
             {
                 traces.Add(new WorkflowTrace("" + id));
@@ -35,10 +36,10 @@ namespace ProcessM.NET.Model.DataAnalysis
         /// </summary>
         /// <param name="ids">A "Case ID" column from the data frame, representation of a loaded event log.</param>
         /// <returns>A list of empty timestamped workflow traces, one for each unique "Case ID" in given data.</returns>
-        private List<TimestampedWorkflowTrace> MakeEmptyTimestampedWfts(Deedle.Series<int, string> ids)
+        private List<TimestampedWorkflowTrace> MakeEmptyTimestampedWfts(List<string> ids)
         {
             List<TimestampedWorkflowTrace> traces = new List<TimestampedWorkflowTrace>();
-            HashSet<string> uniqueIds = new HashSet<string>(ids.Values);
+            HashSet<string> uniqueIds = new HashSet<string>(ids);
             foreach (var id in uniqueIds)
             {
                 traces.Add(new TimestampedWorkflowTrace("" + id));
@@ -51,21 +52,23 @@ namespace ProcessM.NET.Model.DataAnalysis
         /// </summary>
         /// <param name="importedData">Loaded data from an event log.</param>
         /// <returns>List of filled workflow traces.</returns>
-        private List<WorkflowTrace> MakeWftsBasedOnOrder(Model.ImportedEventLog importedData)
+        private List<WorkflowTrace> MakeWftsBasedOnOrder(ImportedEventLog importedData)
         {
-            List<WorkflowTrace> traces = MakeEmptyWfts(importedData.Contents.GetColumn<string>(importedData.CaseId));
+            List<WorkflowTrace> traces = MakeEmptyWfts(importedData.GetNthColumn(importedData.CaseId));
 
-            for (int i = 0; i < importedData.Contents.RowCount; i++)
+            foreach (var row in importedData.Rows)
             {
-                OptionalValue<Series<string, string>> row = importedData.Contents.TryGetRow<string>(i);
                 foreach (WorkflowTrace wft in traces)
                 {
-                    if (wft.CaseId == row.Value.Get(importedData.CaseId))
+                    var rowCaseId = row[importedData.CaseId];
+                    if (wft.CaseId == rowCaseId)
                     {
-                        wft.AddActivity(row.Value.Get(importedData.Activity));
+                        var rowActivity = row[importedData.Activity];
+                        wft.AddActivity(rowActivity);
                     }
                 }
             }
+
             return traces;
         }
 
@@ -75,19 +78,22 @@ namespace ProcessM.NET.Model.DataAnalysis
         /// </summary>
         /// <param name="importedData">Loaded data from an event log.</param>
         /// <returns>List of filled workflow traces.</returns>
-        private List<WorkflowTrace> MakeWftsBasedOnTimestamp(Model.ImportedEventLog importedData)
+        private List<WorkflowTrace> MakeWftsBasedOnTimestamp(ImportedEventLog importedData)
         {
-            List<TimestampedWorkflowTrace> traces = MakeEmptyTimestampedWfts(importedData.Contents.GetColumn<string>(importedData.CaseId));
+            List<TimestampedWorkflowTrace> traces = MakeEmptyTimestampedWfts(importedData.GetNthRow(importedData.CaseId));
 
-            for (int i = 0; i < importedData.Contents.RowCount; i++)
+            foreach (var row in importedData.Rows)
             {
-                OptionalValue<Series<string, string>> row = importedData.Contents.TryGetRow<string>(i);
                 foreach (TimestampedWorkflowTrace wft in traces)
                 {
-                    if (wft.CaseId == row.Value.Get(importedData.CaseId))
+                    var rowCaseId = row[importedData.CaseId];
+                    if (wft.CaseId == rowCaseId)
                     {
-                        var timestamp = DateTime.ParseExact(row.Value.Get(importedData.Timestamp), importedData.TimestampFormat, CultureInfo.CurrentCulture);
-                        wft.AddActivity(row.Value.Get(importedData.Activity), timestamp);
+                        var timeStampValue = row[importedData.Timestamp.Value];
+                        var timestamp = DateTime.ParseExact(timeStampValue, importedData.TimestampFormat, CultureInfo.CurrentCulture);
+
+                        var activity = row[importedData.Activity];
+                        wft.AddActivity(activity, timestamp);
                     }
                 }
             }
@@ -101,7 +107,7 @@ namespace ProcessM.NET.Model.DataAnalysis
             return outTraces;
         }
 
-        public WorkflowLog(Model.ImportedEventLog importedData)
+        public WorkflowLog(ImportedEventLog importedData)
         {
             if (importedData.Timestamp == null)
             {
@@ -111,6 +117,18 @@ namespace ProcessM.NET.Model.DataAnalysis
             {
                 WorkflowTraces = MakeWftsBasedOnTimestamp(importedData);
             }
+        }
+
+        public WorkflowLog(List<WorkflowTrace> workflowTraces)
+        {
+            WorkflowTraces = workflowTraces;
+        }
+
+        public WorkflowLog() { }
+
+        public WorkflowLog Clone()
+        {
+            return JsonSerializer.Deserialize<WorkflowLog>(JsonSerializer.Serialize(this));
         }
 
         public List<Tuple<WorkflowTrace, int>> GetTracesWithOccurrence()
@@ -128,17 +146,24 @@ namespace ProcessM.NET.Model.DataAnalysis
 
             return dictionary.Select(x => new Tuple<WorkflowTrace, int>(x.Key, x.Value)).ToList();
         }
-        
-        public WorkflowLog(List<WorkflowTrace> workflowTraces)
-        {
-            WorkflowTraces = workflowTraces;
-        }
-        
-        public WorkflowLog() {}
 
-        public WorkflowLog Clone()
+        public override string ToString()
         {
-            return  JsonSerializer.Deserialize<WorkflowLog>(JsonSerializer.Serialize(this));
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("These are the workflow traces:");
+            foreach (var wft in this.WorkflowTraces)
+            {
+                sb.Append($"Case id: {wft.CaseId} - ");
+                foreach (var activity in wft.Activities)
+                {
+                    sb.Append($"{activity}, ");
+                }
+                sb.Append("\n");
+            }
+
+            return sb.ToString();
         }
+
+
     }
 }

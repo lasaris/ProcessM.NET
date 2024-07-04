@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
+using LogImport.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProcessM.NET.ConformanceChecking.Alignments;
 using ProcessM.NET.Discovery.HeuristicMiner;
 using ProcessM.NET.Import;
-using ProcessM.NET.Model;
 using ProcessM.NET.Model.BasicPetriNet;
 using ProcessM.NET.Model.CausalNet;
 using ProcessM.NET.Model.DataAnalysis;
@@ -22,9 +18,9 @@ namespace ProcessM.NETtests
         {
             // Arrange
             using FileStream fs = File.Open(heuristicCsv, FileMode.Open);
-            ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            var elog = CSVImport.MakeDataFrame(fs);
+            elog.Activity = heuristicCsvActivity;
+            elog.CaseId = heuristicCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             PetriNet pNet = CNetUtils.ConvertCNetToPetriNet(HeuristicMiner.MineCNet(wlog));
 
@@ -47,8 +43,8 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(hardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = hardCsvActivity;
+            elog.CaseId = hardCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             PetriNet pNet = CNetUtils.ConvertCNetToPetriNet(HeuristicMiner.MineCNet(wlog));
 
@@ -68,10 +64,10 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(hardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = hardCsvActivity;
+            elog.CaseId = hardCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
-            PetriNet pNet = CNetUtils.ConvertCNetToPetriNet(HeuristicMiner.MineCNet(wlog, new HeuristicMinerSettings(){L2LThreshold = 1}));
+            PetriNet pNet = CNetUtils.ConvertCNetToPetriNet(HeuristicMiner.MineCNet(wlog, new HeuristicMinerSettings() { L2LThreshold = 1 }));
 
             // Act unfitting trace abcbcdfgi (deleted L2L loop B->C->B)
             var alignment = new AlignmentOnTrace(wlog.WorkflowTraces[61], pNet);
