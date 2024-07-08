@@ -1,0 +1,22 @@
+name: Frontend
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  format:
+    name: Check formatting
+    runs-on: ubuntu:latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install packages
+        run: npm ci
+      - name: Prettier
+        run: npm run format:check
+      - name: Lint
+        run: npm run lint
