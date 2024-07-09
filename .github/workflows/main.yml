@@ -11,7 +11,7 @@ on:
 jobs:
   format:
     name: Check formatting
-    runs-on: ubuntu:latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Install packages
