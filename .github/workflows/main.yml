@@ -10,13 +10,25 @@ on:
 
 jobs:
   format:
-    name: Check formatting
+    name: Prettier
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Install packages
         run: npm ci
+        working-directory: frontend
       - name: Prettier
         run: npm run format:check
+        working-directory: frontend
+      
+  lint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install packages
+        run: npm ci
+        working-directory: frontend
       - name: Lint
         run: npm run lint
+        working-directory: frontend
