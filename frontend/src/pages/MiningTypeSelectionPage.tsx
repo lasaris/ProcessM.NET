@@ -1,4 +1,5 @@
 import { MiningTypeCard } from '@/components/ui/MiningTypeCard';
+import { TargetURL } from '@/router';
 import React from 'react';
 
 const imperativeDescription =
@@ -12,7 +13,7 @@ export const MiningTypeSelectionPage: React.FC = () => {
             <MiningTypeCard
                 title="Imperative"
                 description={imperativeDescription}
-                targetUrl="imperative"
+                targetUrl={TargetURL.IMPERATIVE}
             />
             <MiningTypeCard
                 title="Declarative"
