@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 
 export const MainLayout: React.FC = () => {
     return (
-        <div className="flex justify-center items-center h-screen">
+        <div className="flex flex-col items-center justify-center h-screen overflow-y-auto">
             <Outlet />
         </div>
     );
