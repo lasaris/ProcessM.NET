@@ -1,3 +1,4 @@
+import { AddLogDialog } from '@/components/ui/AddLogDialog';
 import {
     Table,
     TableBody,
@@ -91,6 +92,7 @@ export const ImperativeLogs: React.FC = () => {
                     ))}
                 </TableBody>
             </Table>
+            <AddLogDialog />
         </div>
     );
 };
