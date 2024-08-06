@@ -3,6 +3,7 @@ import { LayoutWithNavbar } from './layout/LayoutWithNavbar';
 import { MainLayout } from './layout/MainLayout';
 import { HomePage } from './pages/HomePage';
 import { ImperativeLogs } from './pages/ImperativeLogs';
+import { ImperativeModels } from './pages/ImperativeModels';
 import { MiningTypeSelectionPage } from './pages/MiningTypeSelectionPage';
 
 export enum TargetURL {
@@ -38,7 +39,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: TargetURL.IMPERATIVE_MODELS,
-                element: <div>Imperative Models Page</div>,
+                element: <ImperativeModels />,
             },
             {
                 path: TargetURL.IMPERATIVE_MINE,
