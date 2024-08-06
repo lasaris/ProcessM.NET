@@ -12,7 +12,7 @@ export const MyNavLink: React.FC<MyNavLinkProps> = ({ targetUrl, title }) => {
         <NavLink
             to={targetUrl}
             className={({ isActive }) =>
-                'scroll-m-20 text-xl font-semibold tracking-tight hover:border-b-2 ' +
+                'scroll-m-20 mx-4 text-sm lg:text-xl font-semibold tracking-tight hover:border-b-2 ' +
                 (isActive ? 'border-b-2' : '')
             }
             end

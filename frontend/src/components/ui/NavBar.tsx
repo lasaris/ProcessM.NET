@@ -1,20 +1,67 @@
+import { NavLink } from '@/models/NavLink';
 import { TargetURL } from '@/router';
 import React from 'react';
 import { MyNavLink } from './MyNavLink';
+import {
+    NavigationMenu,
+    NavigationMenuContent,
+    NavigationMenuItem,
+    NavigationMenuTrigger,
+} from './navigation-menu';
 
 export const NavBar: React.FC = () => {
+    const links: NavLink[] = [
+        {
+            targetUrl: TargetURL.IMPERATIVE,
+            title: 'Logs',
+        },
+        {
+            targetUrl: TargetURL.IMPERATIVE_MODELS,
+            title: 'Models',
+        },
+        {
+            targetUrl: TargetURL.IMPERATIVE_MINE,
+            title: 'Mine',
+        },
+    ];
+
     return (
         <nav className="flex flex-row h-16 items-center justify-between gap-3 px-4 border-b">
             <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
                 ProcessM.NET
             </h2>
-            <div className="flex flex-row gap-8">
-                <MyNavLink targetUrl={TargetURL.IMPERATIVE} title="Logs" />
-                <MyNavLink
-                    targetUrl={TargetURL.IMPERATIVE_MODELS}
-                    title="Models"
-                />
-                <MyNavLink targetUrl={TargetURL.IMPERATIVE_MINE} title="Mine" />
+            <div>
+                <div className="hidden lg:block gap-8">
+                    {links.map((link) => {
+                        return (
+                            <MyNavLink
+                                key={link.title}
+                                targetUrl={link.targetUrl}
+                                title={link.title}
+                            />
+                        );
+                    })}
+                </div>
+                <NavigationMenu className="lg:hidden">
+                    <NavigationMenuItem>
+                        <NavigationMenuTrigger>Menu</NavigationMenuTrigger>
+                        <NavigationMenuContent>
+                            <ul>
+                                {links?.map((link) => (
+                                    <li
+                                        key={link.title}
+                                        className="ml-4 py-2 w-[100px] text-md font-semibold tracking-tight"
+                                    >
+                                        <MyNavLink
+                                            targetUrl={link.targetUrl}
+                                            title={link.title}
+                                        />
+                                    </li>
+                                ))}
+                            </ul>
+                        </NavigationMenuContent>
+                    </NavigationMenuItem>
+                </NavigationMenu>
             </div>
         </nav>
     );
