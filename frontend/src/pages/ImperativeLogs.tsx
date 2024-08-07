@@ -9,6 +9,8 @@ import {
 } from '@/components/ui/table';
 import { RightArrow } from '@/icons/RightArrow';
 import { ImperativeLog } from '@/models/ImperativeLog';
+import { TooltipWrapper } from '@/wrappers/TooltipWrapper';
+import { useNavigate } from 'react-router-dom';
 
 const logs: ImperativeLog[] = [
     {
@@ -32,6 +34,12 @@ const logs: ImperativeLog[] = [
 ];
 
 export const ImperativeLogs: React.FC = () => {
+    const navigate = useNavigate();
+
+    const mineLog = (name: string) => {
+        navigate(`/imperative/mine/${name}`);
+    };
+
     return (
         <div className="w-11/12 md:w-3/4">
             <Table>
@@ -48,9 +56,16 @@ export const ImperativeLogs: React.FC = () => {
                                 {log.name}
                             </TableCell>
                             <TableCell className="flex items-end justify-end">
-                                <div className="rounded-full bg-slate-400 w-8 h-8 flex items-center justify-center hover:shadow-lg hover:cursor-pointer">
-                                    <RightArrow />
-                                </div>
+                                <TooltipWrapper
+                                    tooltipTitle={`Mine ${log.name}`}
+                                >
+                                    <div
+                                        onClick={() => mineLog(log.name)}
+                                        className="rounded-full bg-slate-400 w-8 h-8 flex items-center justify-center hover:shadow-lg hover:cursor-pointer"
+                                    >
+                                        <RightArrow />
+                                    </div>
+                                </TooltipWrapper>
                             </TableCell>
                         </TableRow>
                     ))}

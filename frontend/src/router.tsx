@@ -3,16 +3,16 @@ import { LayoutWithNavbar } from './layout/LayoutWithNavbar';
 import { MainLayout } from './layout/MainLayout';
 import { HomePage } from './pages/HomePage';
 import { ImperativeLogs } from './pages/ImperativeLogs';
+import { ImperativeMinePage } from './pages/ImperativeMinePage';
 import { ImperativeModels } from './pages/ImperativeModels';
 import { MiningTypeSelectionPage } from './pages/MiningTypeSelectionPage';
-import { ImperativeMinePage } from './pages/ImperativeMinePage';
 
 export enum TargetURL {
     HOME = '/',
     MINING_TYPE_SELECTION = '/mining-select',
     IMPERATIVE = '/imperative',
     IMPERATIVE_MODELS = '/imperative/models',
-    IMPERATIVE_MINE = '/imperative/mine',
+    IMPERATIVE_MINE = '/imperative/mine/:logName',
 }
 
 export const router = createBrowserRouter([

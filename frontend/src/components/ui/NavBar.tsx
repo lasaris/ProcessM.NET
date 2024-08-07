@@ -22,10 +22,6 @@ export const NavBar: React.FC = () => {
             targetUrl: TargetURL.IMPERATIVE_MODELS,
             title: 'Models',
         },
-        {
-            targetUrl: TargetURL.IMPERATIVE_MINE,
-            title: 'Mine',
-        },
     ];
 
     const navigateHome = () => {
