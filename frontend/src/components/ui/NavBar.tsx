@@ -1,6 +1,7 @@
 import { NavLink } from '@/models/NavLink';
 import { TargetURL } from '@/router';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MyNavLink } from './MyNavLink';
 import {
     NavigationMenu,
@@ -10,6 +11,8 @@ import {
 } from './navigation-menu';
 
 export const NavBar: React.FC = () => {
+    const navigate = useNavigate();
+
     const links: NavLink[] = [
         {
             targetUrl: TargetURL.IMPERATIVE,
@@ -25,9 +28,16 @@ export const NavBar: React.FC = () => {
         },
     ];
 
+    const navigateHome = () => {
+        navigate(TargetURL.HOME);
+    };
+
     return (
         <nav className="flex flex-row h-16 items-center justify-between gap-3 px-4 border-b">
-            <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+            <h2
+                onClick={navigateHome}
+                className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 hover:cursor-pointer"
+            >
                 ProcessM.NET
             </h2>
             <div>

@@ -5,6 +5,7 @@ import { HomePage } from './pages/HomePage';
 import { ImperativeLogs } from './pages/ImperativeLogs';
 import { ImperativeModels } from './pages/ImperativeModels';
 import { MiningTypeSelectionPage } from './pages/MiningTypeSelectionPage';
+import { ImperativeMinePage } from './pages/ImperativeMinePage';
 
 export enum TargetURL {
     HOME = '/',
@@ -43,7 +44,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: TargetURL.IMPERATIVE_MINE,
-                element: <div>Imperative Mine Page</div>,
+                element: <ImperativeMinePage />,
             },
         ],
     },
