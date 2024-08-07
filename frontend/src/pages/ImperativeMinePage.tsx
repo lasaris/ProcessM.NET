@@ -1,4 +1,4 @@
-import Graphviz from 'graphviz-react';
+import { Graphviz } from 'graphviz-react';
 import React from 'react';
 
 export const ImperativeMinePage: React.FC = () => {
@@ -31,8 +31,19 @@ export const ImperativeMinePage: React.FC = () => {
 }`;
 
     return (
-        <div className="w-full h-full bg-red-500">
-            <Graphviz dot={exampleDotString} options={{ zoom: true }} />
+        <div className="flex w-full h-full grow">
+            <div className="flex items-center justify-center w-3/4 ">
+                <Graphviz
+                    dot={exampleDotString}
+                    className="border-4"
+                    options={{
+                        zoom: true,
+                        width: '70vw',
+                        height: '80vh',
+                    }}
+                />
+            </div>
+            <div className="grow border-s"></div>
         </div>
     );
 };
