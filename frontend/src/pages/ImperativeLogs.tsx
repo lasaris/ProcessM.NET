@@ -29,42 +29,6 @@ const logs: ImperativeLog[] = [
     {
         name: 'Log Fandango',
     },
-    {
-        name: 'Log Aardvark',
-    },
-    {
-        name: 'Log Bananarama',
-    },
-    {
-        name: 'Log Catastrophe',
-    },
-    {
-        name: 'Log Doodlebug',
-    },
-    {
-        name: 'Log Eggcellent',
-    },
-    {
-        name: 'Log Fandango',
-    },
-    {
-        name: 'Log Aardvark',
-    },
-    {
-        name: 'Log Bananarama',
-    },
-    {
-        name: 'Log Catastrophe',
-    },
-    {
-        name: 'Log Doodlebug',
-    },
-    {
-        name: 'Log Eggcellent',
-    },
-    {
-        name: 'Log Fandango',
-    },
 ];
 
 export const ImperativeLogs: React.FC = () => {
