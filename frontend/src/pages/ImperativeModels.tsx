@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import {
     Table,
     TableBody,
@@ -6,64 +7,40 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { RightArrow } from '@/icons/RightArrow';
 import { ImperativeModel } from '@/models/ImperativeModel';
+import { EyeIcon, TrashIcon } from 'lucide-react';
 import React from 'react';
 
 const models: ImperativeModel[] = [
     {
-        name: 'Log Aardvark',
+        name: 'Model Aardvark',
+        size: '6.16 KB',
+        modified: '09.08.2024 19:02',
     },
     {
-        name: 'Log Bananarama',
+        name: 'Model Bananarama',
+        size: '6.16 KB',
+        modified: '09.08.2024 19:02',
     },
     {
-        name: 'Log Catastrophe',
+        name: 'Model Catastrophe',
+        size: '6.16 KB',
+        modified: '09.08.2024 19:02',
     },
     {
-        name: 'Log Doodlebug',
+        name: 'Model Doodlebug',
+        size: '6.16 KB',
+        modified: '09.08.2024 19:02',
     },
     {
-        name: 'Log Eggcellent',
+        name: 'Model Eggcellent',
+        size: '6.16 KB',
+        modified: '09.08.2024 19:02',
     },
     {
-        name: 'Log Fandango',
-    },
-    {
-        name: 'Log Aardvark',
-    },
-    {
-        name: 'Log Bananarama',
-    },
-    {
-        name: 'Log Catastrophe',
-    },
-    {
-        name: 'Log Doodlebug',
-    },
-    {
-        name: 'Log Eggcellent',
-    },
-    {
-        name: 'Log Fandango',
-    },
-    {
-        name: 'Log Aardvark',
-    },
-    {
-        name: 'Log Bananarama',
-    },
-    {
-        name: 'Log Catastrophe',
-    },
-    {
-        name: 'Log Doodlebug',
-    },
-    {
-        name: 'Log Eggcellent',
-    },
-    {
-        name: 'Log Fandango',
+        name: 'Model Fandango',
+        size: '6.16 KB',
+        modified: '09.08.2024 19:02',
     },
 ];
 
@@ -74,7 +51,11 @@ export const ImperativeModels: React.FC = () => {
                 <TableHeader>
                     <TableRow>
                         <TableHead>Name</TableHead>
-                        <TableHead className="text-right"></TableHead>
+                        <TableHead>Export</TableHead>
+                        <TableHead>Size</TableHead>
+                        <TableHead>Last Modified</TableHead>
+                        <TableHead>View</TableHead>
+                        <TableHead className="text-right">Delete</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -83,9 +64,28 @@ export const ImperativeModels: React.FC = () => {
                             <TableCell className="font-medium">
                                 {log.name}
                             </TableCell>
-                            <TableCell className="flex items-end justify-end">
+                            <TableCell>
+                                <div className="flex gap-4">
+                                    <Button>PNML</Button>
+                                    <Button>DOT</Button>
+                                </div>
+                            </TableCell>
+                            <TableCell className="font-medium">
+                                {log.size}
+                            </TableCell>
+                            <TableCell className="font-medium">
+                                {log.modified}
+                            </TableCell>
+                            <TableCell>
                                 <div className="rounded-full bg-slate-400 w-8 h-8 flex items-center justify-center hover:shadow-lg hover:cursor-pointer">
-                                    <RightArrow />
+                                    <EyeIcon />
+                                </div>
+                            </TableCell>
+                            <TableCell className="">
+                                <div className="flex justify-end">
+                                    <div className="rounded-full bg-slate-400 w-8 h-8 flex items-center justify-center hover:shadow-lg hover:cursor-pointer">
+                                        <TrashIcon />
+                                    </div>
                                 </div>
                             </TableCell>
                         </TableRow>
