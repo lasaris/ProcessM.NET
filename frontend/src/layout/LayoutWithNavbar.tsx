@@ -6,7 +6,9 @@ export const LayoutWithNavbar: React.FC = () => {
     return (
         <div className="h-screen flex flex-col">
             <NavBar />
-            <Outlet />
+            <div className="flex flex-col items-center grow">
+                <Outlet />
+            </div>
         </div>
     );
 };
