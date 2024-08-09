@@ -30,7 +30,7 @@ export const AddLogDialog: React.FC = () => {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button className="sticky bottom-4 float-right">Add Log</Button>
+                <Button>Add Log</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>

@@ -29,7 +29,7 @@ export const NavBar: React.FC = () => {
     };
 
     return (
-        <nav className="flex flex-row min-h-16 items-center justify-between gap-3 px-4 border-b">
+        <nav className="sticky top-0 z-20 bg-white flex flex-row min-h-16 items-center justify-between gap-3 px-4 border-b">
             <h2
                 onClick={navigateHome}
                 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 hover:cursor-pointer"
