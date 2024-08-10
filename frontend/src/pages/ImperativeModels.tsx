@@ -1,3 +1,4 @@
+import { ViewModel } from '@/components/ui/ViewModel';
 import { Button } from '@/components/ui/button';
 import {
     Table,
@@ -8,7 +9,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { ImperativeModel } from '@/models/ImperativeModel';
-import { EyeIcon, TrashIcon } from 'lucide-react';
+import { TrashIcon } from 'lucide-react';
 import React from 'react';
 
 const models: ImperativeModel[] = [
@@ -77,9 +78,7 @@ export const ImperativeModels: React.FC = () => {
                                 {log.modified}
                             </TableCell>
                             <TableCell>
-                                <div className="rounded-full bg-slate-400 w-8 h-8 flex items-center justify-center hover:shadow-lg hover:cursor-pointer">
-                                    <EyeIcon />
-                                </div>
+                                <ViewModel title={log.name} />
                             </TableCell>
                             <TableCell className="">
                                 <div className="flex justify-end">
