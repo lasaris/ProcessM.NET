@@ -5,7 +5,7 @@ import { SwitchWithLabel } from '@/components/ui/SwitchWithLabel';
 import { VisibleActivitiesTrigger } from '@/components/ui/VisibleActivitiesTrigger';
 import { VisibleTracesTrigger } from '@/components/ui/VisibleTracesTrigger';
 import { Button } from '@/components/ui/button';
-import { dot } from '@/exampleDots/dot';
+import { dot } from '@/examples/exampleDots/dot';
 import { Graphviz } from 'graphviz-react';
 import { SaveIcon } from 'lucide-react';
 import React, { useState } from 'react';

@@ -1,4 +1,4 @@
-import { dot } from '@/exampleDots/dot';
+import { dot } from '@/examples/exampleDots/dot';
 import Graphviz from 'graphviz-react';
 import { EyeIcon } from 'lucide-react';
 import React from 'react';
