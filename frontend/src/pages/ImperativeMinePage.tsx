@@ -17,8 +17,8 @@ export const ImperativeMinePage: React.FC = () => {
     const [sourcePetriNet, setSourcePetriNet] = useState<boolean>(false);
 
     return (
-        <div className="flex w-full h-full grow">
-            <div className="flex items-center justify-center w-3/4 ">
+        <div className="flex flex-col w-full h-full grow md:flex-row">
+            <div className="flex items-center justify-center w-full md:w-3/4 ">
                 <Graphviz
                     dot={dot}
                     className="border-4"
@@ -26,6 +26,7 @@ export const ImperativeMinePage: React.FC = () => {
                         zoom: true,
                         width: '70vw',
                         height: '80vh',
+                        useWorker: false,
                     }}
                 />
             </div>

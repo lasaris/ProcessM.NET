@@ -7,6 +7,7 @@ import {
     Dialog,
     DialogClose,
     DialogContent,
+    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
@@ -25,9 +26,10 @@ export const ViewModel: React.FC<ViewModelProps> = ({ title }) => {
                     <EyeIcon />
                 </div>
             </DialogTrigger>
-            <DialogContent className="w-full h-full">
+            <DialogContent className="w-full">
                 <DialogHeader>
                     <DialogTitle>{title}</DialogTitle>
+                    <DialogDescription>View the mined model.</DialogDescription>
                 </DialogHeader>
                 <div>
                     <Graphviz
@@ -36,10 +38,11 @@ export const ViewModel: React.FC<ViewModelProps> = ({ title }) => {
                         options={{
                             zoom: true,
                             width: '100%',
+                            useWorker: false,
                         }}
                     />
                 </div>
-                <DialogFooter className="sm:justify-start">
+                <DialogFooter>
                     <DialogClose asChild>
                         <Button type="button">Close</Button>
                     </DialogClose>
