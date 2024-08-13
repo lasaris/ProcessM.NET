@@ -1,16 +1,20 @@
 import { ExportButton } from '@/components/ui/ExportButton';
-import { ImperativeMinerSelect } from '@/components/ui/ImperativeMinerSelect';
 import { PMSlider } from '@/components/ui/PMSlider';
 import { SwitchWithLabel } from '@/components/ui/SwitchWithLabel';
 import { VisibleActivitiesTrigger } from '@/components/ui/VisibleActivitiesTrigger';
 import { VisibleTracesTrigger } from '@/components/ui/VisibleTracesTrigger';
 import { Button } from '@/components/ui/button';
 import { dot } from '@/examples/exampleDots/dot';
+import { MINER_TYPE } from '@/models/MinerType';
 import { Graphviz } from 'graphviz-react';
 import { SaveIcon } from 'lucide-react';
 import React, { useState } from 'react';
 
-export const MinePage: React.FC = () => {
+type MinePageProps = {
+    miningType: MINER_TYPE;
+};
+
+export const MinePage: React.FC<MinePageProps> = ({ miningType }) => {
     const [traces, setTraces] = useState<number>(1);
     const [fitness, setFitness] = useState<number>(1);
     const [ignoreFrequency, setIgnoreFrequency] = useState<boolean>(false);
@@ -31,7 +35,11 @@ export const MinePage: React.FC = () => {
                 />
             </div>
             <div className="grow border-s p-4 flex flex-col gap-8 items-center">
-                <ImperativeMinerSelect />
+                <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                    {miningType === MINER_TYPE.ALPHA
+                        ? 'Alpha Miner'
+                        : 'Heuristic Miner'}
+                </h3>
                 <PMSlider
                     label="Traces"
                     changeValue={setTraces}

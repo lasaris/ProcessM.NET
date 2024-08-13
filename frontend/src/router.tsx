@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { LayoutWithNavbar } from './layout/LayoutWithNavbar';
 import { MainLayout } from './layout/MainLayout';
+import { MINER_TYPE } from './models/MinerType';
 import { HomePage } from './pages/HomePage';
 import { Logs } from './pages/Logs';
 import { MinePage } from './pages/MinePage';
@@ -50,7 +51,7 @@ export const router = createBrowserRouter([
         path: TargetURL.ALPHA_MINE,
         element: (
             <LayoutWithNavbar>
-                <MinePage />
+                <MinePage miningType={MINER_TYPE.ALPHA} />
             </LayoutWithNavbar>
         ),
     },
@@ -58,7 +59,7 @@ export const router = createBrowserRouter([
         path: TargetURL.HEURISTIC_MINE,
         element: (
             <LayoutWithNavbar>
-                <MinePage />
+                <MinePage miningType={MINER_TYPE.HEURISTIC} />
             </LayoutWithNavbar>
         ),
     },
