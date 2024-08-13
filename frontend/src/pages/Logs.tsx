@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/table';
 import { RightArrow } from '@/icons/RightArrow';
 import { ImperativeLog } from '@/models/ImperativeLog';
+import { TargetURL } from '@/router';
 import { TooltipWrapper } from '@/wrappers/TooltipWrapper';
 import { TrashIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -64,11 +65,12 @@ const logs: ImperativeLog[] = [
     },
 ];
 
-export const ImperativeLogs: React.FC = () => {
+export const Logs: React.FC = () => {
     const navigate = useNavigate();
 
-    const mineLog = (name: string) => {
-        navigate(`/imperative/mine/${name}`);
+    const selectLog = (name: string) => {
+        const destination = TargetURL.OPERATION;
+        navigate(destination.replace(':logName', name));
     };
 
     return (
@@ -108,13 +110,12 @@ export const ImperativeLogs: React.FC = () => {
                                 <TableCell className="font-medium">
                                     {log.modified}
                                 </TableCell>
-
                                 <TableCell>
                                     <TooltipWrapper
                                         tooltipTitle={`Mine ${log.name}`}
                                     >
                                         <div
-                                            onClick={() => mineLog(log.name)}
+                                            onClick={() => selectLog(log.name)}
                                             className="rounded-full bg-slate-400 w-8 h-8 flex items-center justify-center hover:shadow-lg hover:cursor-pointer"
                                         >
                                             <RightArrow />

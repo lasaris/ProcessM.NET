@@ -15,11 +15,11 @@ export const NavBar: React.FC = () => {
 
     const links: NavLink[] = [
         {
-            targetUrl: TargetURL.IMPERATIVE,
+            targetUrl: TargetURL.LOGS,
             title: 'Logs',
         },
         {
-            targetUrl: TargetURL.IMPERATIVE_MODELS,
+            targetUrl: TargetURL.MODELS,
             title: 'Models',
         },
     ];

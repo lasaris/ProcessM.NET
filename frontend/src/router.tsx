@@ -2,17 +2,21 @@ import { createBrowserRouter } from 'react-router-dom';
 import { LayoutWithNavbar } from './layout/LayoutWithNavbar';
 import { MainLayout } from './layout/MainLayout';
 import { HomePage } from './pages/HomePage';
-import { ImperativeLogs } from './pages/ImperativeLogs';
-import { ImperativeMinePage } from './pages/ImperativeMinePage';
-import { ImperativeModels } from './pages/ImperativeModels';
-import { MiningTypeSelectionPage } from './pages/MiningTypeSelectionPage';
+import { Logs } from './pages/Logs';
+import { MinePage } from './pages/MinePage';
+import { MiningChoicePage } from './pages/MiningChoicePage';
+import { Models } from './pages/Models';
 
 export enum TargetURL {
     HOME = '/',
-    MINING_TYPE_SELECTION = '/mining-select',
-    IMPERATIVE = '/imperative',
-    IMPERATIVE_MODELS = '/imperative/models',
-    IMPERATIVE_MINE = '/imperative/mine/:logName',
+    LOGS = '/logs',
+    OPERATION = '/operation/:logName',
+    ALPHA_MINE = '/mine/alpha/:logName',
+    HEURISTIC_MINE = '/mine/heuristic/:logName',
+    DISCOVER = '/discover/:logName',
+    CONFORMANCE = '/conformance/:logName',
+    EDIT = '/edit/:logName',
+    MODELS = '/models',
 }
 
 export const router = createBrowserRouter([
@@ -24,28 +28,70 @@ export const router = createBrowserRouter([
                 index: true,
                 element: <HomePage />,
             },
-            {
-                path: TargetURL.MINING_TYPE_SELECTION,
-                element: <MiningTypeSelectionPage />,
-            },
         ],
     },
     {
-        path: TargetURL.IMPERATIVE,
-        element: <LayoutWithNavbar />,
-        children: [
-            {
-                index: true,
-                element: <ImperativeLogs />,
-            },
-            {
-                path: TargetURL.IMPERATIVE_MODELS,
-                element: <ImperativeModels />,
-            },
-            {
-                path: TargetURL.IMPERATIVE_MINE,
-                element: <ImperativeMinePage />,
-            },
-        ],
+        path: TargetURL.LOGS,
+        element: (
+            <LayoutWithNavbar>
+                <Logs />
+            </LayoutWithNavbar>
+        ),
+    },
+    {
+        path: TargetURL.MODELS,
+        element: (
+            <LayoutWithNavbar>
+                <Models />
+            </LayoutWithNavbar>
+        ),
+    },
+    {
+        path: TargetURL.ALPHA_MINE,
+        element: (
+            <LayoutWithNavbar>
+                <MinePage />
+            </LayoutWithNavbar>
+        ),
+    },
+    {
+        path: TargetURL.HEURISTIC_MINE,
+        element: (
+            <LayoutWithNavbar>
+                <MinePage />
+            </LayoutWithNavbar>
+        ),
+    },
+    {
+        path: TargetURL.DISCOVER,
+        element: (
+            <LayoutWithNavbar>
+                <div>Discover Page</div>
+            </LayoutWithNavbar>
+        ),
+    },
+    {
+        path: TargetURL.EDIT,
+        element: (
+            <LayoutWithNavbar>
+                <div>Edit Page</div>
+            </LayoutWithNavbar>
+        ),
+    },
+    {
+        path: TargetURL.CONFORMANCE,
+        element: (
+            <LayoutWithNavbar>
+                <div>Conformance Page</div>
+            </LayoutWithNavbar>
+        ),
+    },
+    {
+        path: TargetURL.OPERATION,
+        element: (
+            <LayoutWithNavbar>
+                <MiningChoicePage />
+            </LayoutWithNavbar>
+        ),
     },
 ]);

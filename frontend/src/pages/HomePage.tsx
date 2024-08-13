@@ -8,7 +8,7 @@ export const HomePage: React.FC = () => {
     const navigate = useNavigate();
 
     const startMining = () => {
-        navigate(TargetURL.MINING_TYPE_SELECTION);
+        navigate(TargetURL.LOGS);
     };
 
     return (

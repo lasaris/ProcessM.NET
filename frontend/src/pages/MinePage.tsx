@@ -10,7 +10,7 @@ import { Graphviz } from 'graphviz-react';
 import { SaveIcon } from 'lucide-react';
 import React, { useState } from 'react';
 
-export const ImperativeMinePage: React.FC = () => {
+export const MinePage: React.FC = () => {
     const [traces, setTraces] = useState<number>(1);
     const [fitness, setFitness] = useState<number>(1);
     const [ignoreFrequency, setIgnoreFrequency] = useState<boolean>(false);

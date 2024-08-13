@@ -50,7 +50,7 @@ const models: ImperativeModel[] = [
     },
 ];
 
-export const ImperativeModels: React.FC = () => {
+export const Models: React.FC = () => {
     return (
         <div className="relative w-full h-full flex flex-col items-center justify-between">
             <div className="w-11/12 md:w-3/4">
