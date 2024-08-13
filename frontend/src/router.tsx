@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import { LayoutWithNavbar } from './layout/LayoutWithNavbar';
 import { MainLayout } from './layout/MainLayout';
 import { MINER_TYPE } from './models/MinerType';
+import { DiscoverPage } from './pages/DiscoverPage';
 import { HomePage } from './pages/HomePage';
 import { Logs } from './pages/Logs';
 import { MinePage } from './pages/MinePage';
@@ -14,10 +15,13 @@ export enum TargetURL {
     OPERATION = '/operation/:logName',
     ALPHA_MINE = '/mine/alpha/:logName',
     HEURISTIC_MINE = '/mine/heuristic/:logName',
-    DISCOVER = '/discover/:logName',
     CONFORMANCE = '/conformance/:logName',
     EDIT = '/edit/:logName',
     MODELS = '/models',
+
+    //Discover
+    DISCOVER_SELECT_CONSTRAINTS = '/discover/:logName',
+    DISCOVER_CONFIGURE_CONSTRAINTS = '/discover/:logName/configure',
 }
 
 export const router = createBrowserRouter([
@@ -64,12 +68,27 @@ export const router = createBrowserRouter([
         ),
     },
     {
-        path: TargetURL.DISCOVER,
-        element: (
-            <LayoutWithNavbar>
-                <div>Discover Page</div>
-            </LayoutWithNavbar>
-        ),
+        path: TargetURL.DISCOVER_SELECT_CONSTRAINTS,
+        children: [
+            {
+                index: true,
+                element: (
+                    <LayoutWithNavbar>
+                        <DiscoverPage />
+                    </LayoutWithNavbar>
+                ),
+            },
+            {
+                path: TargetURL.DISCOVER_CONFIGURE_CONSTRAINTS,
+                element: (
+                    <LayoutWithNavbar>
+                        <div>
+                            This is the configuration of discover constraints
+                        </div>
+                    </LayoutWithNavbar>
+                ),
+            },
+        ],
     },
     {
         path: TargetURL.EDIT,

@@ -25,7 +25,7 @@ export const MiningChoicePage: React.FC = () => {
             key="Discover"
             name="Discover"
             svgLogo={<img src={Discover} alt="Discover" />}
-            targetUrl={TargetURL.DISCOVER}
+            targetUrl={TargetURL.DISCOVER_SELECT_CONSTRAINTS}
         />,
         <MiningChoiceCard
             key="Edit"
