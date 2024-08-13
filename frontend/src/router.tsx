@@ -8,6 +8,7 @@ import { Logs } from './pages/Logs';
 import { MinePage } from './pages/MinePage';
 import { MiningChoicePage } from './pages/MiningChoicePage';
 import { Models } from './pages/Models';
+import { DiscoverConfigure } from './pages/DiscoverConfigure';
 
 export enum TargetURL {
     HOME = '/',
@@ -82,9 +83,7 @@ export const router = createBrowserRouter([
                 path: TargetURL.DISCOVER_CONFIGURE_CONSTRAINTS,
                 element: (
                     <LayoutWithNavbar>
-                        <div>
-                            This is the configuration of discover constraints
-                        </div>
+                        <DiscoverConfigure />
                     </LayoutWithNavbar>
                 ),
             },
