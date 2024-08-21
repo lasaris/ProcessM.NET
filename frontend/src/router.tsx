@@ -2,13 +2,14 @@ import { createBrowserRouter } from 'react-router-dom';
 import { LayoutWithNavbar } from './layout/LayoutWithNavbar';
 import { MainLayout } from './layout/MainLayout';
 import { MINER_TYPE } from './models/MinerType';
+import { DiscoverConfigure } from './pages/DiscoverConfigure';
 import { DiscoverPage } from './pages/DiscoverPage';
+import { DiscoverView } from './pages/DiscoverView';
 import { HomePage } from './pages/HomePage';
 import { Logs } from './pages/Logs';
 import { MinePage } from './pages/MinePage';
 import { MiningChoicePage } from './pages/MiningChoicePage';
 import { Models } from './pages/Models';
-import { DiscoverConfigure } from './pages/DiscoverConfigure';
 
 export enum TargetURL {
     HOME = '/',
@@ -23,6 +24,7 @@ export enum TargetURL {
     //Discover
     DISCOVER_SELECT_CONSTRAINTS = '/discover/:logName',
     DISCOVER_CONFIGURE_CONSTRAINTS = '/discover/:logName/configure',
+    DISCOVER_VIEW_MODEL = '/discover/:logName/view',
 }
 
 export const router = createBrowserRouter([
@@ -84,6 +86,14 @@ export const router = createBrowserRouter([
                 element: (
                     <LayoutWithNavbar>
                         <DiscoverConfigure />
+                    </LayoutWithNavbar>
+                ),
+            },
+            {
+                path: TargetURL.DISCOVER_VIEW_MODEL,
+                element: (
+                    <LayoutWithNavbar>
+                        <DiscoverView />
                     </LayoutWithNavbar>
                 ),
             },

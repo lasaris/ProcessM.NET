@@ -11,24 +11,25 @@ import {
     DeclareConstraints,
 } from '@/models/DeclareConstraints';
 import { TargetURL } from '@/router';
-import React, { useState } from 'react';
+import {
+    DiscoverConfiguration,
+    useDiscoverStore,
+} from '@/store/useDiscoverStore';
+import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export const DiscoverPage: React.FC = () => {
-    const [selectedConstraints, setSelectedConstraints] = useState<string[]>(
-        []
-    );
+    const { configurations, setConfigurations } = useDiscoverStore();
     const navigate = useNavigate();
     const { logName } = useParams();
 
     const continueWithSelected = () => {
-        if (logName) {
+        if (logName && configurations.length > 0) {
             navigate(
                 TargetURL.DISCOVER_CONFIGURE_CONSTRAINTS.replace(
                     ':logName',
                     logName
-                ),
-                { state: { selectedConstraints } }
+                )
             );
         }
     };
@@ -72,15 +73,31 @@ export const DiscoverPage: React.FC = () => {
             <MultiSelect
                 className="w-3/4"
                 options={options}
-                defaultValue={selectedConstraints}
-                onValueChange={setSelectedConstraints}
+                defaultValue={configurations.map(
+                    (configuration) => configuration.constraintName
+                )}
+                onValueChange={(constraints) => {
+                    const discoverConfigs: DiscoverConfiguration[] =
+                        constraints.map((constraint) => {
+                            return {
+                                constraintName: constraint,
+                                checkVacuously: true,
+                                percentageOfEvents: 100,
+                                percentageOfInstances: 100,
+                            };
+                        });
+
+                    setConfigurations(discoverConfigs);
+                }}
                 maxCount={8}
             />
             <Accordion className="w-3/4" type="single" collapsible>
                 {items}
             </Accordion>
             <div className="sticky bottom-4 flex justify-end w-full px-4">
-                <Button onClick={continueWithSelected}>Continue!</Button>
+                {configurations.length > 0 && (
+                    <Button onClick={continueWithSelected}>Continue!</Button>
+                )}
             </div>
         </div>
     );
