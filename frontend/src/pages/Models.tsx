@@ -13,9 +13,13 @@ import { dot } from '@/examples/exampleDots/dot';
 import { pnml } from '@/examples/examplePNMLs/example';
 import { exportDot } from '@/helpers/exportDot';
 import { exportPnml } from '@/helpers/exportPnml';
+import { RightArrow } from '@/icons/RightArrow';
 import { ImperativeModel } from '@/models/ImperativeModel';
+import { TargetURL } from '@/router';
+import { TooltipWrapper } from '@/wrappers/TooltipWrapper';
 import { TrashIcon } from 'lucide-react';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const models: ImperativeModel[] = [
     {
@@ -51,6 +55,13 @@ const models: ImperativeModel[] = [
 ];
 
 export const Models: React.FC = () => {
+    const navigate = useNavigate();
+
+    const selectModel = (name: string) => {
+        const destination = TargetURL.MODELS_OPERATION;
+        navigate(destination.replace(':modelName', name));
+    };
+
     return (
         <div className="relative w-full h-full flex flex-col items-center justify-between">
             <div className="w-11/12 md:w-3/4">
@@ -62,27 +73,28 @@ export const Models: React.FC = () => {
                             <TableHead>Size</TableHead>
                             <TableHead>Last Modified</TableHead>
                             <TableHead>View</TableHead>
+                            <TableHead>Operations</TableHead>
                             <TableHead className="text-right">Delete</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {models.map((log) => (
-                            <TableRow key={log.name}>
+                        {models.map((model) => (
+                            <TableRow key={model.name}>
                                 <TableCell className="font-medium">
-                                    {log.name}
+                                    {model.name}
                                 </TableCell>
                                 <TableCell>
                                     <div className="flex gap-4">
                                         <Button
                                             onClick={() =>
-                                                exportPnml(log.name, pnml)
+                                                exportPnml(model.name, pnml)
                                             }
                                         >
                                             PNML
                                         </Button>
                                         <Button
                                             onClick={() =>
-                                                exportDot(log.name, dot)
+                                                exportDot(model.name, dot)
                                             }
                                         >
                                             DOT
@@ -90,13 +102,27 @@ export const Models: React.FC = () => {
                                     </div>
                                 </TableCell>
                                 <TableCell className="font-medium">
-                                    {log.size}
+                                    {model.size}
                                 </TableCell>
                                 <TableCell className="font-medium">
-                                    {log.modified}
+                                    {model.modified}
                                 </TableCell>
                                 <TableCell>
-                                    <ViewModel title={log.name} />
+                                    <ViewModel title={model.name} />
+                                </TableCell>
+                                <TableCell>
+                                    <TooltipWrapper
+                                        tooltipTitle={`${model.name} operations`}
+                                    >
+                                        <div
+                                            onClick={() =>
+                                                selectModel(model.name)
+                                            }
+                                            className="rounded-full bg-slate-400 w-8 h-8 flex items-center justify-center hover:shadow-lg hover:cursor-pointer"
+                                        >
+                                            <RightArrow />
+                                        </div>
+                                    </TooltipWrapper>
                                 </TableCell>
                                 <TableCell className="">
                                     <div className="flex justify-end">

@@ -25,7 +25,10 @@ export const MiningChoiceCard: React.FC<MiningChoiceCardProps> = ({
     };
 
     return (
-        <div onClick={selectLog} className="w-40 h-40 bg-slate-300 flex flex-col items-center justify-center rounded-lg hover:shadow-xl hover:cursor-pointer gap-3">
+        <div
+            onClick={selectLog}
+            className="w-full h-40 bg-slate-300 flex flex-col items-center justify-center rounded-lg hover:shadow-xl hover:cursor-pointer gap-3"
+        >
             <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
                 {name}
             </h4>

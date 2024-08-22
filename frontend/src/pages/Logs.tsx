@@ -69,7 +69,7 @@ export const Logs: React.FC = () => {
     const navigate = useNavigate();
 
     const selectLog = (name: string) => {
-        const destination = TargetURL.OPERATION;
+        const destination = TargetURL.LOGS_OPERATION;
         navigate(destination.replace(':logName', name));
     };
 
