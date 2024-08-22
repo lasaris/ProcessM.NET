@@ -14,43 +14,49 @@ import { pnml } from '@/examples/examplePNMLs/example';
 import { exportDot } from '@/helpers/exportDot';
 import { exportPnml } from '@/helpers/exportPnml';
 import { RightArrow } from '@/icons/RightArrow';
-import { ImperativeModel } from '@/models/ImperativeModel';
+import { Model, ModelType } from '@/models/ImperativeModel';
 import { TargetURL } from '@/router';
 import { TooltipWrapper } from '@/wrappers/TooltipWrapper';
 import { TrashIcon } from 'lucide-react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const models: ImperativeModel[] = [
+const models: Model[] = [
     {
         name: 'Model Aardvark',
         size: '6.16 KB',
         modified: '09.08.2024 19:02',
+        type: ModelType.IMPERATIVE,
     },
     {
         name: 'Model Bananarama',
         size: '6.16 KB',
         modified: '09.08.2024 19:02',
+        type: ModelType.DECLARATIVE,
     },
     {
         name: 'Model Catastrophe',
         size: '6.16 KB',
         modified: '09.08.2024 19:02',
+        type: ModelType.IMPERATIVE,
     },
     {
         name: 'Model Doodlebug',
         size: '6.16 KB',
         modified: '09.08.2024 19:02',
+        type: ModelType.DECLARATIVE,
     },
     {
         name: 'Model Eggcellent',
         size: '6.16 KB',
         modified: '09.08.2024 19:02',
+        type: ModelType.IMPERATIVE,
     },
     {
         name: 'Model Fandango',
         size: '6.16 KB',
         modified: '09.08.2024 19:02',
+        type: ModelType.DECLARATIVE,
     },
 ];
 
@@ -72,6 +78,9 @@ export const Models: React.FC = () => {
                             <TableHead>Export</TableHead>
                             <TableHead>Size</TableHead>
                             <TableHead>Last Modified</TableHead>
+                            <TableHead className="text-center">
+                                Type (Imperative/Declarative)
+                            </TableHead>
                             <TableHead>View</TableHead>
                             <TableHead>Operations</TableHead>
                             <TableHead className="text-right">Delete</TableHead>
@@ -84,28 +93,43 @@ export const Models: React.FC = () => {
                                     {model.name}
                                 </TableCell>
                                 <TableCell>
-                                    <div className="flex gap-4">
+                                    {model.type === ModelType.IMPERATIVE ? (
+                                        <div className="flex gap-4">
+                                            <Button
+                                                onClick={() =>
+                                                    exportPnml(model.name, pnml)
+                                                }
+                                            >
+                                                PNML
+                                            </Button>
+                                            <Button
+                                                onClick={() =>
+                                                    exportDot(model.name, dot)
+                                                }
+                                            >
+                                                DOT
+                                            </Button>
+                                        </div>
+                                    ) : (
                                         <Button
                                             onClick={() =>
                                                 exportPnml(model.name, pnml)
                                             }
                                         >
-                                            PNML
+                                            JSON
                                         </Button>
-                                        <Button
-                                            onClick={() =>
-                                                exportDot(model.name, dot)
-                                            }
-                                        >
-                                            DOT
-                                        </Button>
-                                    </div>
+                                    )}
                                 </TableCell>
                                 <TableCell className="font-medium">
                                     {model.size}
                                 </TableCell>
                                 <TableCell className="font-medium">
                                     {model.modified}
+                                </TableCell>
+                                <TableCell className="font-medium text-center">
+                                    {model.type === ModelType.IMPERATIVE
+                                        ? 'Imperative'
+                                        : 'Declarative'}
                                 </TableCell>
                                 <TableCell>
                                     <ViewModel title={model.name} />
