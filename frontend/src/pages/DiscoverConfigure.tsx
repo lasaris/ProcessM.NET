@@ -9,22 +9,22 @@ import { useNavigate, useParams } from 'react-router-dom';
 export const DiscoverConfigure: React.FC = () => {
     const { configurations } = useDiscoverStore();
     const navigate = useNavigate();
-    const { logName } = useParams();
+    const { entityName } = useParams();
 
     const handleSubmit = () => {
-        if (logName && configurations.length > 0) {
+        if (entityName && configurations.length > 0) {
             navigate(
-                TargetURL.DISCOVER_VIEW_MODEL.replace(':logName', logName)
+                TargetURL.DISCOVER_VIEW_MODEL.replace(':entityName', entityName)
             );
         }
     };
 
     const selectConstraints = () => {
-        if (logName) {
+        if (entityName) {
             navigate(
                 TargetURL.DISCOVER_SELECT_CONSTRAINTS.replace(
-                    ':logName',
-                    logName
+                    ':entityName',
+                    entityName
                 )
             );
         }

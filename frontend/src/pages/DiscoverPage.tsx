@@ -21,14 +21,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 export const DiscoverPage: React.FC = () => {
     const { configurations, setConfigurations } = useDiscoverStore();
     const navigate = useNavigate();
-    const { logName } = useParams();
+    const { entityName } = useParams();
 
     const continueWithSelected = () => {
-        if (logName && configurations.length > 0) {
+        if (entityName && configurations.length > 0) {
             navigate(
                 TargetURL.DISCOVER_CONFIGURE_CONSTRAINTS.replace(
-                    ':logName',
-                    logName
+                    ':entityName',
+                    entityName
                 )
             );
         }
