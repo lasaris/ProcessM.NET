@@ -14,19 +14,19 @@ export const MiningChoiceCard: React.FC<MiningChoiceCardProps> = ({
     targetUrl,
 }) => {
     const navigate = useNavigate();
-    const { logName } = useParams();
+    const { entityName } = useParams();
 
-    const selectLog = () => {
+    const selectOption = () => {
         const destination = targetUrl;
 
-        if (logName) {
-            navigate(destination.replace(':logName', logName));
+        if (entityName) {
+            navigate(destination.replace(':entityName', entityName));
         }
     };
 
     return (
         <div
-            onClick={selectLog}
+            onClick={selectOption}
             className="w-full h-40 bg-slate-300 flex flex-col items-center justify-center rounded-lg hover:shadow-xl hover:cursor-pointer gap-3"
         >
             <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">

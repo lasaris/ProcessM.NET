@@ -18,18 +18,18 @@ export enum TargetURL {
 
     // Logs Specific Pages
     LOGS = '/logs',
-    LOGS_OPERATION = '/logs/operation/:logName',
-    ALPHA_MINE = '/logs/mine/alpha/:logName',
-    HEURISTIC_MINE = '/logs/mine/heuristic/:logName',
-    DISCOVER_SELECT_CONSTRAINTS = '/logs/discover/:logName',
-    DISCOVER_CONFIGURE_CONSTRAINTS = '/logs/discover/:logName/configure',
-    DISCOVER_VIEW_MODEL = '/logs/discover/:logName/view',
+    LOGS_OPERATION = '/logs/operation/:entityName',
+    ALPHA_MINE = '/logs/mine/alpha/:entityName',
+    HEURISTIC_MINE = '/logs/mine/heuristic/:entityName',
+    DISCOVER_SELECT_CONSTRAINTS = '/logs/discover/:entityName',
+    DISCOVER_CONFIGURE_CONSTRAINTS = '/logs/discover/:entityName/configure',
+    DISCOVER_VIEW_MODEL = '/logs/discover/:entityName/view',
 
     // Model Specific Pages
     MODELS = '/models',
-    MODELS_OPERATION = '/models/operation/:modelName',
-    CONFORMANCE = '/models/conformance/:logName',
-    EDIT = '/models/edit/:logName',
+    MODELS_OPERATION = '/models/operation/:entityName',
+    CONFORMANCE = '/models/conformance/:entityName',
+    EDIT = '/models/edit/:entityName',
 }
 
 export const router = createBrowserRouter([

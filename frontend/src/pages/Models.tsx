@@ -59,7 +59,7 @@ export const Models: React.FC = () => {
 
     const selectModel = (name: string) => {
         const destination = TargetURL.MODELS_OPERATION;
-        navigate(destination.replace(':modelName', name));
+        navigate(destination.replace(':entityName', name));
     };
 
     return (

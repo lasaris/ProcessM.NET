@@ -70,7 +70,7 @@ export const Logs: React.FC = () => {
 
     const selectLog = (name: string) => {
         const destination = TargetURL.LOGS_OPERATION;
-        navigate(destination.replace(':logName', name));
+        navigate(destination.replace(':entityName', name));
     };
 
     return (
