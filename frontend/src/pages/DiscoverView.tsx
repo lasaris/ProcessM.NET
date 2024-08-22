@@ -1,9 +1,4 @@
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from '@/components/ui/accordion';
+import { DeclareModel } from '@/components/ui/DeclareModel';
 import { jsonModelExample } from '@/examples/exampleJsonModels/example';
 import { safeJsonParse } from '@/helpers/safeJsonParse';
 import { JsonModel } from '@/models/JsonModel';
@@ -13,50 +8,7 @@ export const DiscoverView: React.FC = () => {
     const parsed = safeJsonParse<JsonModel>(jsonModelExample);
 
     if (parsed) {
-        return (
-            <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="item-1">
-                    <AccordionTrigger>{parsed.Name}</AccordionTrigger>
-                    <AccordionContent>
-                        {parsed.Constraints.map((constraint) => {
-                            return (
-                                <Accordion
-                                    type="single"
-                                    collapsible
-                                    className="w-full px-10"
-                                >
-                                    <AccordionItem value="item-1">
-                                        <AccordionTrigger>
-                                            {constraint.TemplateType}
-                                        </AccordionTrigger>
-                                        <AccordionContent>
-                                            {constraint.TemplateInstances.map(
-                                                (instance) => {
-                                                    return (
-                                                        <div>
-                                                            <div>
-                                                                {
-                                                                    instance.LogEventA
-                                                                }
-                                                            </div>
-                                                            <div>
-                                                                {
-                                                                    instance.LogEventB
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                }
-                                            )}
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                </Accordion>
-                            );
-                        })}
-                    </AccordionContent>
-                </AccordionItem>
-            </Accordion>
-        );
+        return <DeclareModel className="w-full" model={parsed} />;
     }
 
     return <div>Unable to parse the json</div>;
