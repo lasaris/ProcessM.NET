@@ -3,7 +3,7 @@ export type Constraint = {
     Poe: number; // Percentage of events
     Poi: number; // Percentage of instances
     CheckVacuously: boolean;
-    TemplateInstances: any[];
+    TemplateInstances: any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
 };
 
 export type JsonModel = {
