@@ -7,6 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { convertUnixTimestampToDateString } from '@/helpers/convertUnixTimestampToDateString';
 import { useIndexedDb } from '@/hooks/useIndexedDb';
 import { RightArrow } from '@/icons/RightArrow';
 import SpinnerLogo from '@/icons/SpinnerLoader.svg';
@@ -18,12 +19,20 @@ import { useNavigate } from 'react-router-dom';
 
 export const Logs: React.FC = () => {
     const navigate = useNavigate();
-    const { fetchAllLogs } = useIndexedDb();
+    const { fetchAllLogs, deleteLog } = useIndexedDb();
     const localLogs = useAsync(fetchAllLogs, []);
 
     const selectLog = (name: string) => {
         const destination = TargetURL.LOGS_OPERATION;
         navigate(destination.replace(':entityName', name));
+    };
+
+    const handleDeleteLog = async (key: string) => {
+        const deleteResult = await deleteLog(key);
+
+        if (deleteResult) {
+            localLogs.execute();
+        }
     };
 
     return (
@@ -65,7 +74,9 @@ export const Logs: React.FC = () => {
                                         {log.metadata.size} kB
                                     </TableCell>
                                     <TableCell className="font-medium">
-                                        {log.metadata.modified}
+                                        {convertUnixTimestampToDateString(
+                                            log.metadata.modified
+                                        )}
                                     </TableCell>
                                     <TableCell>
                                         <TooltipWrapper
@@ -83,7 +94,14 @@ export const Logs: React.FC = () => {
                                     </TableCell>
                                     <TableCell className="">
                                         <div className="flex justify-end">
-                                            <div className="rounded-full bg-slate-400 w-8 h-8 flex items-center justify-center hover:shadow-lg hover:cursor-pointer">
+                                            <div
+                                                onClick={() =>
+                                                    handleDeleteLog(
+                                                        log.metadata.name
+                                                    )
+                                                }
+                                                className="rounded-full bg-slate-400 w-8 h-8 flex items-center justify-center hover:shadow-lg hover:cursor-pointer"
+                                            >
                                                 <TrashIcon />
                                             </div>
                                         </div>

@@ -1,4 +1,10 @@
-import { STORES, addData, getStoreData, initDB } from '@/db/db';
+import {
+    STORES,
+    addData,
+    deleteStoreData,
+    getStoreData,
+    initDB,
+} from '@/db/db';
 import { ConfiguredLog } from '@/models/API/ConfiguredLog';
 
 export const useIndexedDb = () => {
@@ -37,14 +43,18 @@ export const useIndexedDb = () => {
     };
 
     const fetchAllLogs = async (): Promise<ConfiguredLog[]> => {
-        console.log('Started fetching all logs');
         const logs = await getStoreData<ConfiguredLog>(STORES.Logs);
-        console.log('Fetched all logs: ', logs);
         return logs;
+    };
+
+    const deleteLog = async (logKey: string): Promise<boolean> => {
+        const deleteResult = await deleteStoreData(STORES.Logs, logKey);
+        return deleteResult;
     };
 
     return {
         addIntoDb,
         fetchAllLogs,
+        deleteLog,
     };
 };
