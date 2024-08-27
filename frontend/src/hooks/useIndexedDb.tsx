@@ -1,4 +1,5 @@
-import { addData, initDB } from '@/db/db';
+import { STORES, addData, getStoreData, initDB } from '@/db/db';
+import { ConfiguredLog } from '@/models/API/ConfiguredLog';
 
 export const useIndexedDb = () => {
     const handleInitDB = async (): Promise<boolean> => {
@@ -35,7 +36,15 @@ export const useIndexedDb = () => {
         return false;
     };
 
+    const fetchAllLogs = async (): Promise<ConfiguredLog[]> => {
+        console.log('Started fetching all logs');
+        const logs = await getStoreData<ConfiguredLog>(STORES.Logs);
+        console.log('Fetched all logs: ', logs);
+        return logs;
+    };
+
     return {
         addIntoDb,
+        fetchAllLogs,
     };
 };

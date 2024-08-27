@@ -33,7 +33,11 @@ type ConfigurationFormType = {
     timestamp: number | undefined;
 };
 
-export const AddLogDialog: React.FC = () => {
+type AddLogDialogProps = {
+    resetLogs: () => void;
+};
+
+export const AddLogDialog: React.FC<AddLogDialogProps> = ({ resetLogs }) => {
     const [file, setFile] = useState<FormData>();
     const [openDialog, setOpenDialog] = useState<boolean>(false);
     const { uploadLog, data, isSuccess, reset } = useLogs();
@@ -74,6 +78,7 @@ export const AddLogDialog: React.FC = () => {
                     setFile(undefined);
                     reset();
                     setOpenDialog(false);
+                    resetLogs();
                 }
             }
         }

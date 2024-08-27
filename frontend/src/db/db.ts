@@ -62,3 +62,23 @@ export const addData = <T>(
         };
     });
 };
+
+export const getStoreData = <T>(storeName: STORES): Promise<T[]> => {
+    return new Promise((resolve) => {
+        request = indexedDB.open(DATABASE_NAME);
+
+        request.onsuccess = () => {
+            console.log('request.onsuccess - getAllData');
+            db = request.result;
+
+            const tx = db.transaction(storeName, 'readonly');
+            const store = tx.objectStore(storeName);
+            const res = store.getAll();
+
+            res.onsuccess = () => {
+                const returnValue = res.result.map((result) => result.data);
+                resolve(returnValue);
+            };
+        };
+    });
+};
