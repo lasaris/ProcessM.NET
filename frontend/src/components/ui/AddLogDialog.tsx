@@ -5,7 +5,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import React, { useState } from 'react';
+import { STORES } from '@/db/db';
+import { useLogs } from '@/hooks/apiHooks/useLogs';
+import { useIndexedDb } from '@/hooks/useIndexedDb';
+import { ConfiguredLog, Metadata } from '@/models/API/ConfiguredLog';
+import React, { ChangeEvent, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from './button';
 import {
     Dialog,
@@ -16,19 +21,81 @@ import {
     DialogTitle,
     DialogTrigger,
 } from './dialog';
+import { Form, FormField } from './form';
 import { Input } from './input';
 import { Label } from './label';
 import { Separator } from './separator';
 
+type ConfigurationFormType = {
+    logName: string;
+    activity: number;
+    caseId: number;
+    timestamp: number | undefined;
+};
+
 export const AddLogDialog: React.FC = () => {
-    const [isLoaded, setIsLoaded] = useState<boolean>(false);
+    const [file, setFile] = useState<FormData>();
+    const [openDialog, setOpenDialog] = useState<boolean>(false);
+    const { uploadLog, data, isSuccess, reset } = useLogs();
+    const form = useForm<ConfigurationFormType>();
+    const { addIntoDb } = useIndexedDb();
 
     const loadLog = () => {
-        setIsLoaded(true);
+        if (file) {
+            uploadLog(file);
+        }
+    };
+
+    const onSubmit: SubmitHandler<ConfigurationFormType> = async (formData) => {
+        console.log(formData);
+        if (file && data) {
+            const fileInfo = file.get('file');
+
+            if (fileInfo instanceof File) {
+                let metadata: Metadata = {
+                    name: formData.logName,
+                    modified: fileInfo.lastModified,
+                    size: fileInfo.size,
+                };
+
+                const configuredLog: ConfiguredLog = {
+                    metadata,
+                    importedLog: data,
+                };
+
+                console.log(configuredLog);
+                const addIntoDbResult = await addIntoDb(
+                    configuredLog,
+                    STORES.Logs,
+                    formData.logName
+                );
+
+                if (addIntoDbResult) {
+                    setFile(undefined);
+                    reset();
+                    setOpenDialog(false);
+                }
+            }
+        }
+    };
+
+    const onFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+
+        if (e?.target?.files) {
+            const selectedFile = e?.target?.files[0];
+
+            if (selectedFile) {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+
+                setFile(formData);
+            }
+        }
     };
 
     return (
-        <Dialog>
+        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
             <DialogTrigger asChild>
                 <Button>Add Log</Button>
             </DialogTrigger>
@@ -48,77 +115,192 @@ export const AddLogDialog: React.FC = () => {
                             id="file"
                             type="file"
                             accept=".csv"
-                            className="w-5/6"
+                            onChange={onFileSelect}
                         />
                     </div>
-                    {!isLoaded && (
+                    {!isSuccess && (
                         <Button className="w-1/4" onClick={loadLog}>
                             Load
                         </Button>
                     )}
                 </div>
 
-                {isLoaded && (
-                    <div className="flex flex-col gap-4 items-end">
-                        <Separator />
+                {isSuccess && data && (
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)}>
+                            <div className="flex flex-col gap-4 items-end">
+                                <Separator />
+                                <FormField
+                                    control={form.control}
+                                    name="logName"
+                                    render={({ field }) => {
+                                        return (
+                                            <div className="flex flex-col gap-2 justify-center w-full">
+                                                <Label className="w-1/6">
+                                                    Log Name
+                                                </Label>
+                                                <Input
+                                                    onChange={field.onChange}
+                                                    id="logName"
+                                                />
+                                            </div>
+                                        );
+                                    }}
+                                />
+                                <Separator />
+                                <FormField
+                                    control={form.control}
+                                    name="caseId"
+                                    render={({ field }) => {
+                                        return (
+                                            <div className="flex flex-col gap-2 justify-center w-full">
+                                                <Label className="w-1/6">
+                                                    Case ID
+                                                </Label>
+                                                <Select
+                                                    onValueChange={
+                                                        field.onChange
+                                                    }
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Case ID" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {data?.headers.map(
+                                                            (
+                                                                header: string
+                                                            ) => {
+                                                                if (
+                                                                    header ===
+                                                                    ''
+                                                                ) {
+                                                                    return;
+                                                                }
 
-                        <div className="flex flex-col gap-2 justify-center w-full">
-                            <Label className="w-1/6">Case ID</Label>
-                            <Select>
-                                <SelectTrigger className="w-5/6">
-                                    <SelectValue placeholder="Case ID" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="act">act</SelectItem>
-                                    <SelectItem value="id">id</SelectItem>
-                                    <SelectItem value="timestamp">
-                                        timestamp
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="flex flex-col gap-2 justify-center w-full">
-                            <Label className="w-1/6">Activity</Label>
-                            <Select>
-                                <SelectTrigger className="w-5/6">
-                                    <SelectValue placeholder="Activity" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="act">act</SelectItem>
-                                    <SelectItem value="id">id</SelectItem>
-                                    <SelectItem value="timestamp">
-                                        timestamp
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="flex flex-col gap-2 justify-center w-full">
-                            <Label className="w-1/6">Timestamp</Label>
-                            <Select>
-                                <SelectTrigger className="w-5/6">
-                                    <SelectValue placeholder="Timestamp" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="act">act</SelectItem>
-                                    <SelectItem value="id">id</SelectItem>
-                                    <SelectItem value="timestamp">
-                                        timestamp
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <DialogFooter className="w-full">
-                            <Button
-                                type="submit"
-                                className="w-1/4"
-                                onClick={() => {
-                                    setIsLoaded(false);
-                                }}
-                            >
-                                Load
-                            </Button>
-                        </DialogFooter>
-                    </div>
+                                                                return (
+                                                                    <SelectItem
+                                                                        key={
+                                                                            header
+                                                                        }
+                                                                        value={
+                                                                            header
+                                                                        }
+                                                                    >
+                                                                        {header}
+                                                                    </SelectItem>
+                                                                );
+                                                            }
+                                                        )}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        );
+                                    }}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="activity"
+                                    render={({ field }) => {
+                                        return (
+                                            <div className="flex flex-col gap-2 justify-center w-full">
+                                                <Label className="w-1/6">
+                                                    Activity
+                                                </Label>
+                                                <Select
+                                                    onValueChange={
+                                                        field.onChange
+                                                    }
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Activity" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {data?.headers.map(
+                                                            (
+                                                                header: string
+                                                            ) => {
+                                                                if (
+                                                                    header ===
+                                                                    ''
+                                                                ) {
+                                                                    return;
+                                                                }
+                                                                return (
+                                                                    <SelectItem
+                                                                        key={
+                                                                            header
+                                                                        }
+                                                                        value={
+                                                                            header
+                                                                        }
+                                                                    >
+                                                                        {header}
+                                                                    </SelectItem>
+                                                                );
+                                                            }
+                                                        )}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        );
+                                    }}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="timestamp"
+                                    render={({ field }) => {
+                                        return (
+                                            <div className="flex flex-col gap-2 justify-center w-full">
+                                                <Label className="w-1/6">
+                                                    Timestamp
+                                                </Label>
+                                                <Select
+                                                    onValueChange={
+                                                        field.onChange
+                                                    }
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Timestamp" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {data?.headers.map(
+                                                            (
+                                                                header: string
+                                                            ) => {
+                                                                if (
+                                                                    header ===
+                                                                    ''
+                                                                ) {
+                                                                    return;
+                                                                }
+                                                                return (
+                                                                    <SelectItem
+                                                                        key={
+                                                                            header
+                                                                        }
+                                                                        value={
+                                                                            header
+                                                                        }
+                                                                    >
+                                                                        {header}
+                                                                    </SelectItem>
+                                                                );
+                                                            }
+                                                        )}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        );
+                                    }}
+                                />
+                                <DialogFooter className="w-full">
+                                    <Button type="submit" className="w-1/4">
+                                        Upload
+                                    </Button>
+                                </DialogFooter>
+                            </div>
+                        </form>
+                    </Form>
                 )}
             </DialogContent>
         </Dialog>
