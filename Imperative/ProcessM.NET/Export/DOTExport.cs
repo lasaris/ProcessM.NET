@@ -94,10 +94,12 @@ namespace ProcessM.NET.Export
                 outStr.Append(doubleIndent + "\"" + t.Id + "\" [");
                 outStr.Append("id=\"" + t.Id + "\",");
                 outStr.Append("fillcolor=" + t.Color + ",");
+
+                var label = t.Label.Trim('<', '>');
                 if (t.AbsoluteFrequency != 0)
                 {
                     outStr.Append("shape=record, ");
-                    outStr.Append("label=< <B>" + t.Label + "</B> | <FONT POINT-SIZE=\"10\">" + t.AbsoluteFrequency + "</FONT>>, ");
+                    outStr.Append("label=< <B>" + label + "</B> | <FONT POINT-SIZE=\"10\">" + t.AbsoluteFrequency + "</FONT>>, ");
                     outStr.Append("tooltip=\"" +
                                   "Absolute frequency: " + t.AbsoluteFrequency + "&#10;" +
                                   "Case frequency: " + t.CaseFrequency + "&#10;" +
@@ -106,7 +108,7 @@ namespace ProcessM.NET.Export
                 }
                 else
                 {
-                    outStr.Append("label =< <B>" + t.Label + "</B> >");
+                    outStr.Append("label =< <B>" + label + "</B> >");
                 }
                 outStr.Append("];\n");
             }

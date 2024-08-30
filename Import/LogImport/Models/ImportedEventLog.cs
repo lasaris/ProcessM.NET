@@ -146,15 +146,17 @@ namespace LogImport.Models
         /// </summary>
         /// <param name="rows">Represents CSV rows (without headers)</param>
         /// <param name="headers">Represents CSV headers row</param> 
-        public ImportedEventLog(List<string[]> rows, string[] headers)
-        {
-            this._headers = headers;
-            this._rows = rows;
+        public ImportedEventLog(List<string[]> rows, string[] headers) : this(rows, headers, 0, 1, null, null) {}
 
-            this._caseId = 0;
-            this._activity = 1;
-            this._timestamp = null;
-            this._resources = null;
+        public ImportedEventLog(List<string[]> rows, string[] headers, int activity, int caseId, int? timestamp,
+            string timestampFormat)
+        {
+            this._rows = rows;
+            this._headers = headers;
+            this._activity = activity;
+            this._caseId = caseId;
+            this._timestamp = timestamp;
+            this._timestampFormat = timestampFormat;
         }
 
         /// <summary>

@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogImport", "Import\LogImpo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogImport.Tests", "Import\LogImport.Tests\LogImport.Tests.csproj", "{D48BF262-0591-4955-9D86-DE863D59B3B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{EF670532-AFE4-4E7D-9255-D7A2C5CED68D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +147,18 @@ Global
 		{D48BF262-0591-4955-9D86-DE863D59B3B7}.Release|x64.Build.0 = Release|Any CPU
 		{D48BF262-0591-4955-9D86-DE863D59B3B7}.Release|x86.ActiveCfg = Release|Any CPU
 		{D48BF262-0591-4955-9D86-DE863D59B3B7}.Release|x86.Build.0 = Release|Any CPU
+		{EF670532-AFE4-4E7D-9255-D7A2C5CED68D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF670532-AFE4-4E7D-9255-D7A2C5CED68D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF670532-AFE4-4E7D-9255-D7A2C5CED68D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EF670532-AFE4-4E7D-9255-D7A2C5CED68D}.Debug|x64.Build.0 = Debug|Any CPU
+		{EF670532-AFE4-4E7D-9255-D7A2C5CED68D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EF670532-AFE4-4E7D-9255-D7A2C5CED68D}.Debug|x86.Build.0 = Debug|Any CPU
+		{EF670532-AFE4-4E7D-9255-D7A2C5CED68D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF670532-AFE4-4E7D-9255-D7A2C5CED68D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF670532-AFE4-4E7D-9255-D7A2C5CED68D}.Release|x64.ActiveCfg = Release|Any CPU
+		{EF670532-AFE4-4E7D-9255-D7A2C5CED68D}.Release|x64.Build.0 = Release|Any CPU
+		{EF670532-AFE4-4E7D-9255-D7A2C5CED68D}.Release|x86.ActiveCfg = Release|Any CPU
+		{EF670532-AFE4-4E7D-9255-D7A2C5CED68D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
