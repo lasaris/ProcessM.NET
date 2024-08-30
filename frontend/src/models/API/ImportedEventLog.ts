@@ -3,6 +3,6 @@ export type ImportedEventLog = {
     caseId: number;
     headers: string[];
     rows: Array<string>[];
-    timestamp: string | null;
+    timestamp: number | null;
     timestampFormat: string | null;
 };

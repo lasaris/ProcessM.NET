@@ -84,6 +84,27 @@ export const getStoreData = <T>(storeName: STORES): Promise<T[]> => {
     });
 };
 
+export const getStoreObject = <T>(
+    storeName: STORES,
+    key: string
+): Promise<T> => {
+    return new Promise((resolve) => {
+        request = indexedDB.open(DATABASE_NAME, version);
+
+        request.onsuccess = () => {
+            db = request.result;
+
+            const tx = db.transaction(storeName, 'readonly');
+            const store = tx.objectStore(storeName);
+            const res = store.get(key);
+
+            res.onsuccess = () => {
+                resolve(res.result.data);
+            };
+        };
+    });
+};
+
 export const deleteStoreData = (
     storeName: string,
     key: string

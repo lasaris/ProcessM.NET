@@ -1,3 +1,4 @@
+import { ConfiguredLog } from '@/models/API/ConfiguredLog';
 import { axiosInstance } from './axios';
 
 const uploadLog = (file: FormData) => {
@@ -8,8 +9,17 @@ const uploadLog = (file: FormData) => {
     });
 };
 
+const alphaMine = (configuredLog: ConfiguredLog) => {
+    return axiosInstance.post('/log/alpha', configuredLog, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+};
+
 const logsApi = {
     uploadLog,
+    alphaMine,
 };
 
 export default logsApi;

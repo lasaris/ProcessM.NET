@@ -1,10 +1,7 @@
 import { NavBar } from '@/components/ui/NavBar';
+import { Toaster } from '@/components/ui/toaster';
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-
-// type LayoutWithNavbarProps = {
-//     children: React.ReactNode;
-// };
 
 export const LayoutWithNavbar: React.FC = () => {
     return (
@@ -13,6 +10,7 @@ export const LayoutWithNavbar: React.FC = () => {
             <div className="flex flex-col items-center grow z-10">
                 <Outlet />
             </div>
+            <Toaster />
         </div>
     );
 };

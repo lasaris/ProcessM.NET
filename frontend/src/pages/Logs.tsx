@@ -62,13 +62,31 @@ export const Logs: React.FC = () => {
                                         {log.metadata.name}
                                     </TableCell>
                                     <TableCell className="font-medium">
-                                        {log.importedLog.activity}
+                                        {log.importedLog.activity != null &&
+                                        log.importedLog.headers.length >
+                                            log.importedLog.activity
+                                            ? log.importedLog.headers[
+                                                  log.importedLog.activity
+                                              ]
+                                            : ''}
                                     </TableCell>
                                     <TableCell className="font-medium">
-                                        {log.importedLog.caseId}
+                                        {log.importedLog.caseId != null &&
+                                        log.importedLog.headers.length >
+                                            log.importedLog.caseId
+                                            ? log.importedLog.headers[
+                                                  log.importedLog.caseId
+                                              ]
+                                            : ''}
                                     </TableCell>
                                     <TableCell className="font-medium">
-                                        {log.importedLog.timestamp}
+                                        {log.importedLog.timestamp != null &&
+                                        log.importedLog.headers.length >
+                                            log.importedLog.timestamp
+                                            ? log.importedLog.headers[
+                                                  log.importedLog.timestamp
+                                              ]
+                                            : ''}
                                     </TableCell>
                                     <TableCell className="font-medium">
                                         {log.metadata.size} kB

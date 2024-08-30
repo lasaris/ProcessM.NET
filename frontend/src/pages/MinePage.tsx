@@ -4,11 +4,13 @@ import { SwitchWithLabel } from '@/components/ui/SwitchWithLabel';
 import { VisibleActivitiesTrigger } from '@/components/ui/VisibleActivitiesTrigger';
 import { VisibleTracesTrigger } from '@/components/ui/VisibleTracesTrigger';
 import { Button } from '@/components/ui/button';
-import { dot } from '@/examples/exampleDots/dot';
+import { useAlphaMine } from '@/hooks/apiHooks/useAlphaMine';
+import SpinnerLogo from '@/icons/SpinnerLoader.svg';
 import { MINER_TYPE } from '@/models/MinerType';
 import { Graphviz } from 'graphviz-react';
 import { SaveIcon } from 'lucide-react';
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 type MinePageProps = {
     miningType: MINER_TYPE;
@@ -19,20 +21,41 @@ export const MinePage: React.FC<MinePageProps> = ({ miningType }) => {
     const [fitness, setFitness] = useState<number>(1);
     const [ignoreFrequency, setIgnoreFrequency] = useState<boolean>(false);
     const [sourcePetriNet, setSourcePetriNet] = useState<boolean>(false);
+    const { entityName } = useParams();
+    const { data, isLoading, isError } = useAlphaMine(entityName || '');
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center w-full h-full">
+                <img src={SpinnerLogo} alt="loader" />
+            </div>
+        );
+    }
+
+    if (isError) {
+        return (
+            <div className="flex justify-center items-center w-full h-full">
+                Unable to load!
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col w-full h-full grow md:flex-row">
             <div className="flex items-center justify-center w-full md:w-3/4 ">
-                <Graphviz
-                    dot={dot}
-                    className="border-4"
-                    options={{
-                        zoom: true,
-                        width: '70vw',
-                        height: '80vh',
-                        useWorker: false,
-                    }}
-                />
+                {data && (
+                    <Graphviz
+                        dot={data.data}
+                        className="border-4"
+                        options={{
+                            zoom: true,
+                            width: '70vw',
+                            height: '80vh',
+                            useWorker: false,
+                        }}
+                    />
+                )}
+                {!data && <div>Unable to load</div>}
             </div>
             <div className="grow border-s p-4 flex flex-col gap-8 items-center">
                 <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
