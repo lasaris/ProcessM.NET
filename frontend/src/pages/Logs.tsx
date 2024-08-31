@@ -8,7 +8,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { convertUnixTimestampToDateString } from '@/helpers/convertUnixTimestampToDateString';
-import { useIndexedDb } from '@/hooks/useIndexedDb';
+import { useLogsDb } from '@/hooks/useLogsDb';
 import { RightArrow } from '@/icons/RightArrow';
 import SpinnerLogo from '@/icons/SpinnerLoader.svg';
 import { TargetURL } from '@/router';
@@ -19,7 +19,7 @@ import { useNavigate } from 'react-router-dom';
 
 export const Logs: React.FC = () => {
     const navigate = useNavigate();
-    const { fetchAllLogs, deleteLog } = useIndexedDb();
+    const { fetchAllLogs, deleteLog } = useLogsDb();
     const localLogs = useAsync(fetchAllLogs, []);
 
     const selectLog = (name: string) => {
@@ -89,7 +89,7 @@ export const Logs: React.FC = () => {
                                             : ''}
                                     </TableCell>
                                     <TableCell className="font-medium">
-                                        {log.metadata.size} kB
+                                        {log.metadata.size} B
                                     </TableCell>
                                     <TableCell className="font-medium">
                                         {convertUnixTimestampToDateString(

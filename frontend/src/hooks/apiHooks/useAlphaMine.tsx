@@ -1,9 +1,9 @@
 import logsApi from '@/api/logs';
 import { useQuery } from '@tanstack/react-query';
-import { useIndexedDb } from '../useIndexedDb';
+import { useLogsDb } from '../useLogsDb';
 
 export const useAlphaMine = (logName: string) => {
-    const { fetchSingleLog } = useIndexedDb();
+    const { fetchSingleLog } = useLogsDb();
     const { data, isLoading, isError } = useQuery({
         queryKey: [],
         retry: 1,

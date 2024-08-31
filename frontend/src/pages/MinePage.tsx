@@ -1,14 +1,13 @@
 import { ExportButton } from '@/components/ui/ExportButton';
 import { PMSlider } from '@/components/ui/PMSlider';
+import { SaveModelDialog } from '@/components/ui/SaveModelDialog';
 import { SwitchWithLabel } from '@/components/ui/SwitchWithLabel';
 import { VisibleActivitiesTrigger } from '@/components/ui/VisibleActivitiesTrigger';
 import { VisibleTracesTrigger } from '@/components/ui/VisibleTracesTrigger';
-import { Button } from '@/components/ui/button';
 import { useAlphaMine } from '@/hooks/apiHooks/useAlphaMine';
 import SpinnerLogo from '@/icons/SpinnerLoader.svg';
 import { MINER_TYPE } from '@/models/MinerType';
 import { Graphviz } from 'graphviz-react';
-import { SaveIcon } from 'lucide-react';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -102,10 +101,7 @@ export const MinePage: React.FC<MinePageProps> = ({ miningType }) => {
                     />
                 </div>
                 <div className="flex w-5/6 justify-start">
-                    <Button className="flex gap-2">
-                        <SaveIcon />
-                        Save To Models
-                    </Button>
+                    {data && <SaveModelDialog model={data.data} />}
                 </div>
             </div>
         </div>

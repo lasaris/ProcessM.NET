@@ -9,7 +9,7 @@ import {
 } from '@/db/db';
 import { ConfiguredLog } from '@/models/API/ConfiguredLog';
 
-export const useIndexedDb = () => {
+export const useLogsDb = () => {
     const { toast } = useToast();
     const handleInitDB = async (): Promise<boolean> => {
         const status = await initDB();
@@ -54,16 +54,45 @@ export const useIndexedDb = () => {
     };
 
     const fetchAllLogs = async (): Promise<ConfiguredLog[]> => {
+        console.log('Fetching all logs - calling handleInitDB');
+        const initDbAttempt = await handleInitDB();
+        console.log('After handleInitDB. initDbAttempt const: ', initDbAttempt);
+
+        if (!initDbAttempt) {
+            toast({
+                title: 'Unable to connect to indexed database',
+                variant: 'destructive',
+            });
+        }
+
         const logs = await getStoreData<ConfiguredLog>(STORES.Logs);
         return logs;
     };
 
     const fetchSingleLog = async (key: string): Promise<ConfiguredLog> => {
+        const initDbAttempt = await handleInitDB();
+
+        if (!initDbAttempt) {
+            toast({
+                title: 'Unable to connect to indexed database',
+                variant: 'destructive',
+            });
+        }
+
         const log = await getStoreObject<ConfiguredLog>(STORES.Logs, key);
         return log;
     };
 
     const deleteLog = async (logKey: string): Promise<boolean> => {
+        const initDbAttempt = await handleInitDB();
+
+        if (!initDbAttempt) {
+            toast({
+                title: 'Unable to connect to indexed database',
+                variant: 'destructive',
+            });
+        }
+
         const deleteResult = await deleteStoreData(STORES.Logs, logKey);
 
         if (deleteResult) {

@@ -1,7 +1,9 @@
-import { dot } from '@/examples/exampleDots/dot';
+import { useModelsDb } from '@/hooks/useModelsDb';
+import SpinnerLogo from '@/icons/SpinnerLoader.svg';
 import Graphviz from 'graphviz-react';
 import { EyeIcon } from 'lucide-react';
-import React from 'react';
+import React, { ReactNode } from 'react';
+import { useAsync } from 'react-async-hook';
 import { Button } from './button';
 import {
     Dialog,
@@ -19,6 +21,31 @@ export type ViewModelProps = {
 };
 
 export const ViewModel: React.FC<ViewModelProps> = ({ title }) => {
+    const { fetchSingleModel } = useModelsDb();
+    const model = useAsync(() => fetchSingleModel(title), []);
+
+    let content: ReactNode;
+
+    if (model.loading) {
+        content = <img className="w-20 h-20" src={SpinnerLogo} alt="loader" />;
+    } else if (model.result == undefined) {
+        content = <div>Unable to load the model :/</div>;
+    } else {
+        content = (
+            <div>
+                <Graphviz
+                    dot={model.result.model}
+                    className="border-4"
+                    options={{
+                        zoom: true,
+                        width: '100%',
+                        useWorker: false,
+                    }}
+                />
+            </div>
+        );
+    }
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -31,17 +58,7 @@ export const ViewModel: React.FC<ViewModelProps> = ({ title }) => {
                     <DialogTitle>{title}</DialogTitle>
                     <DialogDescription>View the mined model.</DialogDescription>
                 </DialogHeader>
-                <div>
-                    <Graphviz
-                        dot={dot}
-                        className="border-4"
-                        options={{
-                            zoom: true,
-                            width: '100%',
-                            useWorker: false,
-                        }}
-                    />
-                </div>
+                {content}
                 <DialogFooter>
                     <DialogClose asChild>
                         <Button type="button">Close</Button>

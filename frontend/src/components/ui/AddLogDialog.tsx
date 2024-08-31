@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/select';
 import { STORES } from '@/db/db';
 import { useLogs } from '@/hooks/apiHooks/useLogs';
-import { useIndexedDb } from '@/hooks/useIndexedDb';
+import { useLogsDb } from '@/hooks/useLogsDb';
 import { ConfiguredLog, Metadata } from '@/models/API/ConfiguredLog';
 import React, { ChangeEvent, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -42,7 +42,7 @@ export const AddLogDialog: React.FC<AddLogDialogProps> = ({ resetLogs }) => {
     const [openDialog, setOpenDialog] = useState<boolean>(false);
     const { uploadLog, data, isSuccess, reset } = useLogs();
     const form = useForm<ConfigurationFormType>();
-    const { addIntoDb } = useIndexedDb();
+    const { addIntoDb } = useLogsDb();
 
     const loadLog = () => {
         if (file) {

@@ -9,64 +9,55 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { dot } from '@/examples/exampleDots/dot';
 import { pnml } from '@/examples/examplePNMLs/example';
 import { exportDot } from '@/helpers/exportDot';
 import { exportPnml } from '@/helpers/exportPnml';
+import { useModelsDb } from '@/hooks/useModelsDb';
 import { RightArrow } from '@/icons/RightArrow';
-import { Model, ModelType } from '@/models/ImperativeModel';
+import SpinnerLogo from '@/icons/SpinnerLoader.svg';
+import { ModelType } from '@/models/ImperativeModel';
 import { TargetURL } from '@/router';
 import { TooltipWrapper } from '@/wrappers/TooltipWrapper';
 import { TrashIcon } from 'lucide-react';
 import React from 'react';
+import { useAsync } from 'react-async-hook';
 import { useNavigate } from 'react-router-dom';
-
-const models: Model[] = [
-    {
-        name: 'Model Aardvark',
-        size: '6.16 KB',
-        modified: '09.08.2024 19:02',
-        type: ModelType.IMPERATIVE,
-    },
-    {
-        name: 'Model Bananarama',
-        size: '6.16 KB',
-        modified: '09.08.2024 19:02',
-        type: ModelType.DECLARATIVE,
-    },
-    {
-        name: 'Model Catastrophe',
-        size: '6.16 KB',
-        modified: '09.08.2024 19:02',
-        type: ModelType.IMPERATIVE,
-    },
-    {
-        name: 'Model Doodlebug',
-        size: '6.16 KB',
-        modified: '09.08.2024 19:02',
-        type: ModelType.DECLARATIVE,
-    },
-    {
-        name: 'Model Eggcellent',
-        size: '6.16 KB',
-        modified: '09.08.2024 19:02',
-        type: ModelType.IMPERATIVE,
-    },
-    {
-        name: 'Model Fandango',
-        size: '6.16 KB',
-        modified: '09.08.2024 19:02',
-        type: ModelType.DECLARATIVE,
-    },
-];
 
 export const Models: React.FC = () => {
     const navigate = useNavigate();
+    const { fetchAllModels, deleteModel } = useModelsDb();
+    const localModels = useAsync(fetchAllModels, []);
 
     const selectModel = (name: string) => {
         const destination = TargetURL.MODELS_OPERATION;
         navigate(destination.replace(':entityName', name));
     };
+
+    const handleDeleteModel = async (key: string) => {
+        const deleteResult = await deleteModel(key);
+
+        if (deleteResult) {
+            localModels.execute();
+        }
+    };
+
+    if (localModels.loading) {
+        return (
+            <div className="w-full h-full flex items-center justify-center">
+                <img className="w-20 h-20" src={SpinnerLogo} alt="loader" />
+            </div>
+        );
+    }
+
+    if (localModels.result == undefined) {
+        return (
+            <div className="w-full h-full flex items-centere justify-center">
+                Unable to load models!
+            </div>
+        );
+    }
+
+    const models = localModels.result;
 
     return (
         <div className="relative w-full h-full flex flex-col items-center justify-between">
@@ -76,8 +67,6 @@ export const Models: React.FC = () => {
                         <TableRow>
                             <TableHead>Name</TableHead>
                             <TableHead>Export</TableHead>
-                            <TableHead>Size</TableHead>
-                            <TableHead>Last Modified</TableHead>
                             <TableHead className="text-center">
                                 Type (Imperative/Declarative)
                             </TableHead>
@@ -97,14 +86,20 @@ export const Models: React.FC = () => {
                                         <div className="flex gap-4">
                                             <Button
                                                 onClick={() =>
-                                                    exportPnml(model.name, pnml)
+                                                    exportPnml(
+                                                        model.name,
+                                                        model.model
+                                                    )
                                                 }
                                             >
                                                 PNML
                                             </Button>
                                             <Button
                                                 onClick={() =>
-                                                    exportDot(model.name, dot)
+                                                    exportDot(
+                                                        model.name,
+                                                        model.model
+                                                    )
                                                 }
                                             >
                                                 DOT
@@ -119,12 +114,6 @@ export const Models: React.FC = () => {
                                             JSON
                                         </Button>
                                     )}
-                                </TableCell>
-                                <TableCell className="font-medium">
-                                    {model.size}
-                                </TableCell>
-                                <TableCell className="font-medium">
-                                    {model.modified}
                                 </TableCell>
                                 <TableCell className="font-medium text-center">
                                     {model.type === ModelType.IMPERATIVE
@@ -150,7 +139,12 @@ export const Models: React.FC = () => {
                                 </TableCell>
                                 <TableCell className="">
                                     <div className="flex justify-end">
-                                        <div className="rounded-full bg-slate-400 w-8 h-8 flex items-center justify-center hover:shadow-lg hover:cursor-pointer">
+                                        <div
+                                            onClick={() =>
+                                                handleDeleteModel(model.name)
+                                            }
+                                            className="rounded-full bg-slate-400 w-8 h-8 flex items-center justify-center hover:shadow-lg hover:cursor-pointer"
+                                        >
                                             <TrashIcon />
                                         </div>
                                     </div>
