@@ -28,9 +28,9 @@ import { Separator } from './separator';
 
 type ConfigurationFormType = {
     logName: string;
-    activity: number;
-    caseId: number;
-    timestamp: number | undefined;
+    activity: string;
+    caseId: string;
+    timestamp: string | undefined;
 };
 
 type AddLogDialogProps = {
@@ -62,12 +62,15 @@ export const AddLogDialog: React.FC<AddLogDialogProps> = ({ resetLogs }) => {
                     size: fileInfo.size,
                 };
 
+                data.activity = data.headers.indexOf(formData.activity);
+                data.caseId = data.headers.indexOf(formData.caseId);
+                // TODO: Set timestamp
+
                 const configuredLog: ConfiguredLog = {
                     metadata,
                     importedLog: data,
                 };
 
-                console.log(configuredLog);
                 const addIntoDbResult = await addIntoDb(
                     configuredLog,
                     STORES.Logs,
