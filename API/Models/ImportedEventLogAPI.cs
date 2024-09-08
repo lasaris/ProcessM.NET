@@ -17,4 +17,21 @@ public class ImportedEventLogAPI
         return new ImportedEventLog(this.Rows, this.Headers, this.Activity, this.CaseId, this.Timestamp,
             this.TimestampFormat);
     }
+    
+    public List<string> GetAllActivities()
+    {
+        var result = new List<string>();
+
+        foreach (var strings in Rows)
+        {
+            var currentActivity = strings[Activity];
+
+            if (!result.Contains(currentActivity))
+            {
+                result.Add(currentActivity);
+            }
+        }
+
+        return result;
+    }
 }
