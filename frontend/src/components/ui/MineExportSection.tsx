@@ -1,23 +1,30 @@
+import { exportDot } from '@/helpers/exportDot';
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import { ExportButton } from './ExportButton';
 
 type MineExportSectionProps = {
-    model: string;
+    dotModel: string;
+    exportPnmlFunction: () => void;
 };
 
 export const MineExportSection: React.FC<MineExportSectionProps> = ({
-    model,
+    dotModel,
+    exportPnmlFunction,
 }) => {
     // TODO: implement the functionality
+    const { entityName } = useParams();
+
+    if (!entityName) {
+        return;
+    }
+
     return (
         <div className="flex justify-start w-5/6 gap-4">
-            <ExportButton
-                title="PNML"
-                exportFunction={() => console.log('PNML Download' + model)}
-            />
+            <ExportButton title="PNML" exportFunction={exportPnmlFunction} />
             <ExportButton
                 title="DOT"
-                exportFunction={() => console.log('DOT Download' + model)}
+                exportFunction={() => exportDot(entityName, dotModel)}
             />
         </div>
     );

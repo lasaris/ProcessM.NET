@@ -21,12 +21,10 @@ export const PMSlider: React.FC<PMSliderProps> = ({
 }) => {
     return (
         <div className="w-5/6 flex flex-col gap-3">
-            <Label>
-                {label} - {value}/{maxValue}
-            </Label>
+            <Label>{label}</Label>
             <Slider
                 defaultValue={[value]}
-                onValueChange={([val]) => changeValue(val)}
+                onValueCommit={([val]) => changeValue(val)}
                 max={maxValue}
                 step={step}
                 className={className}

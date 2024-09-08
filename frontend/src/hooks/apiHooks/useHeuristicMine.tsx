@@ -1,11 +1,11 @@
 import logsApi from '@/api/logs';
-import { AlphaMinerConfigurationType } from '@/models/schemas/AlphaMinerConfiguration';
+import { HeuristicMinerConfigurationType } from '@/models/schemas/HeuristicMinerConfiguration';
 import { useQuery } from '@tanstack/react-query';
 import { useLogsDb } from '../useLogsDb';
 
-export const useAlphaMine = (
+export const useHeuristicMine = (
     logName: string,
-    configuration: AlphaMinerConfigurationType
+    configuration: HeuristicMinerConfigurationType
 ) => {
     const { fetchSingleLog } = useLogsDb();
     const { data, isLoading, isError } = useQuery({
@@ -13,9 +13,8 @@ export const useAlphaMine = (
         retry: 1,
         queryFn: async () => {
             const configuredLog = await fetchSingleLog(logName);
-            console.log('This is the config: ', configuration);
             configuredLog.configuration = configuration;
-            return logsApi.alphaMine(configuredLog);
+            return logsApi.heuristicMine(configuredLog);
         },
     });
 

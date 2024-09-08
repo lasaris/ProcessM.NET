@@ -10,7 +10,15 @@ const uploadLog = (file: FormData) => {
 };
 
 const alphaMine = (configuredLog: ConfiguredLog) => {
-    return axiosInstance.post('/log/alpha', configuredLog, {
+    return axiosInstance.post('/log/mine/alpha', configuredLog, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+};
+
+const heuristicMine = (configudLog: ConfiguredLog) => {
+    return axiosInstance.post('/log/mine/heuristic', configudLog, {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -20,6 +28,7 @@ const alphaMine = (configuredLog: ConfiguredLog) => {
 const logsApi = {
     uploadLog,
     alphaMine,
+    heuristicMine,
 };
 
 export default logsApi;

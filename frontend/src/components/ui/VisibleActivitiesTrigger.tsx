@@ -8,10 +8,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { configureMinerFormSchema } from '@/pages/MinePage';
 import { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { z } from 'zod';
 import { Switch } from './switch';
 
 import {
@@ -22,16 +20,16 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { AlphaMinerConfigurationType } from '@/models/schemas/AlphaMinerConfiguration';
 
 type VisibleTracesActivitiesProps = {
     activities: string[];
-    form: UseFormReturn<z.infer<typeof configureMinerFormSchema>>;
+    form: UseFormReturn<AlphaMinerConfigurationType>;
 };
 
-export const VisibleActivitiesTrigger: React.FC<VisibleTracesActivitiesProps> = ({
-    activities,
-    form,
-}) => {
+export const VisibleActivitiesTrigger: React.FC<
+    VisibleTracesActivitiesProps
+> = ({ activities, form }) => {
     const [invisActivities, setInvisActivities] = useState<string[]>(
         form.getValues().invisibleActivities
     );
@@ -86,14 +84,16 @@ export const VisibleActivitiesTrigger: React.FC<VisibleTracesActivitiesProps> = 
             <DialogTrigger asChild>
                 <Button>Activities</Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Set Visible Activities</DialogTitle>
                     <DialogDescription>
                         You can edit out Activities from the model here.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">{content}</div>
+                <div className="gap-4 py-4 overflow-auto h-[350px]">
+                    {content}
+                </div>
                 <DialogFooter>
                     <Button onClick={handleSubmit}>Save changes</Button>
                 </DialogFooter>

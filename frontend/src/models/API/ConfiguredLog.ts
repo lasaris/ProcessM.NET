@@ -1,9 +1,6 @@
+import { AlphaMinerConfigurationType } from '../schemas/AlphaMinerConfiguration';
+import { HeuristicMinerConfigurationType } from '../schemas/HeuristicMinerConfiguration';
 import { ImportedEventLog } from './ImportedEventLog';
-
-export type MineConfiguration = {
-    sourcePetriNet: boolean;
-    ignoreFrequency: boolean;
-};
 
 export type Metadata = {
     name: string;
@@ -14,5 +11,7 @@ export type Metadata = {
 export type ConfiguredLog = {
     importedLog: ImportedEventLog;
     metadata: Metadata;
-    configuration?: MineConfiguration;
+    configuration?:
+        | AlphaMinerConfigurationType
+        | HeuristicMinerConfigurationType;
 };

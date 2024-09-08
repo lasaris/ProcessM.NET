@@ -9,10 +9,8 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { TraceWithOccurence } from '@/models/TraceWithOccurence';
-import { configureMinerFormSchema } from '@/pages/MinePage';
 import { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { z } from 'zod';
 import { Switch } from './switch';
 
 import {
@@ -25,10 +23,11 @@ import {
 } from '@/components/ui/table';
 import { areArraysEqual } from '@/helpers/areArraysEqual';
 import { doesArrayContainArray } from '@/helpers/doesArrayContainArray';
+import { AlphaMinerConfigurationType } from '@/models/schemas/AlphaMinerConfiguration';
 
 type VisibleTracesTriggerProps = {
     traces: TraceWithOccurence[];
-    form: UseFormReturn<z.infer<typeof configureMinerFormSchema>>;
+    form: UseFormReturn<AlphaMinerConfigurationType>;
 };
 
 export const VisibleTracesTrigger: React.FC<VisibleTracesTriggerProps> = ({
@@ -44,12 +43,10 @@ export const VisibleTracesTrigger: React.FC<VisibleTracesTriggerProps> = ({
     };
 
     const changeCheckedTrace = (trace: string[]) => {
-        console.log(
-            `Does the array ${invisTraces} contain: ${trace}? ` +
-                doesArrayContainArray(invisTraces, trace)
-        );
         if (doesArrayContainArray(invisTraces, trace)) {
-            setInvisTraces((prevState) => prevState.filter((t) => !areArraysEqual(t, trace)));
+            setInvisTraces((prevState) =>
+                prevState.filter((t) => !areArraysEqual(t, trace))
+            );
             return;
         }
 
@@ -98,14 +95,16 @@ export const VisibleTracesTrigger: React.FC<VisibleTracesTriggerProps> = ({
             <DialogTrigger asChild>
                 <Button>Traces</Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Set Traces</DialogTitle>
                     <DialogDescription>
                         You can edit out Traces from the model here.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">{content}</div>
+                <div className="gap-4 py-4 overflow-auto h-[350px]">
+                    {content}
+                </div>
                 <DialogFooter>
                     <Button onClick={handleSubmit}>Save changes</Button>
                 </DialogFooter>
