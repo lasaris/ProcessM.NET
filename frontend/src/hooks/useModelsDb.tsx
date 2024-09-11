@@ -27,7 +27,7 @@ export const useModelsDb = () => {
             await addData(STORES.Models, { data, key });
 
             toast({
-                title: `Successfully added log: ${key}!`,
+                title: `Successfully added model: ${key}!`,
             });
 
             return true;

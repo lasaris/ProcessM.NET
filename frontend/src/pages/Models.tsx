@@ -88,7 +88,7 @@ export const Models: React.FC = () => {
                                                 onClick={() =>
                                                     exportPnml(
                                                         model.name,
-                                                        model.model
+                                                        model.model as string
                                                     )
                                                 }
                                             >
@@ -98,7 +98,7 @@ export const Models: React.FC = () => {
                                                 onClick={() =>
                                                     exportDot(
                                                         model.name,
-                                                        model.model
+                                                        model.model as string
                                                     )
                                                 }
                                             >

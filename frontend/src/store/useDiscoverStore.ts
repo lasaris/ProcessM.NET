@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 
 export interface DiscoverConfiguration {
-    constraintName: string;
-    percentageOfInstances: number;
-    percentageOfEvents: number;
+    template: string;
+    poi: number;
+    poe: number;
     checkVacuously: boolean;
 }
 
@@ -35,7 +35,7 @@ export const useDiscoverStore = create<DiscoverConfigurationState>()((set) => ({
         set((state) => ({
             configurations: state.configurations.map((configuration) => {
                 if (
-                    configuration.constraintName === configName &&
+                    configuration.template === configName &&
                     typeof value === 'boolean'
                 ) {
                     configuration.checkVacuously = value;
@@ -47,8 +47,8 @@ export const useDiscoverStore = create<DiscoverConfigurationState>()((set) => ({
     editEvents: (configName: string, value: number) =>
         set((state) => ({
             configurations: state.configurations.map((configuration) => {
-                if (configuration.constraintName === configName) {
-                    configuration.percentageOfEvents = value;
+                if (configuration.template === configName) {
+                    configuration.poe = value;
                 }
 
                 return configuration;
@@ -57,8 +57,8 @@ export const useDiscoverStore = create<DiscoverConfigurationState>()((set) => ({
     editInstances: (configName: string, value: number) =>
         set((state) => ({
             configurations: state.configurations.map((configuration) => {
-                if (configuration.constraintName === configName) {
-                    configuration.percentageOfInstances = value;
+                if (configuration.template === configName) {
+                    configuration.poi = value;
                 }
 
                 return configuration;

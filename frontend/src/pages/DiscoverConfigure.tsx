@@ -33,7 +33,7 @@ export const DiscoverConfigure: React.FC = () => {
     const items = configurations.map((constraint) => {
         return (
             <ConstraintConfigure
-                key={constraint.constraintName}
+                key={constraint.template}
                 constraint={constraint}
             />
         );

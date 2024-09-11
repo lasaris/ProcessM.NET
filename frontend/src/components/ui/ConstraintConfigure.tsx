@@ -24,63 +24,55 @@ export const ConstraintConfigure: React.FC<ConstraintConfigureProps> = ({
         useDiscoverStore();
 
     return (
-        <AccordionItem
-            key={constraint.constraintName}
-            value={constraint.constraintName}
-        >
-            <AccordionTrigger>{constraint.constraintName}</AccordionTrigger>
+        <AccordionItem key={constraint.template} value={constraint.template}>
+            <AccordionTrigger>{constraint.template}</AccordionTrigger>
             <AccordionContent className="grid grid-cols-6 gap-4 py-8 px-4">
                 <Label
-                    htmlFor={
-                        constraint.constraintName + 'percentageOfInstances'
-                    }
+                    htmlFor={constraint.template + 'percentageOfInstances'}
                     className="flex items-center col-span-6 md:col-span-1"
                 >
                     Percentage of instances
                 </Label>
                 <Input
-                    id={constraint.constraintName + 'percentageOfInstances'}
+                    id={constraint.template + 'percentageOfInstances'}
                     type="number"
                     max={100}
                     min={0}
                     className="col-span-6 md:col-span-5"
-                    value={constraint.percentageOfInstances}
+                    value={constraint.poi}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        editInstances(
-                            constraint.constraintName,
-                            +e.target.value
-                        )
+                        editInstances(constraint.template, +e.target.value)
                     }
                 />
                 <Label
-                    htmlFor={constraint.constraintName + 'percentageOfEvents'}
+                    htmlFor={constraint.template + 'percentageOfEvents'}
                     className="flex items-center col-span-6 md:col-span-1"
                 >
                     Percentage of events
                 </Label>
                 <Input
-                    id={constraint.constraintName + 'percentageOfEvents'}
+                    id={constraint.template + 'percentageOfEvents'}
                     type="number"
                     max={100}
                     min={0}
                     className="col-span-6 md:col-span-5"
-                    value={constraint.percentageOfEvents}
+                    value={constraint.poe}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        editEvents(constraint.constraintName, +e.target.value)
+                        editEvents(constraint.template, +e.target.value)
                     }
                 />
                 <Label
                     className="flex items-center col-span-6 md:col-span-1"
-                    htmlFor={constraint.constraintName + 'checkVacuously'}
+                    htmlFor={constraint.template + 'checkVacuously'}
                 >
                     Check Vacuously
                 </Label>
                 <div className="col-span-6 md:col-span-5">
                     <Checkbox
-                        id={constraint.constraintName + 'checkVacuously'}
+                        id={constraint.template + 'checkVacuously'}
                         checked={constraint.checkVacuously}
                         onCheckedChange={(e: CheckedState) => {
-                            editCheckVacuously(constraint.constraintName, e);
+                            editCheckVacuously(constraint.template, e);
                         }}
                         className="w-6 h-6"
                     />

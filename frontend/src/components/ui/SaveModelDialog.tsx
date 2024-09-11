@@ -18,6 +18,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useModelsDb } from '@/hooks/useModelsDb';
 import { ModelType } from '@/models/ImperativeModel';
+import { JsonModel } from '@/models/JsonModel';
 import { ModelDB } from '@/models/ModelDB';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useState } from 'react';
@@ -25,7 +26,9 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 type SaveModelDialogProps = {
-    model: string;
+    model: string | JsonModel;
+    declareModelJson?: string;
+    type: ModelType;
 };
 
 const saveModelFormSchema = z.object({
@@ -34,7 +37,11 @@ const saveModelFormSchema = z.object({
     }),
 });
 
-export const SaveModelDialog: React.FC<SaveModelDialogProps> = ({ model }) => {
+export const SaveModelDialog: React.FC<SaveModelDialogProps> = ({
+    model,
+    declareModelJson,
+    type,
+}) => {
     const { addIntoDb } = useModelsDb();
     const [openSaveModelDialog, setOpenSaveModelDialog] =
         useState<boolean>(false);
@@ -48,8 +55,9 @@ export const SaveModelDialog: React.FC<SaveModelDialogProps> = ({ model }) => {
     const onSubmit = async (values: z.infer<typeof saveModelFormSchema>) => {
         const modelDb: ModelDB = {
             name: values.modelName,
-            type: ModelType.IMPERATIVE,
+            type: type,
             model: model,
+            declareModelJson: declareModelJson,
         };
 
         const result = await addIntoDb(modelDb, values.modelName);

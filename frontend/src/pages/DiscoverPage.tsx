@@ -1,3 +1,4 @@
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { MultiSelect } from '@/components/ui/MultiSelect';
 import {
     Accordion,
@@ -6,10 +7,10 @@ import {
     AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-import {
-    DeclareConstraintType,
-    DeclareConstraints,
-} from '@/models/DeclareConstraints';
+import { useToast } from '@/components/ui/use-toast';
+import { stripParentheses } from '@/helpers/stripParentheses';
+import { useDiscoverTemplates } from '@/hooks/apiHooks/useDiscoverTemplates';
+import { DeclareConstraint } from '@/models/DeclareConstraints';
 import { TargetURL } from '@/router';
 import {
     DiscoverConfiguration,
@@ -22,6 +23,8 @@ export const DiscoverPage: React.FC = () => {
     const { configurations, setConfigurations } = useDiscoverStore();
     const navigate = useNavigate();
     const { entityName } = useParams();
+    const { data, isError, isLoading } = useDiscoverTemplates();
+    const { toast } = useToast();
 
     const continueWithSelected = () => {
         if (entityName && configurations.length > 0) {
@@ -34,19 +37,39 @@ export const DiscoverPage: React.FC = () => {
         }
     };
 
-    const items = DeclareConstraints.map((constraint) => {
+    if (isLoading) {
+        return <LoadingSpinner />;
+    }
+
+    if (isError) {
+        toast({
+            title: 'Unable to load templates',
+            variant: 'destructive',
+        });
+        return <div>Unable to load constraints!</div>;
+    }
+
+    const templates: DeclareConstraint[] = data?.data.map((template: any) => {
+        return {
+            template: template.titName,
+            name: template.description.readableName,
+            description: template.description.description,
+            ltlExpression: template.description.ltlExpression,
+            type: template.description.type,
+        };
+    });
+
+    const items = templates.map((constraint) => {
         return (
-            <AccordionItem key={constraint.name} value={constraint.name}>
-                <AccordionTrigger>{constraint.name}</AccordionTrigger>
+            <AccordionItem
+                key={constraint.template}
+                value={constraint.template}
+            >
+                <AccordionTrigger>{constraint.template}</AccordionTrigger>
                 <AccordionContent className="flex flex-col gap-2">
                     <div>
                         <span className="font-bold pr-3">Type:</span>
-                        {constraint.type === DeclareConstraintType.RELATIONAL
-                            ? 'Relational'
-                            : constraint.type ===
-                                DeclareConstraintType.EXISTENTIAL
-                              ? 'Existential'
-                              : 'Not Relational'}
+                        {constraint.type}
                     </div>
                     <div>
                         <span className="font-bold pr-3">Description:</span>
@@ -61,10 +84,10 @@ export const DiscoverPage: React.FC = () => {
         );
     });
 
-    const options = DeclareConstraints.map((constraint) => {
+    const options = templates.map((constraint) => {
         return {
-            label: constraint.name,
-            value: constraint.name,
+            label: constraint.template,
+            value: constraint.template,
         };
     });
 
@@ -74,16 +97,22 @@ export const DiscoverPage: React.FC = () => {
                 className="w-3/4"
                 options={options}
                 defaultValue={configurations.map(
-                    (configuration) => configuration.constraintName
+                    (configuration) => configuration.template
                 )}
                 onValueChange={(constraints) => {
                     const discoverConfigs: DiscoverConfiguration[] =
                         constraints.map((constraint) => {
+                            const realConstraint = templates.find(
+                                (c) => c.template === constraint
+                            );
+
                             return {
-                                constraintName: constraint,
+                                template: stripParentheses(
+                                    realConstraint!.template
+                                ),
                                 checkVacuously: true,
-                                percentageOfEvents: 100,
-                                percentageOfInstances: 100,
+                                poe: 100,
+                                poi: 100,
                             };
                         });
 

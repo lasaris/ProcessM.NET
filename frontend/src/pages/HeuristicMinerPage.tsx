@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { useHeuristicMine } from '@/hooks/apiHooks/useHeuristicMine';
 import { useModelExport } from '@/hooks/apiHooks/useModelExport';
 import { MinePageLayout } from '@/layout/MinePageLayout';
+import { ModelType } from '@/models/ImperativeModel';
 import { TraceWithOccurence } from '@/models/TraceWithOccurence';
 import { AlphaMinerConfigurationType } from '@/models/schemas/AlphaMinerConfiguration';
 import {
@@ -127,7 +128,10 @@ export const HeuristicMinerPage: React.FC = () => {
                 />
                 <Separator />
                 <div className="flex w-5/6 justify-start">
-                    <SaveModelDialog model={data?.data.model} />
+                    <SaveModelDialog
+                        model={data?.data.model}
+                        type={ModelType.IMPERATIVE}
+                    />
                 </div>
             </div>
         </MinePageLayout>

@@ -8,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { useAlphaMine } from '@/hooks/apiHooks/useAlphaMine';
 import { useModelExport } from '@/hooks/apiHooks/useModelExport';
 import { MinePageLayout } from '@/layout/MinePageLayout';
+import { ModelType } from '@/models/ImperativeModel';
 import { TraceWithOccurence } from '@/models/TraceWithOccurence';
 import {
     AlphaMinerConfigurationSchema,
@@ -111,7 +112,10 @@ export const AlphaMinerPage: React.FC = () => {
                 />
                 <Separator />
                 <div className="flex w-5/6 justify-start">
-                    <SaveModelDialog model={data?.data.model} />
+                    <SaveModelDialog
+                        model={data?.data.model}
+                        type={ModelType.IMPERATIVE}
+                    />
                 </div>
             </div>
         </MinePageLayout>
