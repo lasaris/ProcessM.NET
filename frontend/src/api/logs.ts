@@ -1,4 +1,5 @@
 import { ConfiguredLog } from '@/models/API/ConfiguredLog';
+import { ImportedEventLog } from '@/models/API/ImportedEventLog';
 import { axiosInstance } from './axios';
 
 const uploadLog = (file: FormData) => {
@@ -25,10 +26,19 @@ const heuristicMine = (configudLog: ConfiguredLog) => {
     });
 };
 
+const getEventLog = (importedEventLog: ImportedEventLog) => {
+    return axiosInstance.post('/model/conformance/traces', importedEventLog, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+};
+
 const logsApi = {
     uploadLog,
     alphaMine,
     heuristicMine,
+    getEventLog,
 };
 
 export default logsApi;

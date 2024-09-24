@@ -1,9 +1,12 @@
 import { useModelsDb } from '@/hooks/useModelsDb';
-import SpinnerLogo from '@/icons/SpinnerLoader.svg';
+import { ModelType } from '@/models/ImperativeModel';
+import { JsonModel } from '@/models/JsonModel';
 import Graphviz from 'graphviz-react';
 import { EyeIcon } from 'lucide-react';
 import React, { ReactNode } from 'react';
 import { useAsync } from 'react-async-hook';
+import { DeclareModel } from './DeclareModel';
+import { LoadingSpinner } from './LoadingSpinner';
 import { Button } from './button';
 import {
     Dialog,
@@ -27,14 +30,21 @@ export const ViewModel: React.FC<ViewModelProps> = ({ title }) => {
     let content: ReactNode;
 
     if (model.loading) {
-        content = <img className="w-20 h-20" src={SpinnerLogo} alt="loader" />;
+        content = <LoadingSpinner />;
     } else if (model.result == undefined) {
         content = <div>Unable to load the model :/</div>;
+    } else if (model.result.type === ModelType.DECLARATIVE) {
+        content = (
+            <DeclareModel
+                treeModel={model.result.model as JsonModel}
+                className="lg:w-full max-h-80 overflow-y-auto"
+            />
+        );
     } else {
         content = (
             <div>
                 <Graphviz
-                    dot={model.result.model}
+                    dot={model.result.model as string}
                     className="border-4"
                     options={{
                         zoom: true,

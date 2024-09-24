@@ -26,7 +26,7 @@ export const DiscoverView: React.FC = () => {
         console.log(data.data);
         const parsed: DiscoveredModel = {
             treeModel: data.data.treeModel,
-            declareModel: data.data.declareModel,
+            declareModel: data.data.model,
         };
 
         return (

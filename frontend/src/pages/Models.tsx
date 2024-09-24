@@ -9,8 +9,8 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { pnml } from '@/examples/examplePNMLs/example';
 import { exportDot } from '@/helpers/exportDot';
+import { exportJson } from '@/helpers/exportJson';
 import { exportPnml } from '@/helpers/exportPnml';
 import { useModelsDb } from '@/hooks/useModelsDb';
 import { RightArrow } from '@/icons/RightArrow';
@@ -108,7 +108,14 @@ export const Models: React.FC = () => {
                                     ) : (
                                         <Button
                                             onClick={() =>
-                                                exportPnml(model.name, pnml)
+                                                exportJson(
+                                                    model.name,
+                                                    JSON.stringify(
+                                                        model.model,
+                                                        undefined,
+                                                        2
+                                                    )
+                                                )
                                             }
                                         >
                                             JSON
