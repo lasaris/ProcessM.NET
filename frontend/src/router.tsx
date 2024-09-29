@@ -29,7 +29,6 @@ export enum TargetURL {
     MODELS = '/models',
     MODELS_OPERATION = '/models/operation/:entityName',
     CONFORMANCE = '/models/conformance/:entityName',
-    EDIT = '/models/edit/:entityName',
 }
 
 export const router = createBrowserRouter([
@@ -93,10 +92,6 @@ export const router = createBrowserRouter([
             {
                 path: TargetURL.MODELS_OPERATION,
                 element: <ModelOperationSelection />,
-            },
-            {
-                path: TargetURL.EDIT,
-                element: <div>Edit Page</div>,
             },
             {
                 path: TargetURL.CONFORMANCE,

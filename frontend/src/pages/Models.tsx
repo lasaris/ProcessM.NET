@@ -131,18 +131,20 @@ export const Models: React.FC = () => {
                                     <ViewModel title={model.name} />
                                 </TableCell>
                                 <TableCell>
-                                    <TooltipWrapper
-                                        tooltipTitle={`${model.name} operations`}
-                                    >
-                                        <div
-                                            onClick={() =>
-                                                selectModel(model.name)
-                                            }
-                                            className="rounded-full bg-slate-400 w-8 h-8 flex items-center justify-center hover:shadow-lg hover:cursor-pointer"
+                                    {model.type === ModelType.DECLARATIVE && (
+                                        <TooltipWrapper
+                                            tooltipTitle={`${model.name} operations`}
                                         >
-                                            <RightArrow />
-                                        </div>
-                                    </TooltipWrapper>
+                                            <div
+                                                onClick={() =>
+                                                    selectModel(model.name)
+                                                }
+                                                className="rounded-full bg-slate-400 w-8 h-8 flex items-center justify-center hover:shadow-lg hover:cursor-pointer"
+                                            >
+                                                <RightArrow />
+                                            </div>
+                                        </TooltipWrapper>
+                                    )}
                                 </TableCell>
                                 <TableCell className="">
                                     <div className="flex justify-end">
