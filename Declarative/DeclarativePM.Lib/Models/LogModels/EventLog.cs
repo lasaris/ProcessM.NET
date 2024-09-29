@@ -8,6 +8,8 @@ namespace DeclarativePM.Lib.Models.LogModels
     /// </summary>
     public class EventLog
     {
+        public EventLog() { }
+
         public EventLog(List<Event> logs, string name = null)
         {
             Name = name ?? DefaultName;

@@ -1,5 +1,6 @@
 ﻿using BakaMining.Models;
-using LogImport.Models;
+using DeclarativePM.Lib.Models.LogModels;
+using ImportedEventLog = LogImport.Models.ImportedEventLog;
 
 namespace API.Models;
 
@@ -33,5 +34,30 @@ public class ImportedEventLogAPI
         }
 
         return result;
+    }
+    
+    public EventLog BuildEventLog()
+    {
+        var events = new List<Event>(Rows.Capacity);
+        
+        events.AddRange(Rows.Select(row =>
+        {
+            var e = new Event(
+                row[Activity],
+                row[CaseId],
+                // TODO: Add the resources
+                new string[1]
+            );
+
+            // TODO: Add timestamping
+            // if (_timestamp.HasValue && _timestamp < _headers.Length)
+            // {
+            //     e.TimeStamp = row[_timestamp.Value];
+            // }
+
+            return e;
+        }));
+
+        return new EventLog(events, Headers.ToList());
     }
 }

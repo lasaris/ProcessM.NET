@@ -16,6 +16,8 @@ namespace DeclarativePM.Lib.Models.LogModels
             Resources = res.ToList();
         }
 
+        public Event(){}
+
         public string Activity { get; set; }
 
         public int ActivityInTraceId { get; set; } = 0;

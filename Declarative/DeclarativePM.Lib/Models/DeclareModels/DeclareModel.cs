@@ -13,6 +13,7 @@ namespace DeclarativePM.Lib.Models.DeclareModels
     /// </summary>
     public class DeclareModel
     {
+        public DeclareModel() {}
         public DeclareModel(string name, List<ParametrizedTemplate> constraints, EventLog log)
         {
             Name = name;
@@ -31,7 +32,7 @@ namespace DeclarativePM.Lib.Models.DeclareModels
         public string Name { get; set; }
         public List<ParametrizedTemplate> Constraints { get; set; }
 
-        [JsonIgnore] public EventLog Log { get; }
+        public EventLog Log { get; }
 
         /// <summary>
         /// </summary>

@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Declarative\DeclarativePM.Lib\DeclarativePM.Lib.csproj" />
+  </ItemGroup>
+
 </Project>
