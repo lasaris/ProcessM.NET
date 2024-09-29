@@ -37,7 +37,6 @@ export const TracesTable: React.FC<TracesTableProps> = ({
     };
 
     const submitHandler = () => {
-        console.log('Adding the following traces: ', selectedTraces);
         addTraces(selectedTraces);
         closeDialog();
     };

@@ -1,6 +1,6 @@
 import { useConformance } from '@/hooks/apiHooks/useConformance';
 import { TraceDTO } from '@/models/API/TraceDTO';
-import { CheckIcon, XIcon } from 'lucide-react';
+import { XIcon } from 'lucide-react';
 import React from 'react';
 import {
     Table,
@@ -10,6 +10,7 @@ import {
     TableHeader,
     TableRow,
 } from '../table';
+import { ConformanceResultDialog } from './ConformanceResultDialog';
 import { ViewTraceDialog } from './ViewTraceDialog';
 
 type SelectTraceTableProps = {
@@ -45,10 +46,7 @@ export const SelectTraceTable: React.FC<SelectTraceTableProps> = ({
                             <ViewTraceDialog trace={trace} />
                         </TableCell>
                         <TableCell className="w-1/6">
-                            <CheckIcon
-                                className="rounder-full hover:cursor-pointer"
-                                onClick={() => checkConformance(trace.events)}
-                            />
+                            <ConformanceResultDialog events={trace.events} />
                         </TableCell>
                         <TableCell className="w-1/6">
                             <XIcon
