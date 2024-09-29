@@ -98,8 +98,16 @@ export const getStoreObject = <T>(
             const res = store.get(key);
 
             res.onsuccess = () => {
-                resolve(res.result.data);
+                resolve(res.result?.data);
             };
+
+            res.onerror = () => {
+                throw new Error('Unable to fetch the model');
+            };
+        };
+
+        request.onerror = () => {
+            throw new Error('Unable to connect to the db');
         };
     });
 };

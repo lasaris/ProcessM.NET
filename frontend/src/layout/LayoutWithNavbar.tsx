@@ -10,7 +10,6 @@ export const LayoutWithNavbar: React.FC = () => {
             <div className="flex flex-col items-center grow z-10">
                 <Outlet />
             </div>
-            <Toaster />
         </div>
     );
 };

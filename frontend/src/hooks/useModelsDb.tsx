@@ -72,8 +72,22 @@ export const useModelsDb = () => {
             });
         }
 
-        const model = await getStoreObject<ModelDB>(STORES.Models, key);
-        return model;
+        try {
+            const model = await getStoreObject<ModelDB>(STORES.Models, key);
+
+            if (model === undefined) {
+                toast({
+                    title: `Unable to find the model: "${key}"`,
+                    variant: 'destructive',
+                });
+
+                throw new Error('Unable to find the model');
+            }
+
+            return model;
+        } catch (err) {
+            throw err;
+        }
     };
 
     const deleteModel = async (key: string): Promise<boolean> => {
