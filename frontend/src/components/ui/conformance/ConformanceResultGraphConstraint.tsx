@@ -81,7 +81,6 @@ export const ConformanceResultGraphConstraint: React.FC<
         }
 
         const dot = createDotFromTraceWithHighlight(trace, logEvents);
-        // console.log(dot);
         setDot(dot);
     };
 

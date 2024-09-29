@@ -13,7 +13,6 @@ export const useAlphaMine = (
         retry: 1,
         queryFn: async () => {
             const configuredLog = await fetchSingleLog(logName);
-            console.log('This is the config: ', configuration);
             configuredLog.configuration = configuration;
             return logsApi.alphaMine(configuredLog);
         },

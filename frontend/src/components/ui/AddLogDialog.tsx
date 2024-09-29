@@ -51,7 +51,6 @@ export const AddLogDialog: React.FC<AddLogDialogProps> = ({ resetLogs }) => {
     };
 
     const onSubmit: SubmitHandler<ConfigurationFormType> = async (formData) => {
-        console.log(formData);
         if (file && data) {
             const fileInfo = file.get('file');
 

@@ -34,8 +34,6 @@ export const ConformanceResultDialog: React.FC<
     let content = <LoadingSpinner />;
 
     if (traceEvaluation) {
-        console.log(traceEvaluation);
-
         content = (
             <Carousel className="w-full max-w-xs lg:max-w-sm">
                 <CarouselContent className="m-4">

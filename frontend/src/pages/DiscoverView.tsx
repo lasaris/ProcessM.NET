@@ -20,10 +20,7 @@ export const DiscoverView: React.FC = () => {
         return <UnableToLoad />;
     }
 
-    console.log(data);
-
     if (data) {
-        console.log(data.data);
         const parsed: DiscoveredModel = {
             treeModel: data.data.treeModel,
             declareModel: data.data.model,

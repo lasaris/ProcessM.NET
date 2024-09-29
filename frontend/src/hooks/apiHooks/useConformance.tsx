@@ -30,8 +30,6 @@ export const useConformance = () => {
         },
     });
 
-    console.log(data?.data);
-
     const traceEvaluation: TraceEvaluation | undefined =
         isPending || !data
             ? undefined

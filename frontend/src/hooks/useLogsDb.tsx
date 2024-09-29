@@ -23,7 +23,6 @@ export const useLogsDb = () => {
     ): Promise<boolean> => {
         const initDbAttempt = await handleInitDB();
         if (!initDbAttempt) {
-            console.log('Unable to connect to indexed database');
             return false;
         }
 
@@ -54,9 +53,7 @@ export const useLogsDb = () => {
     };
 
     const fetchAllLogs = async (): Promise<ConfiguredLog[]> => {
-        console.log('Fetching all logs - calling handleInitDB');
         const initDbAttempt = await handleInitDB();
-        console.log('After handleInitDB. initDbAttempt const: ', initDbAttempt);
 
         if (!initDbAttempt) {
             toast({

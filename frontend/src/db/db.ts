@@ -44,7 +44,6 @@ export const addData = <T>(
         const request = indexedDB.open(DATABASE_NAME, version);
 
         request.onsuccess = (event: Event) => {
-            console.log('request.onsuccess - addData', data);
             const db = (event.target as IDBOpenDBRequest).result;
 
             const tx = db.transaction(storeName, 'readwrite');

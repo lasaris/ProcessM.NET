@@ -19,7 +19,6 @@ export const useModelsDb = () => {
     const addIntoDb = async (data: ModelDB, key: string): Promise<boolean> => {
         const initDbAttempt = await handleInitDB();
         if (!initDbAttempt) {
-            console.log('Unable to connect to indexed database');
             return false;
         }
 

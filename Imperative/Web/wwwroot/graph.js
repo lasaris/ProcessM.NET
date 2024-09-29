@@ -48,7 +48,6 @@ window.InitGraph = (element, csharpObjectRef) => {
 
 window.RenderGraph = async (dotString) => {
     graphviz.renderDot(dotString);
-    // console.log(dotString);
 }
 
 window.ResetZoom = async () => {

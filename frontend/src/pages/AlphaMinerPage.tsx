@@ -65,9 +65,7 @@ export const AlphaMinerPage: React.FC = () => {
         );
     }
 
-    const onSubmit = async (values: AlphaMinerConfigurationType) => {
-        console.log(values);
-    };
+    const onSubmit = async (values: AlphaMinerConfigurationType) => {};
 
     const traces: TraceWithOccurence[] = data?.data.tracesWithOccurence.map(
         (trace: any): TraceWithOccurence => {
