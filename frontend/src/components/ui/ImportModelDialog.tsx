@@ -1,5 +1,4 @@
-import React from 'react';
-import { Button } from './button';
+import { Button } from '@/components/ui/ShadCN/button';
 import {
     Dialog,
     DialogClose,
@@ -8,9 +7,10 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from './dialog';
-import { Input } from './input';
-import { Label } from './label';
+} from '@/components/ui/ShadCN/dialog';
+import { Input } from '@/components/ui/ShadCN/input';
+import { Label } from '@/components/ui/ShadCN/label';
+import React from 'react';
 
 export const ImportModelDialog: React.FC = () => {
     return (

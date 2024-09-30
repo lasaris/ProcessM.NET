@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/ShadCN/button';
 import {
     Dialog,
     DialogContent,
@@ -6,7 +6,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from '@/components/ui/dialog';
+} from '@/components/ui/ShadCN/dialog';
 import {
     Form,
     FormControl,
@@ -14,8 +14,8 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@/components/ui/ShadCN/form';
+import { Input } from '@/components/ui/ShadCN/input';
 import { useModelsDb } from '@/hooks/useModelsDb';
 import { ModelType } from '@/models/ImperativeModel';
 import { JsonModel } from '@/models/JsonModel';

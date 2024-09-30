@@ -1,9 +1,4 @@
-import { useEventLog } from '@/hooks/apiHooks/useEventLog';
-import { TraceDTO } from '@/models/API/TraceDTO';
-import React from 'react';
-import { Button } from './button';
-import { SelectLogForm } from './conformance/SelectLogForm';
-import { TracesTable } from './conformance/TracesTable';
+import { Button } from '@/components/ui/ShadCN/button';
 import {
     Dialog,
     DialogContent,
@@ -11,7 +6,12 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from './dialog';
+} from '@/components/ui/ShadCN/dialog';
+import { useEventLog } from '@/hooks/apiHooks/useEventLog';
+import { TraceDTO } from '@/models/API/TraceDTO';
+import React from 'react';
+import { SelectLogForm } from './conformance/SelectLogForm';
+import { TracesTable } from './conformance/TracesTable';
 
 type AddTracesDialogProps = {
     addTraces: (traces: TraceDTO[]) => void;

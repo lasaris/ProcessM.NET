@@ -1,6 +1,6 @@
+import { Label } from '@/components/ui/ShadCN/label';
+import { Switch } from '@/components/ui/ShadCN/switch';
 import React, { Dispatch } from 'react';
-import { Label } from './label';
-import { Switch } from './switch';
 
 export type SwitchWithLabelProps = {
     label: string;

@@ -1,6 +1,4 @@
-import { ImportModelDialog } from '@/components/ui/ImportModelDialog';
-import { ViewModel } from '@/components/ui/ViewModel';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/ShadCN/button';
 import {
     Table,
     TableBody,
@@ -8,7 +6,8 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from '@/components/ui/table';
+} from '@/components/ui/ShadCN/table';
+import { ViewModel } from '@/components/ui/ViewModel';
 import { exportDot } from '@/helpers/exportDot';
 import { exportJson } from '@/helpers/exportJson';
 import { exportPnml } from '@/helpers/exportPnml';
@@ -163,9 +162,9 @@ export const Models: React.FC = () => {
                     </TableBody>
                 </Table>
             </div>
-            <div className="sticky bottom-4 flex justify-end w-full px-4">
+            {/* <div className="sticky bottom-4 flex justify-end w-full px-4">
                 <ImportModelDialog />
-            </div>
+            </div> */}
         </div>
     );
 };

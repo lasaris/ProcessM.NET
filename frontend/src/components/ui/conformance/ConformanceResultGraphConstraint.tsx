@@ -1,4 +1,12 @@
-import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/ShadCN/button';
+import { Card, CardContent } from '@/components/ui/ShadCN/card';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/ShadCN/select';
 import { createDotFromTraceWithHighlight } from '@/helpers/createDotFromTraceWithHighlight';
 import { Event } from '@/models/API/Event';
 import { TemplateEvaluation } from '@/models/TraceEvaluation';
@@ -8,14 +16,6 @@ import { UndoIcon } from 'lucide-react';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Button } from '../button';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '../select';
 import { useToast } from '../use-toast';
 
 type ConformanceResultGraphConstraintProps = {

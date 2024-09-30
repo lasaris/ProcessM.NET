@@ -1,23 +1,23 @@
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/ShadCN/card';
 import {
     Carousel,
     CarouselContent,
     CarouselItem,
     CarouselNext,
     CarouselPrevious,
-} from '@/components/ui/carousel';
-import { useConformance } from '@/hooks/apiHooks/useConformance';
-import { Event } from '@/models/API/Event';
-import { CheckIcon } from 'lucide-react';
-import React from 'react';
-import { LoadingSpinner } from '../LoadingSpinner';
+} from '@/components/ui/ShadCN/carousel';
 import {
     Dialog,
     DialogContent,
     DialogDescription,
     DialogTitle,
     DialogTrigger,
-} from '../dialog';
+} from '@/components/ui/ShadCN/dialog';
+import { useConformance } from '@/hooks/apiHooks/useConformance';
+import { Event } from '@/models/API/Event';
+import { CheckIcon } from 'lucide-react';
+import React from 'react';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { H4 } from '../typography/H4';
 import { ConformanceResultGraphConstraint } from './ConformanceResultGraphConstraint';
 import { ConformanceResultHealthinessAccordion } from './ConformanceResultHealthinessAccordion';

@@ -3,7 +3,7 @@ import {
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from '@/components/ui/accordion';
+} from '@/components/ui/ShadCN/accordion';
 import { JsonModel } from '@/models/JsonModel';
 import React from 'react';
 

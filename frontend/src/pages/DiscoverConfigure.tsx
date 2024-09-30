@@ -1,6 +1,6 @@
 import { ConstraintConfigure } from '@/components/ui/ConstraintConfigure';
-import { Accordion } from '@/components/ui/accordion';
-import { Button } from '@/components/ui/button';
+import { Accordion } from '@/components/ui/ShadCN/accordion';
+import { Button } from '@/components/ui/ShadCN/button';
 import { TargetURL } from '@/router';
 import { useDiscoverStore } from '@/store/useDiscoverStore';
 import React from 'react';

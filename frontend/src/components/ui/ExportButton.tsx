@@ -1,6 +1,6 @@
+import { Button } from '@/components/ui/ShadCN/button';
 import { Download } from '@/icons/Download';
 import React from 'react';
-import { Button } from './button';
 
 type ExportButtonProps = {
     title: string;

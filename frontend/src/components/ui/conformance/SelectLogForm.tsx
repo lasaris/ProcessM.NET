@@ -1,10 +1,13 @@
+import { Button } from '@/components/ui/ShadCN/button';
+import { Form, FormField } from '@/components/ui/ShadCN/form';
+import { Label } from '@/components/ui/ShadCN/label';
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
+} from '@/components/ui/ShadCN/select';
 import { useLogsDb } from '@/hooks/useLogsDb';
 import { SelectLogSchema, SelectLogType } from '@/models/schemas/SelectLog';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,9 +15,6 @@ import React from 'react';
 import { useAsync } from 'react-async-hook';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { Button } from '../button';
-import { Form, FormField } from '../form';
-import { Label } from '../label';
 
 type SelectLogFormProps = {
     getEventLog: (name: string) => void;

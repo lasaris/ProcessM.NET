@@ -5,8 +5,8 @@ import {
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from '@/components/ui/accordion';
-import { Button } from '@/components/ui/button';
+} from '@/components/ui/ShadCN/accordion';
+import { Button } from '@/components/ui/ShadCN/button';
 import { useToast } from '@/components/ui/use-toast';
 import { stripParentheses } from '@/helpers/stripParentheses';
 import { useDiscoverTemplates } from '@/hooks/apiHooks/useDiscoverTemplates';

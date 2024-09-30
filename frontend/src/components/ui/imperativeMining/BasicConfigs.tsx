@@ -1,14 +1,14 @@
-import { VisibleActivitiesTrigger } from '@/components/ui/VisibleActivitiesTrigger';
-import { VisibleTracesTrigger } from '@/components/ui/VisibleTracesTrigger';
 import {
     FormControl,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
-} from '@/components/ui/form';
-import { Separator } from '@/components/ui/separator';
-import { Switch } from '@/components/ui/switch';
+} from '@/components/ui/ShadCN/form';
+import { Separator } from '@/components/ui/ShadCN/separator';
+import { Switch } from '@/components/ui/ShadCN/switch';
+import { VisibleActivitiesTrigger } from '@/components/ui/VisibleActivitiesTrigger';
+import { VisibleTracesTrigger } from '@/components/ui/VisibleTracesTrigger';
 import { TraceWithOccurence } from '@/models/TraceWithOccurence';
 import { AlphaMinerConfigurationType } from '@/models/schemas/AlphaMinerConfiguration';
 import { UseFormReturn } from 'react-hook-form';

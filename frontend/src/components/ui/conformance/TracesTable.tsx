@@ -1,7 +1,4 @@
-import { TraceDTO } from '@/models/API/TraceDTO';
-import { CheckIcon, XIcon } from 'lucide-react';
-import React, { useState } from 'react';
-import { Button } from '../button';
+import { Button } from '@/components/ui/ShadCN/button';
 import {
     Table,
     TableBody,
@@ -9,7 +6,10 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from '../table';
+} from '@/components/ui/ShadCN/table';
+import { TraceDTO } from '@/models/API/TraceDTO';
+import { CheckIcon, XIcon } from 'lucide-react';
+import React, { useState } from 'react';
 
 type TracesTableProps = {
     traces: TraceDTO[];

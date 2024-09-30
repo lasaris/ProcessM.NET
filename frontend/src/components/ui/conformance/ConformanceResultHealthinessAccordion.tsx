@@ -1,11 +1,11 @@
-import { Healthiness } from '@/models/TraceEvaluation';
-import React from 'react';
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from '../accordion';
+} from '@/components/ui/ShadCN/accordion';
+import { Healthiness } from '@/models/TraceEvaluation';
+import React from 'react';
 import { Lead } from '../typography/Lead';
 import { HealthinessProgress } from './HealthinessProgress';
 

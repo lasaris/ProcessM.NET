@@ -1,5 +1,5 @@
+import { Progress } from '@/components/ui/ShadCN/progress';
 import React from 'react';
-import { Progress } from '../progress';
 
 type HealthinessProgressProps = {
     higherIsBetter: boolean;

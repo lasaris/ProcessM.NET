@@ -2,10 +2,10 @@ import {
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from '@/components/ui/accordion';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from '@/components/ui/ShadCN/accordion';
+import { Checkbox } from '@/components/ui/ShadCN/checkbox';
+import { Input } from '@/components/ui/ShadCN/input';
+import { Label } from '@/components/ui/ShadCN/label';
 import {
     DiscoverConfiguration,
     useDiscoverStore,

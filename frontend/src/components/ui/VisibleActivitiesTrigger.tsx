@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/ShadCN/button';
 import {
     Dialog,
     DialogContent,
@@ -7,10 +7,10 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from '@/components/ui/dialog';
+} from '@/components/ui/ShadCN/dialog';
+import { Switch } from '@/components/ui/ShadCN/switch';
 import { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { Switch } from './switch';
 
 import {
     Table,
@@ -19,7 +19,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from '@/components/ui/table';
+} from '@/components/ui/ShadCN/table';
 import { AlphaMinerConfigurationType } from '@/models/schemas/AlphaMinerConfiguration';
 
 type VisibleTracesActivitiesProps = {

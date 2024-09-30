@@ -3,7 +3,7 @@ import {
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from '@/components/ui/ShadCN/tooltip';
 import React from 'react';
 
 type TooltipWrapperProps = {

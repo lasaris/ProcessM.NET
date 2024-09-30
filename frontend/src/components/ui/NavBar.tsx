@@ -1,14 +1,14 @@
-import { NavLink } from '@/models/NavLink';
-import { TargetURL } from '@/router';
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { MyNavLink } from './MyNavLink';
 import {
     NavigationMenu,
     NavigationMenuContent,
     NavigationMenuItem,
     NavigationMenuTrigger,
-} from './navigation-menu';
+} from '@/components/ui/ShadCN/navigation-menu';
+import { NavLink } from '@/models/NavLink';
+import { TargetURL } from '@/router';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { MyNavLink } from './MyNavLink';
 
 export const NavBar: React.FC = () => {
     const navigate = useNavigate();

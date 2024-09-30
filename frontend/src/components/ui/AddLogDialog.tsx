@@ -1,17 +1,4 @@
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import { STORES } from '@/db/db';
-import { useLogs } from '@/hooks/apiHooks/useLogs';
-import { useLogsDb } from '@/hooks/useLogsDb';
-import { ConfiguredLog, Metadata } from '@/models/API/ConfiguredLog';
-import React, { ChangeEvent, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { Button } from './button';
+import { Button } from '@/components/ui/ShadCN/button';
 import {
     Dialog,
     DialogContent,
@@ -20,11 +7,24 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from './dialog';
-import { Form, FormField } from './form';
-import { Input } from './input';
-import { Label } from './label';
-import { Separator } from './separator';
+} from '@/components/ui/ShadCN/dialog';
+import { Form, FormField } from '@/components/ui/ShadCN/form';
+import { Input } from '@/components/ui/ShadCN/input';
+import { Label } from '@/components/ui/ShadCN/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/ShadCN/select';
+import { Separator } from '@/components/ui/ShadCN/separator';
+import { STORES } from '@/db/db';
+import { useLogs } from '@/hooks/apiHooks/useLogs';
+import { useLogsDb } from '@/hooks/useLogsDb';
+import { ConfiguredLog, Metadata } from '@/models/API/ConfiguredLog';
+import React, { ChangeEvent, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 type ConfigurationFormType = {
     logName: string;

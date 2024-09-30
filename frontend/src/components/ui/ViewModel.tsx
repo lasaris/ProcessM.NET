@@ -1,13 +1,4 @@
-import { useModelsDb } from '@/hooks/useModelsDb';
-import { ModelType } from '@/models/ImperativeModel';
-import { JsonModel } from '@/models/JsonModel';
-import Graphviz from 'graphviz-react';
-import { EyeIcon } from 'lucide-react';
-import React, { ReactNode } from 'react';
-import { useAsync } from 'react-async-hook';
-import { DeclareModel } from './DeclareModel';
-import { LoadingSpinner } from './LoadingSpinner';
-import { Button } from './button';
+import { Button } from '@/components/ui/ShadCN/button';
 import {
     Dialog,
     DialogClose,
@@ -17,7 +8,16 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from './dialog';
+} from '@/components/ui/ShadCN/dialog';
+import { useModelsDb } from '@/hooks/useModelsDb';
+import { ModelType } from '@/models/ImperativeModel';
+import { JsonModel } from '@/models/JsonModel';
+import Graphviz from 'graphviz-react';
+import { EyeIcon } from 'lucide-react';
+import React, { ReactNode } from 'react';
+import { useAsync } from 'react-async-hook';
+import { DeclareModel } from './DeclareModel';
+import { LoadingSpinner } from './LoadingSpinner';
 
 export type ViewModelProps = {
     title: string;

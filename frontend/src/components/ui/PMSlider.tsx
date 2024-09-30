@@ -1,6 +1,6 @@
+import { Label } from '@/components/ui/ShadCN/label';
+import { Slider } from '@/components/ui/ShadCN/slider';
 import React, { Dispatch } from 'react';
-import { Label } from './label';
-import { Slider } from './slider';
 
 type PMSliderProps = {
     label: string;

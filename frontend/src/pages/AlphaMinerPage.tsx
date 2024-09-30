@@ -1,10 +1,10 @@
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { MineExportSection } from '@/components/ui/MineExportSection';
 import { SaveModelDialog } from '@/components/ui/SaveModelDialog';
+import { Form } from '@/components/ui/ShadCN/form';
+import { Separator } from '@/components/ui/ShadCN/separator';
 import { UnableToLoad } from '@/components/ui/UnableToLoad';
-import { Form } from '@/components/ui/form';
 import { BasicConfigs } from '@/components/ui/imperativeMining/BasicConfigs';
-import { Separator } from '@/components/ui/separator';
 import { useAlphaMine } from '@/hooks/apiHooks/useAlphaMine';
 import { useModelExport } from '@/hooks/apiHooks/useModelExport';
 import { MinePageLayout } from '@/layout/MinePageLayout';

@@ -1,9 +1,4 @@
-import { createDotFromTrace } from '@/helpers/createDotFromTrace';
-import { TraceDTO } from '@/models/API/TraceDTO';
-import Graphviz from 'graphviz-react';
-import { EyeIcon } from 'lucide-react';
-import React from 'react';
-import { Button } from '../button';
+import { Button } from '@/components/ui/ShadCN/button';
 import {
     Dialog,
     DialogClose,
@@ -12,7 +7,12 @@ import {
     DialogFooter,
     DialogTitle,
     DialogTrigger,
-} from '../dialog';
+} from '@/components/ui/ShadCN/dialog';
+import { createDotFromTrace } from '@/helpers/createDotFromTrace';
+import { TraceDTO } from '@/models/API/TraceDTO';
+import Graphviz from 'graphviz-react';
+import { EyeIcon } from 'lucide-react';
+import React from 'react';
 
 type ViewTraceDialogProps = {
     trace: TraceDTO;

@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/ShadCN/button';
 import { H3 } from '@/components/ui/typography/H3';
 import { TargetURL } from '@/router';
 import React from 'react';

@@ -1,7 +1,3 @@
-import { useConformance } from '@/hooks/apiHooks/useConformance';
-import { TraceDTO } from '@/models/API/TraceDTO';
-import { XIcon } from 'lucide-react';
-import React from 'react';
 import {
     Table,
     TableBody,
@@ -9,7 +5,11 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from '../table';
+} from '@/components/ui/ShadCN/table';
+import { useConformance } from '@/hooks/apiHooks/useConformance';
+import { TraceDTO } from '@/models/API/TraceDTO';
+import { XIcon } from 'lucide-react';
+import React from 'react';
 import { ConformanceResultDialog } from './ConformanceResultDialog';
 import { ViewTraceDialog } from './ViewTraceDialog';
 

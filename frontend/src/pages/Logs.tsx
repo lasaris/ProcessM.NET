@@ -6,7 +6,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from '@/components/ui/table';
+} from '@/components/ui/ShadCN/table';
 import { convertUnixTimestampToDateString } from '@/helpers/convertUnixTimestampToDateString';
 import { useLogsDb } from '@/hooks/useLogsDb';
 import { RightArrow } from '@/icons/RightArrow';

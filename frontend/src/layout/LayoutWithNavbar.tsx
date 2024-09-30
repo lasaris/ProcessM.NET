@@ -1,5 +1,4 @@
 import { NavBar } from '@/components/ui/NavBar';
-import { Toaster } from '@/components/ui/toaster';
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 

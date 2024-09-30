@@ -1,9 +1,14 @@
+import {
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/ShadCN/form';
+import { Switch } from '@/components/ui/ShadCN/switch';
 import { HeuristicMinerConfigurationType } from '@/models/schemas/HeuristicMinerConfiguration';
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { PMSlider } from '../PMSlider';
-import { FormField, FormItem, FormLabel, FormMessage } from '../form';
-import { Switch } from '../switch';
 
 type HeuristicConfigsProps = {
     form: UseFormReturn<HeuristicMinerConfigurationType>;

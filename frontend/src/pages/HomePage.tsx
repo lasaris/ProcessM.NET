@@ -1,5 +1,5 @@
 import { HomePageDescription } from '@/components/ui/HomePageDescription';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/ShadCN/button';
 import { TargetURL } from '@/router';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
