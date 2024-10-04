@@ -6,16 +6,18 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/ShadCN/table';
-import { useConformance } from '@/hooks/apiHooks/useConformance';
 import { TraceDTO } from '@/models/API/TraceDTO';
+import { CONFORMANCE_TYPE } from '@/models/ConformanceType';
 import { XIcon } from 'lucide-react';
 import React from 'react';
 import { ConformanceResultDialog } from './ConformanceResultDialog';
+import { OptimalAlignmentForTraceResultDialog } from './OptimalAlignmentForTraceResultDialog';
 import { ViewTraceDialog } from './ViewTraceDialog';
 
 type SelectTraceTableProps = {
     traces: TraceDTO[];
     removeTrace: (trace: TraceDTO) => void;
+    conformanceType: CONFORMANCE_TYPE;
 };
 
 const headers = ['Case ID', 'View Trace', 'Select Trace', 'Remove'];
@@ -23,9 +25,8 @@ const headers = ['Case ID', 'View Trace', 'Select Trace', 'Remove'];
 export const SelectTraceTable: React.FC<SelectTraceTableProps> = ({
     traces,
     removeTrace,
+    conformanceType,
 }) => {
-    const { checkConformance } = useConformance();
-
     const tableHeader = (
         <TableHeader>
             <TableRow>
@@ -46,7 +47,16 @@ export const SelectTraceTable: React.FC<SelectTraceTableProps> = ({
                             <ViewTraceDialog trace={trace} />
                         </TableCell>
                         <TableCell className="w-1/6">
-                            <ConformanceResultDialog events={trace.events} />
+                            {conformanceType === CONFORMANCE_TYPE.ALIGNMENT && (
+                                <OptimalAlignmentForTraceResultDialog
+                                    events={trace.events}
+                                />
+                            )}
+                            {conformanceType === CONFORMANCE_TYPE.DECLARE && (
+                                <ConformanceResultDialog
+                                    events={trace.events}
+                                />
+                            )}
                         </TableCell>
                         <TableCell className="w-1/6">
                             <XIcon

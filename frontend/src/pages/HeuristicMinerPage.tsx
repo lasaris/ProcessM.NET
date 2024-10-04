@@ -128,6 +128,7 @@ export const HeuristicMinerPage: React.FC = () => {
                 <div className="flex w-5/6 justify-start">
                     <SaveModelDialog
                         model={data?.data.minedModel}
+                        petriNet={data?.data?.petriNet}
                         type={ModelType.IMPERATIVE}
                     />
                 </div>

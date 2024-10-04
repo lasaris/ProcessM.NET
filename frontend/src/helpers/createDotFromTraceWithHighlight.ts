@@ -16,7 +16,7 @@ export const createDotFromTraceWithHighlight = (
 
         nodes.push({
             nodeName: `node${i}`,
-            node: `node${i} [label="${event.activity}",fixedsize=true${logEvents.includes(event.activity) ? ',fillcolor=red, style=filled' : ''}];\n`,
+            node: `node${i} [label="${event.activity}"${logEvents.includes(event.activity) ? ',fillcolor=red, style=filled' : ''}];\n`,
         });
     }
 

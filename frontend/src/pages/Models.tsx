@@ -27,8 +27,12 @@ export const Models: React.FC = () => {
     const { fetchAllModels, deleteModel } = useModelsDb();
     const localModels = useAsync(fetchAllModels, []);
 
-    const selectModel = (name: string) => {
-        const destination = TargetURL.MODELS_OPERATION;
+    const selectModel = (name: string, type: ModelType) => {
+        const destination =
+            type === ModelType.DECLARATIVE
+                ? TargetURL.DECLARE_MODELS_OPERATION
+                : TargetURL.IMPERATIVE_MODELS_OPERATION;
+
         navigate(destination.replace(':entityName', name));
     };
 
@@ -130,20 +134,21 @@ export const Models: React.FC = () => {
                                     <ViewModel title={model.name} />
                                 </TableCell>
                                 <TableCell>
-                                    {model.type === ModelType.DECLARATIVE && (
-                                        <TooltipWrapper
-                                            tooltipTitle={`${model.name} operations`}
+                                    <TooltipWrapper
+                                        tooltipTitle={`${model.name} operations`}
+                                    >
+                                        <div
+                                            onClick={() =>
+                                                selectModel(
+                                                    model.name,
+                                                    model.type
+                                                )
+                                            }
+                                            className="rounded-full bg-slate-400 w-8 h-8 flex items-center justify-center hover:shadow-lg hover:cursor-pointer"
                                         >
-                                            <div
-                                                onClick={() =>
-                                                    selectModel(model.name)
-                                                }
-                                                className="rounded-full bg-slate-400 w-8 h-8 flex items-center justify-center hover:shadow-lg hover:cursor-pointer"
-                                            >
-                                                <RightArrow />
-                                            </div>
-                                        </TooltipWrapper>
-                                    )}
+                                            <RightArrow />
+                                        </div>
+                                    </TooltipWrapper>
                                 </TableCell>
                                 <TableCell className="">
                                     <div className="flex justify-end">
@@ -162,9 +167,6 @@ export const Models: React.FC = () => {
                     </TableBody>
                 </Table>
             </div>
-            {/* <div className="sticky bottom-4 flex justify-end w-full px-4">
-                <ImportModelDialog />
-            </div> */}
         </div>
     );
 };

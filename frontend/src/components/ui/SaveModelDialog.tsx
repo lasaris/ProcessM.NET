@@ -20,6 +20,7 @@ import { useModelsDb } from '@/hooks/useModelsDb';
 import { ModelType } from '@/models/ImperativeModel';
 import { JsonModel } from '@/models/JsonModel';
 import { ModelDB } from '@/models/ModelDB';
+import { PetriNet } from '@/models/PetriNet';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -28,6 +29,7 @@ import { z } from 'zod';
 type SaveModelDialogProps = {
     model: string | JsonModel;
     declareModelJson?: string;
+    petriNet?: PetriNet;
     type: ModelType;
 };
 
@@ -40,6 +42,7 @@ const saveModelFormSchema = z.object({
 export const SaveModelDialog: React.FC<SaveModelDialogProps> = ({
     model,
     declareModelJson,
+    petriNet,
     type,
 }) => {
     const { addIntoDb } = useModelsDb();
@@ -58,6 +61,7 @@ export const SaveModelDialog: React.FC<SaveModelDialogProps> = ({
             type: type,
             model: model,
             declareModelJson: declareModelJson,
+            petriNet: petriNet,
         };
 
         const result = await addIntoDb(modelDb, values.modelName);

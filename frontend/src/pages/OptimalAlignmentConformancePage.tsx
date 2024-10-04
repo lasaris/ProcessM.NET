@@ -4,7 +4,7 @@ import { TraceDTO } from '@/models/API/TraceDTO';
 import { CONFORMANCE_TYPE } from '@/models/ConformanceType';
 import React, { useState } from 'react';
 
-export const ConformancePage: React.FC = () => {
+export const OptimalAlignmentConformancePage: React.FC = () => {
     const [traces, setTraces] = useState<TraceDTO[]>([]);
     const [openAddTracesDialog, setOpenAddTraceDialog] = useState(false);
 
@@ -27,7 +27,7 @@ export const ConformancePage: React.FC = () => {
             <SelectTraceTable
                 traces={traces}
                 removeTrace={removeTrace}
-                conformanceType={CONFORMANCE_TYPE.DECLARE}
+                conformanceType={CONFORMANCE_TYPE.ALIGNMENT}
             />
             <div className="sticky bottom-4 flex justify-end w-full px-4">
                 <AddTracesDialog

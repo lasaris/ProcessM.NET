@@ -1,5 +1,5 @@
 import conformance from '@/api/conformance';
-import { Conformance } from '@/models/API/Conformance';
+import { ConformanceDeclare } from '@/models/API/ConformanceDeclare';
 import { Event } from '@/models/API/Event';
 import { TraceEvaluation } from '@/models/TraceEvaluation';
 import { useMutation } from '@tanstack/react-query';
@@ -21,7 +21,7 @@ export const useConformance = () => {
                 return;
             }
 
-            const conformanceInput: Conformance = {
+            const conformanceInput: ConformanceDeclare = {
                 DeclareModel: JSON.parse(JSON.parse(model.declareModelJson)),
                 Trace: events,
             };

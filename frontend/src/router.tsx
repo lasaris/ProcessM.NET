@@ -15,6 +15,7 @@ import { ModelOperationSelection } from './pages/ModelOperationSelection';
 import { Models } from './pages/Models';
 import { ExistingLogWrapper } from './wrappers/ExistingLogWrapper';
 import { ExistingModelWrapper } from './wrappers/ExistingModelWrapper';
+import { OptimalAlignmentConformancePage } from './pages/OptimalAlignmentConformancePage';
 
 export enum TargetURL {
     HOME = '/',
@@ -30,8 +31,10 @@ export enum TargetURL {
 
     // Model Specific Pages
     MODELS = '/models',
-    MODELS_OPERATION = '/models/operation/:entityName',
+    DECLARE_MODELS_OPERATION = '/models/operation/declare/:entityName',
+    IMPERATIVE_MODELS_OPERATION = '/models/operation/imperative/:entityName',
     CONFORMANCE = '/models/conformance/:entityName',
+    OPTIMAL_ALIGNMENT = '/models/conformance/alignment/:entityName',
 }
 
 export const router = createBrowserRouter([
@@ -117,7 +120,15 @@ export const router = createBrowserRouter([
                 element: <Models />,
             },
             {
-                path: TargetURL.MODELS_OPERATION,
+                path: TargetURL.DECLARE_MODELS_OPERATION,
+                element: (
+                    <ExistingModelWrapper>
+                        <ModelOperationSelection />,
+                    </ExistingModelWrapper>
+                ),
+            },
+            {
+                path: TargetURL.IMPERATIVE_MODELS_OPERATION,
                 element: (
                     <ExistingModelWrapper>
                         <ModelOperationSelection />,
@@ -129,6 +140,14 @@ export const router = createBrowserRouter([
                 element: (
                     <ExistingModelWrapper>
                         <ConformancePage />,
+                    </ExistingModelWrapper>
+                ),
+            },
+            {
+                path: TargetURL.OPTIMAL_ALIGNMENT,
+                element: (
+                    <ExistingModelWrapper>
+                        <OptimalAlignmentConformancePage />,
                     </ExistingModelWrapper>
                 ),
             },

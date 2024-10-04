@@ -1,6 +1,6 @@
 import { Event } from './Event';
 
-export type Conformance = {
+export type ConformanceDeclare = {
     DeclareModel: any;
     Trace: Event[];
 };
