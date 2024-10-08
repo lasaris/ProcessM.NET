@@ -134,11 +134,30 @@ export const useModelsDb = () => {
         return deleteResult;
     };
 
+    const deleteModelsForLog = async (keys: string[]): Promise<boolean> => {
+        const initDbAttempt = await handleInitDB();
+
+        if (!initDbAttempt) {
+            return false;
+        }
+
+        const promises: Promise<boolean>[] = [];
+
+        keys.forEach((key) => {
+            promises.push(deleteStoreData(STORES.Models, key));
+        });
+
+        const results = await Promise.all(promises);
+
+        return !results.includes(false);
+    };
+
     return {
         addIntoDb,
         fetchAllModels,
         fetchAllModelsByLogName,
         fetchSingleModel,
         deleteModel,
+        deleteModelsForLog,
     };
 };

@@ -7,8 +7,10 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/ShadCN/table';
+import { useToast } from '@/components/ui/use-toast';
 import { convertUnixTimestampToDateString } from '@/helpers/convertUnixTimestampToDateString';
 import { useLogsDb } from '@/hooks/useLogsDb';
+import { useModelsDb } from '@/hooks/useModelsDb';
 import { RightArrow } from '@/icons/RightArrow';
 import SpinnerLogo from '@/icons/SpinnerLoader.svg';
 import { TargetURL } from '@/router';
@@ -19,7 +21,9 @@ import { useNavigate } from 'react-router-dom';
 
 export const Logs: React.FC = () => {
     const navigate = useNavigate();
+    const { toast } = useToast();
     const { fetchAllLogs, deleteLog } = useLogsDb();
+    const { deleteModelsForLog, fetchAllModelsByLogName } = useModelsDb();
     const localLogs = useAsync(fetchAllLogs, []);
 
     const selectLog = (name: string) => {
@@ -29,9 +33,18 @@ export const Logs: React.FC = () => {
 
     const handleDeleteLog = async (key: string) => {
         const deleteResult = await deleteLog(key);
+        const modelsToDelete = await fetchAllModelsByLogName(key);
+        const deleteModelsResult = await deleteModelsForLog(
+            modelsToDelete.map((model) => model.name)
+        );
 
-        if (deleteResult) {
+        if (deleteResult && deleteModelsResult) {
             localLogs.execute();
+        } else {
+            toast({
+                title: `Unable to delete log with key: ${key}`,
+                variant: 'destructive',
+            });
         }
     };
 
