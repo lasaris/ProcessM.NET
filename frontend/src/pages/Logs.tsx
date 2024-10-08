@@ -49,7 +49,7 @@ export const Logs: React.FC = () => {
                                 <TableHead>Timestamp</TableHead>
                                 <TableHead>Size</TableHead>
                                 <TableHead>Modified</TableHead>
-                                <TableHead>Mine</TableHead>
+                                <TableHead>Operations</TableHead>
                                 <TableHead className="text-right">
                                     Delete
                                 </TableHead>

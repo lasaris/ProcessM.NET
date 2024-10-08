@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { LayoutWithNavbar } from './layout/LayoutWithNavbar';
 import { MainLayout } from './layout/MainLayout';
+import { ModelType } from './models/ImperativeModel';
 import { AlphaMinerPage } from './pages/AlphaMinerPage';
 import { ConformancePage } from './pages/ConformancePage';
 import { DiscoverConfigure } from './pages/DiscoverConfigure';
@@ -13,9 +14,9 @@ import { LogOperationSelection } from './pages/LogOperationSelection';
 import { Logs } from './pages/Logs';
 import { ModelOperationSelection } from './pages/ModelOperationSelection';
 import { Models } from './pages/Models';
+import { OptimalAlignmentConformancePage } from './pages/OptimalAlignmentConformancePage';
 import { ExistingLogWrapper } from './wrappers/ExistingLogWrapper';
 import { ExistingModelWrapper } from './wrappers/ExistingModelWrapper';
-import { OptimalAlignmentConformancePage } from './pages/OptimalAlignmentConformancePage';
 
 export enum TargetURL {
     HOME = '/',
@@ -31,6 +32,7 @@ export enum TargetURL {
 
     // Model Specific Pages
     MODELS = '/models',
+    MODELS_TABLE = '/models/:entityName',
     DECLARE_MODELS_OPERATION = '/models/operation/declare/:entityName',
     IMPERATIVE_MODELS_OPERATION = '/models/operation/imperative/:entityName',
     CONFORMANCE = '/models/conformance/:entityName',
@@ -116,14 +118,17 @@ export const router = createBrowserRouter([
         element: <LayoutWithNavbar />,
         children: [
             {
-                index: true,
+                path: TargetURL.MODELS_TABLE,
                 element: <Models />,
             },
             {
                 path: TargetURL.DECLARE_MODELS_OPERATION,
                 element: (
                     <ExistingModelWrapper>
-                        <ModelOperationSelection />,
+                        <ModelOperationSelection
+                            modelType={ModelType.DECLARATIVE}
+                        />
+                        ,
                     </ExistingModelWrapper>
                 ),
             },
@@ -131,7 +136,10 @@ export const router = createBrowserRouter([
                 path: TargetURL.IMPERATIVE_MODELS_OPERATION,
                 element: (
                     <ExistingModelWrapper>
-                        <ModelOperationSelection />,
+                        <ModelOperationSelection
+                            modelType={ModelType.IMPERATIVE}
+                        />
+                        ,
                     </ExistingModelWrapper>
                 ),
             },

@@ -20,12 +20,13 @@ import { TooltipWrapper } from '@/wrappers/TooltipWrapper';
 import { TrashIcon } from 'lucide-react';
 import React from 'react';
 import { useAsync } from 'react-async-hook';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export const Models: React.FC = () => {
     const navigate = useNavigate();
-    const { fetchAllModels, deleteModel } = useModelsDb();
-    const localModels = useAsync(fetchAllModels, []);
+    const { entityName } = useParams();
+    const { fetchAllModelsByLogName, deleteModel } = useModelsDb();
+    const localModels = useAsync(() => fetchAllModelsByLogName(entityName), []);
 
     const selectModel = (name: string, type: ModelType) => {
         const destination =

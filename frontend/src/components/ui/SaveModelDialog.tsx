@@ -18,16 +18,16 @@ import {
 import { Input } from '@/components/ui/ShadCN/input';
 import { useModelsDb } from '@/hooks/useModelsDb';
 import { ModelType } from '@/models/ImperativeModel';
-import { JsonModel } from '@/models/JsonModel';
 import { ModelDB } from '@/models/ModelDB';
 import { PetriNet } from '@/models/PetriNet';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
 import { z } from 'zod';
 
 type SaveModelDialogProps = {
-    model: string | JsonModel;
+    model: string;
     declareModelJson?: string;
     petriNet?: PetriNet;
     type: ModelType;
@@ -45,6 +45,7 @@ export const SaveModelDialog: React.FC<SaveModelDialogProps> = ({
     petriNet,
     type,
 }) => {
+    const { entityName } = useParams();
     const { addIntoDb } = useModelsDb();
     const [openSaveModelDialog, setOpenSaveModelDialog] =
         useState<boolean>(false);
@@ -57,6 +58,7 @@ export const SaveModelDialog: React.FC<SaveModelDialogProps> = ({
 
     const onSubmit = async (values: z.infer<typeof saveModelFormSchema>) => {
         const modelDb: ModelDB = {
+            eventLogName: entityName || '',
             name: values.modelName,
             type: type,
             model: model,

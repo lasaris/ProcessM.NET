@@ -62,6 +62,24 @@ export const useModelsDb = () => {
         return models;
     };
 
+    const fetchAllModelsByLogName = async (
+        logName?: string
+    ): Promise<ModelDB[]> => {
+        const initDbAttempt = await handleInitDB();
+
+        if (!initDbAttempt) {
+            toast({
+                title: 'Unable to connect to indexed database',
+                variant: 'destructive',
+            });
+        }
+
+        const models = await getStoreData<ModelDB>(STORES.Models);
+
+        const result = models.filter((model) => model.eventLogName === logName);
+        return result;
+    };
+
     const fetchSingleModel = async (key: string): Promise<ModelDB> => {
         const initDbAttempt = await handleInitDB();
 
@@ -119,6 +137,7 @@ export const useModelsDb = () => {
     return {
         addIntoDb,
         fetchAllModels,
+        fetchAllModelsByLogName,
         fetchSingleModel,
         deleteModel,
     };

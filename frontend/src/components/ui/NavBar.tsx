@@ -1,9 +1,3 @@
-import {
-    NavigationMenu,
-    NavigationMenuContent,
-    NavigationMenuItem,
-    NavigationMenuTrigger,
-} from '@/components/ui/ShadCN/navigation-menu';
 import { NavLink } from '@/models/NavLink';
 import { TargetURL } from '@/router';
 import React from 'react';
@@ -17,10 +11,6 @@ export const NavBar: React.FC = () => {
         {
             targetUrl: TargetURL.LOGS,
             title: 'Logs',
-        },
-        {
-            targetUrl: TargetURL.MODELS,
-            title: 'Models',
         },
     ];
 
@@ -37,7 +27,7 @@ export const NavBar: React.FC = () => {
                 ProcessM.NET
             </h2>
             <div>
-                <div className="hidden lg:block gap-8">
+                <div className="gap-8">
                     {links.map((link) => {
                         return (
                             <MyNavLink
@@ -48,26 +38,6 @@ export const NavBar: React.FC = () => {
                         );
                     })}
                 </div>
-                <NavigationMenu className="lg:hidden">
-                    <NavigationMenuItem>
-                        <NavigationMenuTrigger>Menu</NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                            <ul>
-                                {links?.map((link) => (
-                                    <li
-                                        key={link.title}
-                                        className="ml-4 py-2 w-[100px] text-md font-semibold tracking-tight"
-                                    >
-                                        <MyNavLink
-                                            targetUrl={link.targetUrl}
-                                            title={link.title}
-                                        />
-                                    </li>
-                                ))}
-                            </ul>
-                        </NavigationMenuContent>
-                    </NavigationMenuItem>
-                </NavigationMenu>
             </div>
         </nav>
     );
