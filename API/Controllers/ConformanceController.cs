@@ -1,12 +1,13 @@
 ﻿using API.Models;
-using DeclarativePM.Lib.Models.ConformanceModels;
-using DeclarativePM.Lib.Models.DeclareModels;
 using DeclarativePM.Lib.Models.LogModels;
 using DeclarativePM.Lib.Utils;
 using DeclarativePM.UI.Data;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using ProcessM.NET.ConformanceChecking.Alignments;
+using ProcessM.NET.Model;
+using ProcessM.NET.Model.BasicPetriNet;
+using ProcessM.NET.Model.DataAnalysis;
+using ProcessM.NET.Model.SynchronousProductNet;
 
 namespace API.Controllers;
 
@@ -15,7 +16,8 @@ namespace API.Controllers;
 public class ConformanceController : ControllerBase
 {
     [HttpPost]
-    public ActionResult<TraceEvaluationAPI> DeclareAPI(ConformanceModelAPI conformanceModel)
+    [Route("declare")]
+    public ActionResult<TraceEvaluationAPI> DeclareConformance(ConformanceModelAPI conformanceModel)
     {
         var declareModel = conformanceModel.DeclareModel.ConvertToDeclareModel();
 
@@ -27,6 +29,35 @@ public class ConformanceController : ControllerBase
         traceEvaluation.TemplateEvaluations.AddRange(temp);
 
         var result = Conformance.Conformance.PrepareConformanceEvaluationResult(traceEvaluation);
+
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [Route("alignment")]
+    public ActionResult<List<STransition>> AlignmentConformance(AlignmentConformanceAPI alignmentConformance)
+    {
+        var petriNetApi = alignmentConformance.PetriNet;
+        var traceApi = alignmentConformance.Trace;
+
+        if (petriNetApi == null || traceApi == null)
+        {
+            return BadRequest("You have to pass a petri net and a trace");
+        }
+
+        if (petriNetApi.Transitions == null || petriNetApi.Places == null)
+        {
+            return BadRequest("Petri net must contain places and transitions");
+        }
+
+        var petriNet = alignmentConformance.PetriNet?.ConvertToPetriNet();
+
+        var workflowTrace = new WorkflowTrace("Case");
+
+        var activities = traceApi.Select((e) => e.Activity);
+        workflowTrace.AddActivities(activities);
+
+        List<STransition> result = AlignmentUtils.OptimalAlignmentOnTrace(workflowTrace, petriNet);
 
         return Ok(result);
     }

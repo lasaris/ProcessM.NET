@@ -4,6 +4,7 @@ using BakaMining.Utils;
 using LogImport.Models;
 using ProcessM.NET.Discovery.HeuristicMiner;
 using ProcessM.NET.Export;
+using ProcessM.NET.Model;
 using ProcessM.NET.Model.BasicPetriNet;
 using ProcessM.NET.Model.DataAnalysis;
 using ProcessM.NET.Model.GraphvizNet;
@@ -14,13 +15,13 @@ public static class Imperative
 {
     public static EventLogFile CreateEventLogFileFromImportedModel(ImportedEventLogAPI importedLog, MetadataAPI metadata)
     {
-        
+
         // First I need to create the ImportedEventLog from the ConfiguredModelAPI.ImportedEventLogAPI
         var importedEventLog = importedLog.SerializeImportedEventLogAPI();
-    
+
         // Then create a workflowLog from this
         var workflowLog = new WorkflowLog(importedEventLog);
-    
+
         // And from this an EventLogFile is created
         return new EventLogFile()
         {
@@ -49,7 +50,7 @@ public static class Imperative
             WorkflowLogUtils.WorkflowLogPreprocessor(workflowLog);
             return workflowLog;
         }
-        
+
         var hiddenActivities = basicConfigs.invisibleActivities.ToHashSet();
         var hiddenTraces = basicConfigs.invisibleTraces.ToHashSet();
         WorkflowLogUtils.WorkflowLogPreprocessor(workflowLog, hiddenActivities, hiddenTraces);
@@ -63,12 +64,33 @@ public static class Imperative
         var graphvizNet = new GraphvizNet(petriNet, workflowLog);
         var dotString = DOTExport.Serialize(graphvizNet, basicConfigs?.SourcePetriNet != true);
 
+        var transitions = petriNet?.Transitions.Cast<Transition>().Select((transition) => new TransitionAPI()
+        {
+            Activity = transition.Activity,
+            Frequency = transition.Frequency,
+            Id = transition.Id,
+            InputPlaces = transition.InputPlaces.Cast<Place>().ToList(),
+            OutputPlaces = transition.OutputPlaces.Cast<Place>().ToList(),
+            Invisible = transition.Invisible,
+        }).ToList();
+
+        var places = petriNet?.Places.Cast<Place>().ToList();
+
+        var petriNetApi = new PetriNetAPI()
+        {
+            Places = places,
+            Transitions = transitions,
+            EndPlace = (Place?)petriNet?.EndPlace,
+            StartPlace = (Place?)petriNet?.StartPlace
+        };
+
         var result = new MineResultAPI()
         {
             MinedModel = dotString,
             WorkflowLog = workflowLog,
             Activities = activities,
             TracesWithOccurence = traces,
+            PetriNet = petriNetApi
         };
 
         return result;
@@ -80,7 +102,7 @@ public static class Imperative
         {
             return new HeuristicMinerSettings();
         }
-        
+
         return new HeuristicMinerSettings()
         {
             DependencyThreshold = configs.Direct,
@@ -92,7 +114,7 @@ public static class Imperative
             LongDistanceThreshold = configs.LongDistance,
         };
     }
-    
+
     private static WorkflowLog OrderByActivityFrequency(WorkflowLog wfLog)
     {
         var comparer = new ActivitiesComparer();

@@ -88,21 +88,21 @@ public static class Conformance
         switch (constraint)
         {
             case BiTemplate biTemplate:
-            {
-                result.ActivityAName = biTemplate.LogEventA;
-                result.ActivityBName = biTemplate.LogEventB;
-                break;
-            }
+                {
+                    result.ActivityAName = biTemplate.LogEventA;
+                    result.ActivityBName = biTemplate.LogEventB;
+                    break;
+                }
             case UniTemplate uniTemplate:
-            {
-                result.ActivityAName = uniTemplate.LogEvent;
-                break;
-            }
-            case Existence existence:
-            {
-                result.ActivityAName = existence.LogEvent;
-                break;
-            }
+                {
+                    result.ActivityAName = uniTemplate.LogEvent;
+                    break;
+                }
+            case ExistenceTemplate existence:
+                {
+                    result.ActivityAName = existence.LogEvent;
+                    break;
+                }
         }
 
         return result;

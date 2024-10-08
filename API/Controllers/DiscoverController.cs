@@ -13,7 +13,7 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("/log/discover")]
-public class DiscoverController: ControllerBase
+public class DiscoverController : ControllerBase
 {
     [HttpPost]
     public async Task<ActionResult<DiscoveredModelResult>> Discover(DiscoverLogAPI log)
@@ -28,11 +28,13 @@ public class DiscoverController: ControllerBase
         var declareModelJson = JsonConvert.SerializeObject(declareModel);
 
         Utilities.CreateTreeNode(out var treeNodeModel, templates);
+        var dotGraph = Utilities.CreateDotGraph(templates);
 
         var result = new DiscoveredModelResult()
         {
             Model = declareModelJson,
             TreeModel = treeNodeModel,
+            DotGraph = dotGraph,
         };
 
         return Ok(result);
@@ -47,7 +49,7 @@ public class DiscoverController: ControllerBase
             .Where(x => x != TemplateInstanceType.None)
             .Select(e => new TemplateDescriptionAPI()
             {
-                Description =e.GetTemplateDescription(),
+                Description = e.GetTemplateDescription(),
                 TitName = e.ToString()
             })
             .ToList();

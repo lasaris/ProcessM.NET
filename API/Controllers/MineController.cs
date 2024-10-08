@@ -55,9 +55,9 @@ public class MineController : ControllerBase
         // TODO: Here Activities should be updated and fitness should be computed
         // Prepare result
         var result = Imperative.CreateResult(
-                petriNet, 
-                workflowLog, 
-                configuredAlphaModel.configuration, 
+                petriNet,
+                workflowLog,
+                configuredAlphaModel.configuration,
                 resultTraces,
                 configuredAlphaModel.importedLog.GetAllActivities()
             );

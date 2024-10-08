@@ -5,6 +5,7 @@ namespace API.Models;
 
 public class DiscoveredModelResult
 {
-    public string Model { get; set; }
-    public TreeNodeModel TreeModel { get; set; }
+    public string? Model { get; set; }
+    public TreeNodeModel? TreeModel { get; set; }
+    public string? DotGraph { get; set; }
 }

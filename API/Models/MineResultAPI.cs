@@ -8,4 +8,5 @@ public class MineResultAPI
     public WorkflowLog WorkflowLog { get; set; }
     public List<string> Activities { get; set; }
     public List<Tuple<WorkflowTrace, int>> TracesWithOccurence { get; set; }
+    public PetriNetAPI PetriNet { get; set; }
 }
