@@ -22,16 +22,18 @@ export const DiscoverView: React.FC = () => {
 
     if (data) {
         const parsed: DiscoveredModel = {
-            treeModel: data.data.treeModel,
             declareModel: data.data.model,
+            dotGraph: data.data.dotGraph,
         };
+
+        console.log(parsed);
 
         return (
             <div className="relative w-full h-full flex flex-col items-center justify-between">
-                <DeclareModel treeModel={parsed.treeModel} />
+                <DeclareModel dotGraph={parsed.dotGraph} />
                 <div className="sticky bottom-4 flex justify-end w-full px-4">
                     <SaveModelDialog
-                        model={parsed.treeModel}
+                        model={parsed.dotGraph}
                         type={ModelType.DECLARATIVE}
                         declareModelJson={JSON.stringify(parsed.declareModel)}
                     />

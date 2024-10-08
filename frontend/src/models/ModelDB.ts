@@ -1,11 +1,10 @@
 import { ModelType } from './ImperativeModel';
-import { JsonModel } from './JsonModel';
 import { PetriNet } from './PetriNet';
 
 export type ModelDB = {
     name: string;
     type: ModelType;
-    model: string | JsonModel;
+    model: string;
     declareModelJson?: string;
     petriNet?: PetriNet;
 };

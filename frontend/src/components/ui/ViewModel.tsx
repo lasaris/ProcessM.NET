@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/ShadCN/dialog';
 import { useModelsDb } from '@/hooks/useModelsDb';
 import { ModelType } from '@/models/ImperativeModel';
-import { JsonModel } from '@/models/JsonModel';
 import Graphviz from 'graphviz-react';
 import { EyeIcon } from 'lucide-react';
 import React, { ReactNode } from 'react';
@@ -36,13 +35,13 @@ export const ViewModel: React.FC<ViewModelProps> = ({ title }) => {
     } else if (model.result.type === ModelType.DECLARATIVE) {
         content = (
             <DeclareModel
-                treeModel={model.result.model as JsonModel}
+                dotGraph={model.result.model}
                 className="lg:w-full max-h-80 overflow-y-auto"
             />
         );
     } else {
         content = (
-            <div>
+            <div className="flex items-center justify-center w-full md:w-3/4 ">
                 <Graphviz
                     dot={model.result.model as string}
                     className="border-4"

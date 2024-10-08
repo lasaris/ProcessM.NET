@@ -13,7 +13,7 @@ export type JsonModel = {
 };
 
 export type DiscoveredModel = {
-    treeModel: JsonModel;
+    dotGraph: string;
     declareModel: {
         constraints: Constraint[];
         log: any[];

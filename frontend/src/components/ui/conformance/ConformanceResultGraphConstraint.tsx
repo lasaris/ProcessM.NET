@@ -173,7 +173,7 @@ export const ConformanceResultGraphConstraint: React.FC<
                     </form>
                 )}
                 {dot && (
-                    <div className="w-full h-[60vh] overflow-y-hidden">
+                    <div className="border-4 w-full h-[60vh] overflow-y-hidden">
                         <UndoIcon onClick={() => setDot(undefined)} />
                         <Graphviz
                             dot={dot}
