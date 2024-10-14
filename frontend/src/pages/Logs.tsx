@@ -8,7 +8,6 @@ import {
     TableRow,
 } from '@/components/ui/ShadCN/table';
 import { useToast } from '@/components/ui/use-toast';
-import { convertUnixTimestampToDateString } from '@/helpers/convertUnixTimestampToDateString';
 import { useLogsDb } from '@/hooks/useLogsDb';
 import { useModelsDb } from '@/hooks/useModelsDb';
 import { RightArrow } from '@/icons/RightArrow';
@@ -56,16 +55,9 @@ export const Logs: React.FC = () => {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Name</TableHead>
-                                <TableHead>Activity</TableHead>
-                                <TableHead>Case ID</TableHead>
-                                <TableHead>Timestamp</TableHead>
-                                <TableHead>Size</TableHead>
-                                <TableHead>Modified</TableHead>
-                                <TableHead>Operations</TableHead>
-                                <TableHead className="text-right">
-                                    Delete
-                                </TableHead>
+                                <TableHead className="w-4/5">Name</TableHead>
+                                {/* <TableHead></TableHead>
+                                <TableHead className="text-right"></TableHead> */}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -73,41 +65,6 @@ export const Logs: React.FC = () => {
                                 <TableRow key={log.metadata.name}>
                                     <TableCell className="font-medium">
                                         {log.metadata.name}
-                                    </TableCell>
-                                    <TableCell className="font-medium">
-                                        {log.importedLog.activity != null &&
-                                        log.importedLog.headers.length >
-                                            log.importedLog.activity
-                                            ? log.importedLog.headers[
-                                                  log.importedLog.activity
-                                              ]
-                                            : ''}
-                                    </TableCell>
-                                    <TableCell className="font-medium">
-                                        {log.importedLog.caseId != null &&
-                                        log.importedLog.headers.length >
-                                            log.importedLog.caseId
-                                            ? log.importedLog.headers[
-                                                  log.importedLog.caseId
-                                              ]
-                                            : ''}
-                                    </TableCell>
-                                    <TableCell className="font-medium">
-                                        {log.importedLog.timestamp != null &&
-                                        log.importedLog.headers.length >
-                                            log.importedLog.timestamp
-                                            ? log.importedLog.headers[
-                                                  log.importedLog.timestamp
-                                              ]
-                                            : ''}
-                                    </TableCell>
-                                    <TableCell className="font-medium">
-                                        {log.metadata.size} B
-                                    </TableCell>
-                                    <TableCell className="font-medium">
-                                        {convertUnixTimestampToDateString(
-                                            log.metadata.modified
-                                        )}
                                     </TableCell>
                                     <TableCell>
                                         <TooltipWrapper
