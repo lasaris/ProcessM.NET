@@ -39,6 +39,7 @@ type ConfigurationFormType = {
 
 type FileInputFormType = {
     file: File | undefined;
+    csvSeparator: string;
 };
 
 type AddLogDialogProps = {
@@ -69,6 +70,7 @@ export const AddLogDialog: React.FC<AddLogDialogProps> = ({ resetLogs }) => {
     const fileForm = useForm<FileInputFormType>({
         defaultValues: {
             file: undefined,
+            csvSeparator: '',
         },
     });
 
@@ -93,6 +95,7 @@ export const AddLogDialog: React.FC<AddLogDialogProps> = ({ resetLogs }) => {
         if (file) {
             const formData = new FormData();
             formData.append('file', file);
+            formData.append('csvSeparator', fileInputData.csvSeparator);
 
             uploadLog(formData);
         }
@@ -292,6 +295,21 @@ export const AddLogDialog: React.FC<AddLogDialogProps> = ({ resetLogs }) => {
                                                     e.target.files?.[0]; // Extract the first file
                                                 field.onChange(file); // Pass the file to React Hook Form
                                             }}
+                                        />
+                                    </div>
+                                );
+                            }}
+                        />
+                        <FormField
+                            control={fileForm.control}
+                            name="csvSeparator"
+                            render={({ field }) => {
+                                return (
+                                    <div>
+                                        <Input
+                                            id="csvSeparator"
+                                            onChange={field.onChange}
+                                            placeholder="CSV Separator"
                                         />
                                     </div>
                                 );
