@@ -6,7 +6,7 @@ type MinePageLayoutProps = {
 
 export const MinePageLayout: React.FC<MinePageLayoutProps> = ({ children }) => {
     return (
-        <div className="flex flex-col w-full h-full md:flex-row">
+        <div className="flex flex-col w-full h-full md:flex-row md:overflow-y-hidden">
             {children}
         </div>
     );

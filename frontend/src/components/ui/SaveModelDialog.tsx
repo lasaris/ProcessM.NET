@@ -78,7 +78,7 @@ export const SaveModelDialog: React.FC<SaveModelDialogProps> = ({
             onOpenChange={setOpenSaveModelDialog}
         >
             <DialogTrigger asChild>
-                <Button variant="outline">Save Model</Button>
+                <Button>Save Model</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>

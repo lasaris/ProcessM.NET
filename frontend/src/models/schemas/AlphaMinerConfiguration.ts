@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
 export const AlphaMinerConfigurationSchema = z.object({
+    caseId: z.string(),
+    activity: z.string(),
     ignoreFrequency: z.boolean(),
     sourcePetriNet: z.boolean(),
     invisibleTraces: z.array(z.array(z.string())),

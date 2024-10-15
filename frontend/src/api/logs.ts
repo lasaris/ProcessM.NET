@@ -34,6 +34,7 @@ const trySetTimestampFormatManual = (
 };
 
 const alphaMine = (configuredLog: ConfiguredLog) => {
+    console.log('Alpha mine: ', configuredLog);
     return axiosInstance.post('/log/mine/alpha', configuredLog, {
         headers: {
             'Content-Type': 'application/json',

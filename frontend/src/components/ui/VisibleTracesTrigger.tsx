@@ -93,7 +93,7 @@ export const VisibleTracesTrigger: React.FC<VisibleTracesTriggerProps> = ({
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button>Traces</Button>
+                <Button className="w-1/2">Traces</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>

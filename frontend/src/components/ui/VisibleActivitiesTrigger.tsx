@@ -82,7 +82,7 @@ export const VisibleActivitiesTrigger: React.FC<
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button>Activities</Button>
+                <Button className="w-1/2">Activities</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
