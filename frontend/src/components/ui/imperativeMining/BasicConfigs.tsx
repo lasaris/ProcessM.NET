@@ -42,7 +42,7 @@ export const BasicConfigs = ({ form, log }: BasicConfigsProps) => {
 
     return (
         <div className="flex flex-col gap-3 p-6 bg-white rounded-lg shadow-lg min-w-[400px]">
-            <H4>Configure</H4>
+            <H4>Basic Configuration</H4>
             {logHeaders && logHeaders.length >= 2 && (
                 <FormField
                     control={form.control}
