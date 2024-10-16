@@ -6,6 +6,7 @@ import { UnableToLoad } from '@/components/ui/UnableToLoad';
 import { VisibleActivitiesTrigger } from '@/components/ui/VisibleActivitiesTrigger';
 import { VisibleTracesTrigger } from '@/components/ui/VisibleTracesTrigger';
 import { HeuristicConfigs } from '@/components/ui/imperativeMining/HeuristicConfigs';
+import { H4 } from '@/components/ui/typography/H4';
 import { useHeuristicMine } from '@/hooks/apiHooks/useHeuristicMine';
 import { useModelExport } from '@/hooks/apiHooks/useModelExport';
 import { useLogsDb } from '@/hooks/useLogsDb';
@@ -117,19 +118,24 @@ export const HeuristicMinerPage: React.FC = () => {
                     >
                         <HeuristicConfigs form={form} log={log.result} />
                         {data && (
-                            <div className="flex gap-3 p-6 bg-white rounded-lg shadow-lg">
-                                <VisibleActivitiesTrigger
-                                    activities={data.data.activities}
-                                    form={
-                                        form as unknown as UseFormReturn<AlphaMinerConfigurationType>
-                                    }
-                                />
-                                <VisibleTracesTrigger
-                                    form={
-                                        form as unknown as UseFormReturn<AlphaMinerConfigurationType>
-                                    }
-                                    traces={traces}
-                                />
+                            <div className="bg-white rounded-lg shadow-lg flex flex-col gap-2 p-4">
+                                <H4>View / Hide</H4>
+                                <div className="flex gap-3">
+                                    <VisibleActivitiesTrigger
+                                        activities={data.data.activities}
+                                        form={
+                                            form as unknown as UseFormReturn<AlphaMinerConfigurationType>
+                                        }
+                                        mine={onSubmit}
+                                    />
+                                    <VisibleTracesTrigger
+                                        form={
+                                            form as unknown as UseFormReturn<AlphaMinerConfigurationType>
+                                        }
+                                        traces={traces}
+                                        mine={onSubmit}
+                                    />
+                                </div>
                             </div>
                         )}
                     </form>

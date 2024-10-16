@@ -41,10 +41,10 @@ export const ViewModel: React.FC<ViewModelProps> = ({ title }) => {
         );
     } else {
         content = (
-            <div className="flex items-center justify-center w-full md:w-3/4 ">
+            <div className="flex items-center justify-center w-full ">
                 <Graphviz
                     dot={model.result.model as string}
-                    className="border-4"
+                    className="w-full shadow-lg"
                     options={{
                         zoom: true,
                         width: '100%',

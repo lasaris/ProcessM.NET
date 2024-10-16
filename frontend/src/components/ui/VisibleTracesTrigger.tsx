@@ -28,18 +28,24 @@ import { AlphaMinerConfigurationType } from '@/models/schemas/AlphaMinerConfigur
 type VisibleTracesTriggerProps = {
     traces: TraceWithOccurence[];
     form: UseFormReturn<AlphaMinerConfigurationType>;
+    mine: (values: any) => Promise<void>;
 };
 
 export const VisibleTracesTrigger: React.FC<VisibleTracesTriggerProps> = ({
     traces,
     form,
+    mine,
 }) => {
     const [invisTraces, setInvisTraces] = useState<string[][]>(
         form.getValues().invisibleTraces
     );
 
+    const formWatch = form.watch();
+
     const handleSubmit = () => {
         form.setValue('invisibleTraces', invisTraces);
+        formWatch.invisibleTraces = invisTraces;
+        mine(formWatch);
     };
 
     const changeCheckedTrace = (trace: string[]) => {

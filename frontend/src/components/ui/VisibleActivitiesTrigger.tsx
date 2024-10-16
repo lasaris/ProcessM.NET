@@ -25,17 +25,22 @@ import { AlphaMinerConfigurationType } from '@/models/schemas/AlphaMinerConfigur
 type VisibleTracesActivitiesProps = {
     activities: string[];
     form: UseFormReturn<AlphaMinerConfigurationType>;
+    mine: (values: any) => Promise<void>;
 };
 
 export const VisibleActivitiesTrigger: React.FC<
     VisibleTracesActivitiesProps
-> = ({ activities, form }) => {
+> = ({ activities, form, mine }) => {
     const [invisActivities, setInvisActivities] = useState<string[]>(
         form.getValues().invisibleActivities
     );
 
+    const formWatch = form.watch();
+
     const handleSubmit = () => {
         form.setValue('invisibleActivities', invisActivities);
+        formWatch.invisibleActivities = invisActivities;
+        mine(formWatch);
     };
 
     const changeCheckedTrace = (act: string) => {
