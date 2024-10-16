@@ -2,6 +2,7 @@
 using BakaMining.Models;
 using BakaMining.Utils;
 using LogImport.Models;
+using MatBlazor;
 using ProcessM.NET.Discovery.HeuristicMiner;
 using ProcessM.NET.Export;
 using ProcessM.NET.Model;
@@ -32,8 +33,8 @@ public static class Imperative
                 Size = metadata.Size
             },
             EventLog = OrderByActivityFrequency(workflowLog),
-            Activity = importedEventLog.Headers[importedEventLog.Activity],
-            CaseId = importedEventLog.Headers[importedEventLog.CaseId],
+            Activity = importedLog.Headers[importedLog.Activity],
+            CaseId = importedLog.Headers[importedLog.CaseId],
             Timestamp = importedEventLog.Timestamp.HasValue
                 ? importedEventLog.Headers[importedEventLog.Timestamp.Value]
                 : default,
@@ -51,8 +52,8 @@ public static class Imperative
             return workflowLog;
         }
 
-        var hiddenActivities = basicConfigs.invisibleActivities.ToHashSet();
-        var hiddenTraces = basicConfigs.invisibleTraces.ToHashSet();
+        var hiddenActivities = basicConfigs.InvisibleActivities?.ToHashSet();
+        var hiddenTraces = basicConfigs.InvisibleTraces?.ToHashSet();
         WorkflowLogUtils.WorkflowLogPreprocessor(workflowLog, hiddenActivities, hiddenTraces);
 
         return workflowLog;

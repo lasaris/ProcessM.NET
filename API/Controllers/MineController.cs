@@ -21,8 +21,7 @@ public class MineController : ControllerBase
     {
         // Prepare
         var configs = configuredHeuristicModel.Configuration;
-        var eventLogFile = Imperative.CreateEventLogFileFromImportedModel(configuredHeuristicModel.ImportedLog,
-            configuredHeuristicModel.Metadata);
+        var eventLogFile = Imperative.CreateEventLogFileFromImportedModel(configuredHeuristicModel.ImportedLog, configuredHeuristicModel.Metadata);
         var resultTraces = eventLogFile.EventLog.GetTracesWithOccurrence();
         var workflowLog = Imperative.PrepareWorkflowLog(eventLogFile, configuredHeuristicModel.Configuration);
 
@@ -42,12 +41,20 @@ public class MineController : ControllerBase
     [Route("alpha")]
     public ActionResult<MineResultAPI> AlphaMine(ConfiguredAlphaModelAPI configuredAlphaModel)
     {
+        var importedLog = configuredAlphaModel.ImportedLog;
+        var configuration = configuredAlphaModel.Configuration;
+        var metadata = configuredAlphaModel.Metadata;
+
+        if (importedLog == null || configuration == null || metadata == null)
+        {
+            return BadRequest("Incorrect body. Missing some values");
+        }
+
         // Prepare
         var eventLogFile =
-            Imperative.CreateEventLogFileFromImportedModel(configuredAlphaModel.importedLog,
-                configuredAlphaModel.metadata);
+            Imperative.CreateEventLogFileFromImportedModel(importedLog, metadata);
         var resultTraces = eventLogFile.EventLog.GetTracesWithOccurrence();
-        var workflowLog = Imperative.PrepareWorkflowLog(eventLogFile, configuredAlphaModel.configuration);
+        var workflowLog = Imperative.PrepareWorkflowLog(eventLogFile, configuration);
 
         // Mine
         var petriNet = Alpha.MakePetriNet(new RelationMatrix(workflowLog));
@@ -57,9 +64,9 @@ public class MineController : ControllerBase
         var result = Imperative.CreateResult(
                 petriNet,
                 workflowLog,
-                configuredAlphaModel.configuration,
+                configuration,
                 resultTraces,
-                configuredAlphaModel.importedLog.GetAllActivities()
+                importedLog.GetAllActivities()
             );
 
         return Ok(result);

@@ -150,7 +150,7 @@ namespace LogImport.Models
         public ImportedEventLog(List<string[]> rows, string[] headers) : this(rows, headers, 0, 1, null, null) { }
 
         public ImportedEventLog(List<string[]> rows, string[] headers, int activity, int caseId, int? timestamp,
-            string timestampFormat)
+            string? timestampFormat)
         {
             this._rows = rows;
             this._headers = headers;

@@ -18,7 +18,7 @@ public class ImportedEventLogAPI
         return new ImportedEventLog(this.Rows, this.Headers, this.Activity, this.CaseId, this.Timestamp,
             this.TimestampFormat);
     }
-    
+
     public List<string> GetAllActivities()
     {
         var result = new List<string>();
@@ -35,11 +35,11 @@ public class ImportedEventLogAPI
 
         return result;
     }
-    
+
     public EventLog BuildEventLog()
     {
         var events = new List<Event>(Rows.Capacity);
-        
+
         events.AddRange(Rows.Select(row =>
         {
             var e = new Event(
