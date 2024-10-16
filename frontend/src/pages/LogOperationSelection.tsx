@@ -24,7 +24,7 @@ export const LogOperationSelection: React.FC = () => {
             key="Discover"
             name="Discover"
             svgLogo={<img src={Discover} alt="Discover" />}
-            targetUrl={TargetURL.DISCOVER_SELECT_CONSTRAINTS}
+            targetUrl={TargetURL.DISCOVER_CONFIGURE_CASE_ACTIVITY}
         />,
         <MiningChoiceCard
             key="Models"

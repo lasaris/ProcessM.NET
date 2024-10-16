@@ -11,15 +11,14 @@ export const DeclareModel: React.FC<DeclareModelProps> = ({
     className,
 }) => {
     return (
-        <div
-            className={`border-4 w-full md:w-3/4 h-[60vh] overflow-y-hidden ${className}`}
-        >
+        <div className={`w-full h-[60vh] overflow-y-hidden ${className}`}>
             <Graphviz
                 dot={dotGraph}
-                className="w-full"
+                className="w-full h-full border-gray-200 border-2"
                 options={{
                     zoom: true,
                     width: '100%',
+                    height: '',
                     useWorker: false,
                 }}
             />

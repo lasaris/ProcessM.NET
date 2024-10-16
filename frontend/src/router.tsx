@@ -5,6 +5,7 @@ import { ModelType } from './models/ImperativeModel';
 import { AlphaMinerPage } from './pages/AlphaMinerPage';
 import { ConformancePage } from './pages/ConformancePage';
 import { DiscoverConfigure } from './pages/DiscoverConfigure';
+import { DiscoverConfigureLog } from './pages/DiscoverConfigureLog';
 import { DiscoverPage } from './pages/DiscoverPage';
 import { DiscoverView } from './pages/DiscoverView';
 import { ErrorPage } from './pages/ErrorPage';
@@ -26,6 +27,8 @@ export enum TargetURL {
     LOGS_OPERATION = '/logs/operation/:entityName',
     ALPHA_MINE = '/logs/mine/alpha/:entityName',
     HEURISTIC_MINE = '/logs/mine/heuristic/:entityName',
+
+    DISCOVER_CONFIGURE_CASE_ACTIVITY = '/logs/dsicover/:entityName/configure-log',
     DISCOVER_SELECT_CONSTRAINTS = '/logs/discover/:entityName',
     DISCOVER_CONFIGURE_CONSTRAINTS = '/logs/discover/:entityName/configure',
     DISCOVER_VIEW_MODEL = '/logs/discover/:entityName/view',
@@ -79,6 +82,14 @@ export const router = createBrowserRouter([
                 element: (
                     <ExistingLogWrapper>
                         <HeuristicMinerPage />,
+                    </ExistingLogWrapper>
+                ),
+            },
+            {
+                path: TargetURL.DISCOVER_CONFIGURE_CASE_ACTIVITY,
+                element: (
+                    <ExistingLogWrapper>
+                        <DiscoverConfigureLog />,
                     </ExistingLogWrapper>
                 ),
             },

@@ -1,3 +1,4 @@
+import { ImportedEventLog } from '@/models/API/ImportedEventLog';
 import { create } from 'zustand';
 
 export interface DiscoverConfiguration {
@@ -8,6 +9,8 @@ export interface DiscoverConfiguration {
 }
 
 export interface DiscoverConfigurationState {
+    importedEventLog: ImportedEventLog | undefined;
+    setImportedEventLog: (importedEventLog: ImportedEventLog) => void;
     configurations: DiscoverConfiguration[];
     addConfiguration: (configuration: DiscoverConfiguration) => void;
     clearConfigurations: () => void;
@@ -21,6 +24,11 @@ export interface DiscoverConfigurationState {
 }
 
 export const useDiscoverStore = create<DiscoverConfigurationState>()((set) => ({
+    importedEventLog: undefined,
+    setImportedEventLog: (importedEventLog: ImportedEventLog) =>
+        set(() => ({
+            importedEventLog: importedEventLog,
+        })),
     configurations: [],
     addConfiguration: (configuration: DiscoverConfiguration) =>
         set((state) => ({
