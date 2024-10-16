@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/ShadCN/button';
-import { Download } from '@/icons/Download';
+import { DownloadIcon } from 'lucide-react';
 import React from 'react';
 
 type ExportButtonProps = {
@@ -18,7 +18,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
             className={`flex w-1/2 gap-2 ${className}`}
             onClick={exportFunction}
         >
-            <Download />
+            <DownloadIcon />
             {title}
         </Button>
     );
