@@ -12,6 +12,7 @@ import { exportDot } from '@/helpers/exportDot';
 import { exportJson } from '@/helpers/exportJson';
 import { exportPnml } from '@/helpers/exportPnml';
 import { useModelsDb } from '@/hooks/useModelsDb';
+import Empty from '@/icons/Empty.svg';
 import { RightArrow } from '@/icons/RightArrow';
 import SpinnerLogo from '@/icons/SpinnerLoader.svg';
 import { ModelType } from '@/models/ImperativeModel';
@@ -53,7 +54,7 @@ export const Models: React.FC = () => {
         );
     }
 
-    if (localModels.result == undefined) {
+    if (localModels.result == undefined || localModels.error) {
         return (
             <div className="w-full h-full flex items-centere justify-center">
                 Unable to load models!
@@ -63,20 +64,52 @@ export const Models: React.FC = () => {
 
     const models = localModels.result;
 
+    if (models && models.length === 0) {
+        return (
+            <div className="relative w-full h-full flex flex-col items-center justify-center p-8">
+                <div className="w-1/8 items-center justify-center flex flex-col">
+                    <img
+                        src={Empty}
+                        alt="No Logs"
+                        className="w-1/8 h-1/8 md:w-1/3 mb-6"
+                    />
+                </div>
+                <p className="text-gray-600 text-center mb-4">
+                    There are no mined models under the current log. You have to
+                    mine a log and save the mined model in order for models to
+                    appear here
+                </p>
+            </div>
+        );
+    }
+
     return (
-        <div className="relative w-full h-full flex flex-col items-center justify-between">
-            <div className="w-11/12 md:w-3/4">
+        <div className="relative w-full h-full flex flex-col items-center p-6">
+            <div className="w-11/12 md:w-3/4 mb-6 text-center">
+                <h1 className="text-2xl font-bold text-gray-800 mb-2">
+                    Mined Models
+                </h1>
+                <p className="text-gray-600">
+                    Here is a list of mined models mined from the {entityName}{' '}
+                    log. Declare models are mined using the Discover technique.
+                    Imperative models are either mined by an Alpha miner or
+                    Heuristic miner
+                </p>
+            </div>
+            <div className="w-11/12 md:w-3/4 bg-white shadow-lg rounded-lg p-6">
                 <Table>
                     <TableHeader>
-                        <TableRow>
+                        <TableRow className="border-b">
                             <TableHead>Name</TableHead>
                             <TableHead>Export</TableHead>
                             <TableHead className="text-center">
                                 Type (Imperative/Declarative)
                             </TableHead>
-                            <TableHead>View</TableHead>
-                            <TableHead>Operations</TableHead>
-                            <TableHead className="text-right">Delete</TableHead>
+                            <TableHead className="w-1/10">View</TableHead>
+                            <TableHead className="w-1/10">Operations</TableHead>
+                            <TableHead className="w-1/10 text-right">
+                                Delete
+                            </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -147,7 +180,7 @@ export const Models: React.FC = () => {
                                                     model.type
                                                 )
                                             }
-                                            className="rounded-full bg-slate-400 w-8 h-8 flex items-center justify-center hover:shadow-lg hover:cursor-pointer"
+                                            className="rounded-full w-8 h-8 flex items-center justify-center transition duration-200 cursor-pointer"
                                         >
                                             <RightArrow />
                                         </div>
@@ -159,7 +192,7 @@ export const Models: React.FC = () => {
                                             onClick={() =>
                                                 handleDeleteModel(model.name)
                                             }
-                                            className="rounded-full bg-slate-400 w-8 h-8 flex items-center justify-center hover:shadow-lg hover:cursor-pointer"
+                                            className="rounded-full w-8 h-8 flex items-center justify-center transition duration-200 cursor-pointer"
                                         >
                                             <TrashIcon />
                                         </div>

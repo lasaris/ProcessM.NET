@@ -58,7 +58,7 @@ export const ViewModel: React.FC<ViewModelProps> = ({ title }) => {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <div className="rounded-full bg-slate-400 w-8 h-8 flex items-center justify-center hover:shadow-lg hover:cursor-pointer">
+                <div className="rounded-full w-8 h-8 flex items-center justify-center transition duration-200 cursor-pointer">
                     <EyeIcon />
                 </div>
             </DialogTrigger>
