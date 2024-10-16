@@ -71,8 +71,8 @@ export const SelectTraceTable: React.FC<SelectTraceTableProps> = ({
     );
 
     return (
-        <div className="p-8 w-full h-full lg:w-1/2">
-            <Table>
+        <div className="w-11/12 md:w-3/4 lg:w-1/2 bg-white shadow-lg rounded-lg p-6 max-h-[60vh] overflow-y-auto">
+            <Table className="w-full">
                 {tableHeader}
                 {tableRows}
             </Table>

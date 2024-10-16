@@ -102,7 +102,7 @@ export const Logs: React.FC = () => {
                     </p>
                 </div>
 
-                <div className="w-11/12 md:w-3/4 lg:w-1/2 bg-white shadow-lg rounded-lg p-6">
+                <div className="w-11/12 md:w-3/4 lg:w-1/2 bg-white shadow-lg rounded-lg p-6 max-h-[60vh] overflow-y-auto">
                     <Table className="w-full">
                         <TableHeader>
                             <TableRow className="border-b">
