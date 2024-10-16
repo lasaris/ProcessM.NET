@@ -22,8 +22,12 @@ import {
     TableRow,
 } from '@/components/ui/ShadCN/table';
 import { areArraysEqual } from '@/helpers/areArraysEqual';
+import { createDotFromStringArrayTrace } from '@/helpers/createDotFromStringArrayTrace';
 import { doesArrayContainArray } from '@/helpers/doesArrayContainArray';
+import { shortenTrace } from '@/helpers/shortenTrace';
 import { AlphaMinerConfigurationType } from '@/models/schemas/AlphaMinerConfiguration';
+import { TooltipWrapper } from '@/wrappers/TooltipWrapper';
+import Graphviz from 'graphviz-react';
 
 type VisibleTracesTriggerProps = {
     traces: TraceWithOccurence[];
@@ -63,18 +67,37 @@ export const VisibleTracesTrigger: React.FC<VisibleTracesTriggerProps> = ({
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead>Trace</TableHead>
-                    <TableHead>Occurences</TableHead>
-                    <TableHead>Enable</TableHead>
+                    <TableHead className="w-full">Trace</TableHead>
+                    <TableHead className="w-1/10">Occurences</TableHead>
+                    <TableHead className="w-1/10">Enable</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {traces.map((trace) => {
-                    const traceString = trace.trace.join();
+                {traces.map((trace, index) => {
+                    const traceString = shortenTrace(trace.trace, 2);
+                    const dot = createDotFromStringArrayTrace(trace.trace);
+                    const dotComponent = (
+                        <Graphviz
+                            dot={dot}
+                            className="w-[100px]"
+                            options={{
+                                zoom: true,
+                                useWorker: false,
+                                width: '100px',
+                            }}
+                        />
+                    );
 
                     return (
-                        <TableRow key={traceString}>
-                            <TableCell>{traceString}</TableCell>
+                        <TableRow key={index}>
+                            <TableCell>
+                                <TooltipWrapper
+                                    side="left"
+                                    tooltipContent={dotComponent}
+                                >
+                                    <p>{traceString}</p>
+                                </TooltipWrapper>
+                            </TableCell>
                             <TableCell>{trace.numberOfOccurences}</TableCell>
                             <TableCell>
                                 <Switch
@@ -101,11 +124,12 @@ export const VisibleTracesTrigger: React.FC<VisibleTracesTriggerProps> = ({
             <DialogTrigger asChild>
                 <Button className="w-1/2">Traces</Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-w-xl">
                 <DialogHeader>
                     <DialogTitle>Set Traces</DialogTitle>
                     <DialogDescription>
-                        You can edit out Traces from the model here.
+                        You can edit out Traces from the model here.<br></br>To
+                        view the whole trace, hover over it.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="gap-4 py-4 overflow-auto h-[350px]">

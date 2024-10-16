@@ -68,7 +68,9 @@ export const Logs: React.FC = () => {
                                     </TableCell>
                                     <TableCell>
                                         <TooltipWrapper
-                                            tooltipTitle={`Mine ${log.metadata.name}`}
+                                            tooltipContent={
+                                                <p>{`Mine ${log.metadata.name}`}</p>
+                                            }
                                         >
                                             <div
                                                 onClick={() =>

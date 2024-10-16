@@ -20,7 +20,7 @@ export const PMSlider: React.FC<PMSliderProps> = ({
     className,
 }) => {
     return (
-        <div className="w-5/6 flex flex-col gap-3">
+        <div className="flex flex-col gap-3">
             <Label>{label}</Label>
             <Slider
                 defaultValue={[value]}

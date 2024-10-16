@@ -136,7 +136,9 @@ export const Models: React.FC = () => {
                                 </TableCell>
                                 <TableCell>
                                     <TooltipWrapper
-                                        tooltipTitle={`${model.name} operations`}
+                                        tooltipContent={
+                                            <p>{`${model.name} operations`}</p>
+                                        }
                                     >
                                         <div
                                             onClick={() =>
