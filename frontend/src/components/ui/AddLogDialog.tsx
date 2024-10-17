@@ -381,7 +381,6 @@ export const AddLogDialog: React.FC<AddLogDialogProps> = ({ resetLogs }) => {
                                             <SelectContent>
                                                 {importedEventLog?.headers.map(
                                                     (header: string) => {
-                                                        console.log(header);
                                                         if (header === '') {
                                                             return;
                                                         }

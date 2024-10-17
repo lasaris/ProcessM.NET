@@ -61,7 +61,7 @@ export const AddTracesDialog: React.FC<AddTracesDialogProps> = ({
             }}
         >
             <DialogTrigger asChild>
-                <Button variant="outline">Import Traces From Log</Button>
+                <Button>Import Traces From Log</Button>
             </DialogTrigger>
             {content}
         </Dialog>

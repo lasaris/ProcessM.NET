@@ -1,4 +1,5 @@
 import { AddTracesDialog } from '@/components/ui/AddTracesDialog';
+import { AddTracesFromNewCSVDialog } from '@/components/ui/conformance/AddTracesFromNewCSVDialog';
 import { SelectTraceTable } from '@/components/ui/conformance/SelectTraceTable';
 import { TraceDTO } from '@/models/API/TraceDTO';
 import { CONFORMANCE_TYPE } from '@/models/ConformanceType';
@@ -8,6 +9,8 @@ import { useParams } from 'react-router-dom';
 export const OptimalAlignmentConformancePage: React.FC = () => {
     const [traces, setTraces] = useState<TraceDTO[]>([]);
     const [openAddTracesDialog, setOpenAddTraceDialog] = useState(false);
+    const [openAddTracesFromNewCsvDialog, setOpenAddTracesFromNewCsvDialog] =
+        useState(false);
     const { entityName } = useParams();
 
     const addTraces = (traces: TraceDTO[]) => {
@@ -22,6 +25,10 @@ export const OptimalAlignmentConformancePage: React.FC = () => {
 
     const closeDialog = () => {
         setOpenAddTraceDialog(false);
+    };
+
+    const closeNewCsvDialog = () => {
+        setOpenAddTracesFromNewCsvDialog(false);
     };
 
     return (
@@ -42,7 +49,13 @@ export const OptimalAlignmentConformancePage: React.FC = () => {
                     conformanceType={CONFORMANCE_TYPE.ALIGNMENT}
                 />
             </div>
-            <div className="sticky bottom-4 flex justify-end w-full px-4">
+            <div className=" sticky bottom-4 flex flex-col md:flex-row justify-end w-full px-4 gap-3">
+                <AddTracesFromNewCSVDialog
+                    onSuccess={addTraces}
+                    open={openAddTracesFromNewCsvDialog}
+                    closeDialog={closeNewCsvDialog}
+                    setOpen={setOpenAddTracesFromNewCsvDialog}
+                />
                 <AddTracesDialog
                     open={openAddTracesDialog}
                     setOpen={setOpenAddTraceDialog}

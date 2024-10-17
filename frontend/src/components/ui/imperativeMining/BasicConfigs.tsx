@@ -155,14 +155,7 @@ export const BasicConfigs = ({ form, log }: BasicConfigsProps) => {
                 )}
             />
 
-            <Button
-                type="submit"
-                onClick={() => {
-                    console.log(config);
-                }}
-            >
-                Mine
-            </Button>
+            <Button type="submit">Mine</Button>
         </div>
     );
 };

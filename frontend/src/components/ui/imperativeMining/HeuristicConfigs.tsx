@@ -285,14 +285,7 @@ export const HeuristicConfigs: React.FC<HeuristicConfigsProps> = ({
                     />
                 )}
             </div>
-            <Button
-                type="submit"
-                onClick={() => {
-                    console.log(config);
-                }}
-            >
-                Mine
-            </Button>
+            <Button type="submit">Mine</Button>
         </div>
     );
 };
