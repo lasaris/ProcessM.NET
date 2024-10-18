@@ -1,11 +1,11 @@
-import React from 'react';
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from './select';
+} from '@/components/ui/ShadCN/select';
+import React from 'react';
 
 export type SelectOption = {
     value: string;

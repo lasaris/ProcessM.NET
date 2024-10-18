@@ -1,6 +1,6 @@
+import { Label } from '@/components/ui/ShadCN/label';
+import { Slider } from '@/components/ui/ShadCN/slider';
 import React, { Dispatch } from 'react';
-import { Label } from './label';
-import { Slider } from './slider';
 
 type PMSliderProps = {
     label: string;
@@ -20,13 +20,11 @@ export const PMSlider: React.FC<PMSliderProps> = ({
     className,
 }) => {
     return (
-        <div className="w-5/6 flex flex-col gap-3">
-            <Label>
-                {label} - {value}/{maxValue}
-            </Label>
+        <div className="flex flex-col gap-3">
+            <Label>{label}</Label>
             <Slider
                 defaultValue={[value]}
-                onValueChange={([val]) => changeValue(val)}
+                onValueCommit={([val]) => changeValue(val)}
                 max={maxValue}
                 step={step}
                 className={className}

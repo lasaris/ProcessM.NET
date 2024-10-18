@@ -3,25 +3,25 @@ import {
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from '@/components/ui/ShadCN/tooltip';
 import React from 'react';
 
 type TooltipWrapperProps = {
-    tooltipTitle: string;
+    tooltipContent: React.ReactNode;
     children: React.ReactNode;
+    side?: 'top' | 'right' | 'left' | 'bottom' | undefined;
 };
 
 export const TooltipWrapper: React.FC<TooltipWrapperProps> = ({
-    tooltipTitle,
+    tooltipContent,
     children,
+    side,
 }) => {
     return (
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>{children}</TooltipTrigger>
-                <TooltipContent>
-                    <p>{tooltipTitle}</p>
-                </TooltipContent>
+                <TooltipContent side={side}>{tooltipContent}</TooltipContent>
             </Tooltip>
         </TooltipProvider>
     );

@@ -1,59 +1,27 @@
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from '@/components/ui/accordion';
-import { JsonModel } from '@/models/JsonModel';
+import Graphviz from 'graphviz-react';
 import React from 'react';
 
 type DeclareModelProps = {
-    model: JsonModel;
-    className: string;
+    dotGraph: string;
+    className?: string;
 };
 
 export const DeclareModel: React.FC<DeclareModelProps> = ({
-    model,
+    dotGraph,
     className,
 }) => {
     return (
-        <Accordion type="single" collapsible className={`${className}`}>
-            <AccordionItem value="item-1">
-                <AccordionTrigger>{model.Name}</AccordionTrigger>
-                <AccordionContent>
-                    {model.Constraints.map((constraint) => {
-                        return (
-                            <Accordion
-                                type="single"
-                                collapsible
-                                className="w-full px-10"
-                            >
-                                <AccordionItem value="item-1">
-                                    <AccordionTrigger>
-                                        {constraint.TemplateType}
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        {constraint.TemplateInstances.map(
-                                            (instance) => {
-                                                return (
-                                                    <div>
-                                                        <div>
-                                                            {instance.LogEventA}
-                                                        </div>
-                                                        <div>
-                                                            {instance.LogEventB}
-                                                        </div>
-                                                    </div>
-                                                );
-                                            }
-                                        )}
-                                    </AccordionContent>
-                                </AccordionItem>
-                            </Accordion>
-                        );
-                    })}
-                </AccordionContent>
-            </AccordionItem>
-        </Accordion>
+        <div className={`w-full h-[60vh] overflow-y-hidden ${className}`}>
+            <Graphviz
+                dot={dotGraph}
+                className="w-full h-full border-gray-200 border-2"
+                options={{
+                    zoom: true,
+                    width: '100%',
+                    height: '',
+                    useWorker: false,
+                }}
+            />
+        </div>
     );
 };
