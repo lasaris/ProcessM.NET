@@ -90,22 +90,18 @@ export const useModelsDb = () => {
             });
         }
 
-        try {
-            const model = await getStoreObject<ModelDB>(STORES.Models, key);
+        const model = await getStoreObject<ModelDB>(STORES.Models, key);
 
-            if (model === undefined) {
-                toast({
-                    title: `Unable to find the model: "${key}"`,
-                    variant: 'destructive',
-                });
+        if (model === undefined) {
+            toast({
+                title: `Unable to find the model: "${key}"`,
+                variant: 'destructive',
+            });
 
-                throw new Error('Unable to find the model');
-            }
-
-            return model;
-        } catch (err) {
-            throw err;
+            throw new Error('Unable to find the model');
         }
+
+        return model;
     };
 
     const deleteModel = async (key: string): Promise<boolean> => {

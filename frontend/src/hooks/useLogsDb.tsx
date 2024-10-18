@@ -76,22 +76,18 @@ export const useLogsDb = () => {
             });
         }
 
-        try {
-            const log = await getStoreObject<ConfiguredLog>(STORES.Logs, key);
+        const log = await getStoreObject<ConfiguredLog>(STORES.Logs, key);
 
-            if (log === undefined) {
-                toast({
-                    title: `Unable to find the log: "${key}"`,
-                    variant: 'destructive',
-                });
+        if (log === undefined) {
+            toast({
+                title: `Unable to find the log: "${key}"`,
+                variant: 'destructive',
+            });
 
-                throw new Error('Unable to find the log');
-            }
-
-            return log;
-        } catch (err) {
-            throw err;
+            throw new Error('Unable to find the log');
         }
+
+        return log;
     };
 
     const deleteLog = async (logKey: string): Promise<boolean> => {

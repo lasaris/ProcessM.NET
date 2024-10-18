@@ -25,7 +25,7 @@ import { AlphaMinerConfigurationType } from '@/models/schemas/AlphaMinerConfigur
 type VisibleTracesActivitiesProps = {
     activities: string[];
     form: UseFormReturn<AlphaMinerConfigurationType>;
-    mine: (values: any) => Promise<void>;
+    mine: (values: any) => Promise<void>; // eslint-disable-line @typescript-eslint/no-explicit-any
 };
 
 export const VisibleActivitiesTrigger: React.FC<

@@ -29,6 +29,8 @@ export const HeuristicMinerPage: React.FC = () => {
     const { entityName } = useParams();
     const { fetchSingleLog } = useLogsDb();
     const log = useAsync(() => fetchSingleLog(entityName || ''), []);
+
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const form: UseFormReturn<HeuristicMinerConfigurationType, any, undefined> =
         useForm<HeuristicMinerConfigurationType>({
             resolver: zodResolver(HeuristicMinerConfigurationSchema),
@@ -89,6 +91,7 @@ export const HeuristicMinerPage: React.FC = () => {
     };
 
     const traces: TraceWithOccurence[] = data?.data.tracesWithOccurence.map(
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
         (trace: any): TraceWithOccurence => {
             const activities = trace.item1.activities;
             const occurences = trace.item2;

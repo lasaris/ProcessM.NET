@@ -4,7 +4,7 @@ export type Constraint = {
     poi: number; // Percentage of instances
     checkVacuously: boolean;
     templateInstances: any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
-    templateDescription: any;
+    templateDescription: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 };
 
 export type JsonModel = {
@@ -16,7 +16,7 @@ export type DiscoveredModel = {
     dotGraph: string;
     declareModel: {
         constraints: Constraint[];
-        log: any[];
+        log: any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
         name: string;
     };
 };

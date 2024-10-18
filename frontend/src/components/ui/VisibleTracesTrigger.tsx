@@ -32,7 +32,7 @@ import Graphviz from 'graphviz-react';
 type VisibleTracesTriggerProps = {
     traces: TraceWithOccurence[];
     form: UseFormReturn<AlphaMinerConfigurationType>;
-    mine: (values: any) => Promise<void>;
+    mine: (values: any) => Promise<void>; // eslint-disable-line @typescript-eslint/no-explicit-any
 };
 
 export const VisibleTracesTrigger: React.FC<VisibleTracesTriggerProps> = ({

@@ -82,6 +82,7 @@ export const AlphaMinerPage: React.FC = () => {
     };
 
     const traces: TraceWithOccurence[] = data?.data.tracesWithOccurence.map(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (trace: any): TraceWithOccurence => {
             const activities = trace.item1.activities;
             const occurences = trace.item2;

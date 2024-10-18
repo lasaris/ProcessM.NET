@@ -49,6 +49,7 @@ export const DiscoverPage: React.FC = () => {
         return <div>Unable to load constraints!</div>;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const templates: DeclareConstraint[] = data?.data.map((template: any) => {
         return {
             template: template.titName,

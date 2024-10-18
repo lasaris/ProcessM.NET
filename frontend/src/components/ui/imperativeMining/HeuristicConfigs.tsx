@@ -53,7 +53,6 @@ export const HeuristicConfigs: React.FC<HeuristicConfigsProps> = ({
     }
 
     const logHeaders = log.importedLog.headers;
-    const config = form.watch();
 
     return (
         <div className="flex flex-col gap-3 p-6 bg-white rounded-lg shadow-lg min-w-[400px]">

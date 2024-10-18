@@ -21,7 +21,7 @@ import { H4 } from '../typography/H4';
 import { useToast } from '../use-toast';
 
 type BasicConfigsProps = {
-    form: UseFormReturn<AlphaMinerConfigurationType, any, undefined>;
+    form: UseFormReturn<AlphaMinerConfigurationType, any, undefined>; // eslint-disable-line @typescript-eslint/no-explicit-any
     log?: ConfiguredLog;
 };
 
@@ -38,7 +38,6 @@ export const BasicConfigs = ({ form, log }: BasicConfigsProps) => {
     }
 
     const logHeaders = log.importedLog.headers;
-    const config = form.watch();
 
     return (
         <div className="flex flex-col gap-3 p-6 bg-white rounded-lg shadow-lg min-w-[400px]">

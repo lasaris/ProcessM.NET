@@ -27,7 +27,6 @@ import { IELWithTimestamp } from '@/models/API/IELWithTimestamp';
 import { ImportedEventLog } from '@/models/API/ImportedEventLog';
 import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { LoadingSpinner } from './LoadingSpinner';
 import { Switch } from './ShadCN/switch';
 import { useToast } from './use-toast';
 
@@ -50,12 +49,7 @@ export const AddLogDialog: React.FC<AddLogDialogProps> = ({ resetLogs }) => {
     const { toast } = useToast();
     const [openDialog, setOpenDialog] = useState<boolean>(false);
     const timestampFormatInputRef = useRef<HTMLInputElement>(null);
-    const {
-        uploadLog,
-        data: importedEventLogData,
-        reset,
-        isPending,
-    } = useLogs();
+    const { uploadLog, data: importedEventLogData, reset } = useLogs();
 
     const { addIntoDb } = useLogsDb();
     const {
@@ -146,7 +140,7 @@ export const AddLogDialog: React.FC<AddLogDialogProps> = ({ resetLogs }) => {
     const checkOnLogSubmitErrors = (
         attributesFormData: ConfigurationFormType
     ) => {
-        let errors = [];
+        const errors = [];
 
         if (!importedEventLog) {
             errors.push('The event log is not imported');
@@ -247,7 +241,7 @@ export const AddLogDialog: React.FC<AddLogDialogProps> = ({ resetLogs }) => {
                     importedEventLogWithTimestamp
                 );
                 importedEventLog!.timestampFormat = testTimestampFormat!;
-            } catch (_: any) {
+            } catch (e) {
                 toast({
                     title: 'Unable to set this timestamp format',
                     variant: 'destructive',
@@ -318,9 +312,6 @@ export const AddLogDialog: React.FC<AddLogDialogProps> = ({ resetLogs }) => {
                 </form>
             </Form>
         );
-    } else if (importedEventLogData === undefined && isPending) {
-        // The file was uploaded and now I'm waiting for response
-        content = <LoadingSpinner />;
     } else if (importedEventLog) {
         content = (
             <Form {...attributesForm}>
