@@ -11,7 +11,7 @@ namespace LogImport.CsvImport
     /// </summary>
     public class CsvImporter : ILogImporter
     {
-        private char _delimiter = ',';
+        private char? _delimiter;
         private char[] _delimiterCandidates = new[] { ';', '|', '\t', ',' };
         private string[] _missing = new[] { "none", "null", "nan", "na", "-", "" };
         private bool _hasHeaders = true;
@@ -19,7 +19,7 @@ namespace LogImport.CsvImport
         /// <summary>
         ///   Delimiter used in the CSV file
         /// </summary>
-        public char Delimiter { get => _delimiter; set => _delimiter = value; }
+        public char? Delimiter { get => _delimiter; set => _delimiter = value; }
 
         /// <summary>
         ///   Array of strings that are considered as missing values
@@ -74,7 +74,10 @@ namespace LogImport.CsvImport
         /// <exception cref="CannotParseFileException">This exception is thrown, if the file doesn't contain headers, and we cannot create custom ones by the first row (for headers creation I need their length)</exception>
         public ImportedEventLog LoadLog(Stream stream)
         {
-            _delimiter = DetectCsvDelimiter(stream, _delimiterCandidates);
+            if (this._delimiter == null)
+            {
+                _delimiter = DetectCsvDelimiter(stream, _delimiterCandidates);
+            }
 
             var logRows = new List<string[]>();
 

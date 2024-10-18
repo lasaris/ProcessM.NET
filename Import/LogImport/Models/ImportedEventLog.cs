@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text;
+using DeclarativePM.Lib.Models.LogModels;
 using LogImport.Exceptions;
 
 namespace LogImport.Models
@@ -146,15 +147,17 @@ namespace LogImport.Models
         /// </summary>
         /// <param name="rows">Represents CSV rows (without headers)</param>
         /// <param name="headers">Represents CSV headers row</param> 
-        public ImportedEventLog(List<string[]> rows, string[] headers)
-        {
-            this._headers = headers;
-            this._rows = rows;
+        public ImportedEventLog(List<string[]> rows, string[] headers) : this(rows, headers, 0, 1, null, null) { }
 
-            this._caseId = 0;
-            this._activity = 1;
-            this._timestamp = null;
-            this._resources = null;
+        public ImportedEventLog(List<string[]> rows, string[] headers, int activity, int caseId, int? timestamp,
+            string? timestampFormat)
+        {
+            this._rows = rows;
+            this._headers = headers;
+            this._activity = activity;
+            this._caseId = caseId;
+            this._timestamp = timestamp;
+            this._timestampFormat = timestampFormat;
         }
 
         /// <summary>
@@ -267,6 +270,33 @@ namespace LogImport.Models
         /// <summary>
         ///   Method to set the column index of the case identifier
         /// </summary>
+        /// <param name="timestampFormat">TimeStamp format</param>
+        /// <returns>True if TimeStamp format matches all rows</returns>
+        public bool TrySetTimestampFormat(string timestampFormat)
+        {
+            if (!Timestamp.HasValue || Timestamp.Value < 0 || Timestamp.Value >= Headers.Length)
+            {
+                return false;
+            }
+
+            foreach (var row in Rows)
+            {
+                var rowTimeStamp = row[Timestamp.Value];
+                bool parseSuccess = DateTime.TryParseExact(rowTimeStamp, timestampFormat, CultureInfo.CurrentCulture, DateTimeStyles.None, out _);
+
+                if (!parseSuccess)
+                {
+                    return false;
+                }
+            }
+
+            TimestampFormat = timestampFormat;
+            return true;
+        }
+
+        /// <summary>
+        ///   Method to set the column index of the case identifier
+        /// </summary>
         /// <param name="timestamp">Name of column to be set as timestamp</param>
         /// <param name="timestampFormat">TimeStamp format</param>
         /// <param name="failedToParseTimestamp">Output parameter for return message</param>
@@ -295,6 +325,31 @@ namespace LogImport.Models
             failedToParseTimestamp = "";
             TimestampFormat = timestampFormat;
             return true;
+        }
+
+        public EventLog BuildEventLog()
+        {
+            var events = new List<Event>(_rows.Capacity);
+
+            events.AddRange(_rows.Select(row =>
+            {
+                var e = new Event(
+                    row[_activity],
+                    row[_caseId],
+                    // TODO: Add the resources
+                    new string[1]
+                );
+
+                // TODO: Add timestamping
+                // if (_timestamp.HasValue && _timestamp < _headers.Length)
+                // {
+                //     e.TimeStamp = row[_timestamp.Value];
+                // }
+
+                return e;
+            }));
+
+            return new EventLog(events, Headers.ToList());
         }
     }
 }
