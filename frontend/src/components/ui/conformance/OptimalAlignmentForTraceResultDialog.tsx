@@ -56,9 +56,7 @@ export const OptimalAlignmentForTraceResultDialog: React.FC<
             </DialogTrigger>
             <DialogContent>
                 <DialogTitle>Conformance</DialogTitle>
-                <DialogDescription>
-                    Trace Alignment
-                </DialogDescription>
+                <DialogDescription>Trace Alignment</DialogDescription>
                 <div className="flex justify-center">{content}</div>
             </DialogContent>
         </Dialog>
