@@ -195,10 +195,8 @@ export const AddLogDialog: React.FC<AddLogDialogProps> = ({ resetLogs }) => {
 
         fileForm.reset();
         attributesForm.reset();
-        reset();
         setOpenDialog(false);
         resetLogs();
-        resetTimestamp();
     };
 
     const onSubmitAttributesForm = async (
@@ -446,7 +444,16 @@ export const AddLogDialog: React.FC<AddLogDialogProps> = ({ resetLogs }) => {
     }
 
     return (
-        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+        <Dialog
+            open={openDialog}
+            onOpenChange={() => {
+                setOpenDialog((prevState) => !prevState);
+                reset();
+                // resetLogs();
+                resetTimestamp();
+                attributesForm.reset();
+            }}
+        >
             <DialogTrigger asChild>
                 <Button>Add Log</Button>
             </DialogTrigger>
