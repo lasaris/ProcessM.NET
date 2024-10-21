@@ -1,11 +1,8 @@
-﻿using System.Text.Json;
-using API.Models;
+﻿using API.Models;
+using API.Utils;
 using DeclarativePM.Lib.Discovery;
 using DeclarativePM.Lib.Enums;
-using DeclarativePM.Lib.Models.DeclareModels;
 using DeclarativePM.Lib.Utils;
-using DeclarativePM.UI.Data;
-using DeclarativePM.UI.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -27,13 +24,11 @@ public class DiscoverController : ControllerBase
         var declareModel = await discovery.DiscoverModelAsync(eventLog, templates, ctk);
         var declareModelJson = JsonConvert.SerializeObject(declareModel);
 
-        Utilities.CreateTreeNode(out var treeNodeModel, templates);
         var dotGraph = Utilities.CreateDotGraph(templates);
 
         var result = new DiscoveredModelResult()
         {
             Model = declareModelJson,
-            TreeModel = treeNodeModel,
             DotGraph = dotGraph,
         };
 

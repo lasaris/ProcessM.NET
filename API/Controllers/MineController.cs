@@ -1,13 +1,9 @@
 ﻿using API.Mining;
 using API.Models;
-using BakaMining.Models;
-using BakaMining.Utils;
 using Microsoft.AspNetCore.Mvc;
 using ProcessM.NET.Discovery.Alpha;
 using ProcessM.NET.Discovery.HeuristicMiner;
-using ProcessM.NET.Export;
 using ProcessM.NET.Model.DataAnalysis;
-using ProcessM.NET.Model.GraphvizNet;
 
 namespace API.Controllers;
 

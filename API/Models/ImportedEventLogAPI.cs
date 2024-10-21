@@ -1,5 +1,4 @@
-﻿using BakaMining.Models;
-using DeclarativePM.Lib.Models.LogModels;
+﻿using DeclarativePM.Lib.Models.LogModels;
 using ImportedEventLog = LogImport.Models.ImportedEventLog;
 
 namespace API.Models;

@@ -13,9 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Declarative\DeclarativePM.UI\DeclarativePM.UI.csproj" />
       <ProjectReference Include="..\Imperative\ProcessM.NET\ProcessM.NET.csproj" />
-      <ProjectReference Include="..\Imperative\Web\Web.csproj" />
       <ProjectReference Include="..\Import\LogImport\LogImport.csproj" />
     </ItemGroup>
 

@@ -1,11 +1,7 @@
 ﻿using API.Models;
-using DeclarativePM.Lib.Models.LogModels;
 using DeclarativePM.Lib.Utils;
-using DeclarativePM.UI.Data;
 using Microsoft.AspNetCore.Mvc;
 using ProcessM.NET.ConformanceChecking.Alignments;
-using ProcessM.NET.Model;
-using ProcessM.NET.Model.BasicPetriNet;
 using ProcessM.NET.Model.DataAnalysis;
 using ProcessM.NET.Model.SynchronousProductNet;
 
