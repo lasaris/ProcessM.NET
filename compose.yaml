@@ -3,6 +3,8 @@ services:
     build:
       context: .
       target: final
+    volumes:
+      - ./API/Logs:/app/logs
     ports:
       - 8080:80
   frontend:
