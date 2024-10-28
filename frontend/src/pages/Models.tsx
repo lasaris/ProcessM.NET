@@ -10,7 +10,6 @@ import {
 import { ViewModel } from '@/components/ui/ViewModel';
 import { exportDot } from '@/helpers/exportDot';
 import { exportJson } from '@/helpers/exportJson';
-import { exportPnml } from '@/helpers/exportPnml';
 import { useModelsDb } from '@/hooks/useModelsDb';
 import Empty from '@/icons/Empty.svg';
 import { RightArrow } from '@/icons/RightArrow';
@@ -121,16 +120,6 @@ export const Models: React.FC = () => {
                                 <TableCell>
                                     {model.type === ModelType.IMPERATIVE ? (
                                         <div className="flex gap-4">
-                                            <Button
-                                                onClick={() =>
-                                                    exportPnml(
-                                                        model.name,
-                                                        model.model as string
-                                                    )
-                                                }
-                                            >
-                                                PNML
-                                            </Button>
                                             <Button
                                                 onClick={() =>
                                                     exportDot(

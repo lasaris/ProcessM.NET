@@ -20,11 +20,13 @@ import { useModelsDb } from '@/hooks/useModelsDb';
 import { ModelType } from '@/models/ImperativeModel';
 import { ModelDB } from '@/models/ModelDB';
 import { PetriNet } from '@/models/PetriNet';
+import { TargetURL } from '@/router';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
+import { useToast } from './use-toast';
 
 type SaveModelDialogProps = {
     model: string;
@@ -45,10 +47,12 @@ export const SaveModelDialog: React.FC<SaveModelDialogProps> = ({
     petriNet,
     type,
 }) => {
+    const { toast } = useToast();
     const { entityName } = useParams();
     const { addIntoDb } = useModelsDb();
     const [openSaveModelDialog, setOpenSaveModelDialog] =
         useState<boolean>(false);
+    const navigate = useNavigate();
     const form = useForm<z.infer<typeof saveModelFormSchema>>({
         resolver: zodResolver(saveModelFormSchema),
         defaultValues: {
@@ -66,9 +70,36 @@ export const SaveModelDialog: React.FC<SaveModelDialogProps> = ({
             petriNet: petriNet,
         };
 
-        const result = await addIntoDb(modelDb, values.modelName);
-        if (result) {
+        try {
+            await addIntoDb(modelDb, values.modelName);
             setOpenSaveModelDialog(false);
+            toast({
+                title: 'Success!',
+                description: 'Model was successfully added.',
+                variant: 'default',
+                action: (
+                    <p
+                        className="text-sm opacity-90 inline-block transition-transform duration-300 ease-in-out transform hover:scale-110"
+                        onClick={() => {
+                            if (entityName) {
+                                navigate(
+                                    TargetURL.MODELS_TABLE.replace(
+                                        ':entityName',
+                                        entityName
+                                    )
+                                );
+                            }
+                        }}
+                    >
+                        To models
+                    </p>
+                ),
+            });
+        } catch (error) {
+            toast({
+                title: 'Something went wrong...',
+                variant: 'destructive',
+            });
         }
     };
 

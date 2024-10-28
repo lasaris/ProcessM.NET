@@ -33,7 +33,6 @@ export const AlphaMinerPage: React.FC = () => {
         defaultValues: {
             activity: '',
             caseId: '',
-            ignoreFrequency: false,
             sourcePetriNet: false,
             invisibleTraces: [],
             invisibleActivities: [],
@@ -104,7 +103,7 @@ export const AlphaMinerPage: React.FC = () => {
                     {content}
                 </div>
             )}
-            <div className="p-4 flex flex-col items-center gap-2 grow h-full">
+            <div className="p-4 flex flex-col items-center gap-2 grow h-full md:max-h-[90vh] md:overflow-y-auto md:overflow-x-hidden">
                 <Form {...form}>
                     <form
                         className="flex flex-col gap-4"
@@ -130,12 +129,7 @@ export const AlphaMinerPage: React.FC = () => {
                         )}
                     </form>
                 </Form>
-                {data && (
-                    <MineExportSection
-                        dotModel={data?.data.minedModel}
-                        exportPnmlFunction={exportPnmlHandler}
-                    />
-                )}
+                {data && <MineExportSection dotModel={data?.data.minedModel} />}
                 {data && (
                     <div className="flex flex-col gap-3 p-6 bg-white rounded-lg shadow-lg min-w-[400px]">
                         <SaveModelDialog

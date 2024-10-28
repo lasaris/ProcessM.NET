@@ -16,36 +16,13 @@ export const useModelsDb = () => {
         return status;
     };
 
-    const addIntoDb = async (data: ModelDB, key: string): Promise<boolean> => {
+    const addIntoDb = async (data: ModelDB, key: string) => {
         const initDbAttempt = await handleInitDB();
         if (!initDbAttempt) {
             return false;
         }
 
-        try {
-            await addData(STORES.Models, { data, key });
-
-            toast({
-                title: `Successfully added model: ${key}!`,
-            });
-
-            return true;
-        } catch (err: unknown) {
-            if (err instanceof Error) {
-                toast({
-                    title: `Unable to add model ${key}`,
-                    description: `${err.message}`,
-                    variant: 'destructive',
-                });
-            } else {
-                toast({
-                    title: `Unable to add model ${key}`,
-                    variant: 'destructive',
-                });
-            }
-        }
-
-        return false;
+        await addData(STORES.Models, { data, key });
     };
 
     const fetchAllModels = async (): Promise<ModelDB[]> => {

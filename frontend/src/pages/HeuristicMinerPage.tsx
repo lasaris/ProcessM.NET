@@ -37,7 +37,6 @@ export const HeuristicMinerPage: React.FC = () => {
             defaultValues: {
                 caseId: '',
                 activity: '',
-                ignoreFrequency: false,
                 sourcePetriNet: false,
                 invisibleTraces: [],
                 invisibleActivities: [],
@@ -143,12 +142,7 @@ export const HeuristicMinerPage: React.FC = () => {
                         )}
                     </form>
                 </Form>
-                {data && (
-                    <MineExportSection
-                        dotModel={data?.data.minedModel}
-                        exportPnmlFunction={exportPnmlHandler}
-                    />
-                )}
+                {data && <MineExportSection dotModel={data?.data.minedModel} />}
                 {data && (
                     <div className="flex flex-col gap-3 p-6 bg-white rounded-lg shadow-lg min-w-[400px]">
                         <SaveModelDialog
