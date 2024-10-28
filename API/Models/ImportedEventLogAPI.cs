@@ -1,4 +1,5 @@
-﻿using DeclarativePM.Lib.Models.LogModels;
+﻿using System.Globalization;
+using DeclarativePM.Lib.Models.LogModels;
 using ImportedEventLog = LogImport.Models.ImportedEventLog;
 
 namespace API.Models;
@@ -43,19 +44,22 @@ public class ImportedEventLogAPI
         {
             var e = new Event(
                 row[Activity],
-                row[CaseId],
-                // TODO: Add the resources
-                new string[1]
+                row[CaseId]
             );
 
-            // TODO: Add timestamping
-            // if (_timestamp.HasValue && _timestamp < _headers.Length)
-            // {
-            //     e.TimeStamp = row[_timestamp.Value];
-            // }
+            if (Timestamp.HasValue && Timestamp < Headers.Length && TimestampFormat != null)
+            {
+                e.TimeStamp = DateTime.ParseExact(row[Timestamp.Value], TimestampFormat, CultureInfo.CurrentCulture);
+            }
 
             return e;
         }));
+
+        // If the log has timestamps, then the events can be ordered by timestamp here
+        if (Timestamp.HasValue)
+        {
+            events = events.OrderBy(e => e.TimeStamp).ToList();
+        }
 
         return new EventLog(events, Headers.ToList());
     }
