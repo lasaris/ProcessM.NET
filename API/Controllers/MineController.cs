@@ -55,7 +55,6 @@ public class MineController : ControllerBase
         // Mine
         var petriNet = Alpha.MakePetriNet(new RelationMatrix(workflowLog));
 
-        // TODO: Here Activities should be updated and fitness should be computed
         // Prepare result
         var result = Imperative.CreateResult(
                 petriNet,
