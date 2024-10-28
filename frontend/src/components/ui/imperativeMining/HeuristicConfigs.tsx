@@ -131,26 +131,6 @@ export const HeuristicConfigs: React.FC<HeuristicConfigsProps> = ({
 
             <FormField
                 control={form.control}
-                name="ignoreFrequency"
-                render={({ field }) => (
-                    <FormItem className="flex flex-col justify-center">
-                        <FormLabel className="text-sm font-semibold text-gray-700">
-                            Ignore Frequency
-                        </FormLabel>
-                        <FormControl>
-                            <Switch
-                                onCheckedChange={field.onChange}
-                                checked={field.value}
-                                className="bg-gray-200 focus:ring-2 focus:ring-blue-500"
-                            />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )}
-            />
-
-            <FormField
-                control={form.control}
                 name="sourcePetriNet"
                 render={({ field }) => (
                     <FormItem className="flex flex-col justify-center">

@@ -22,10 +22,11 @@ export const ModelOperationSelection: React.FC<
 
     const imperativeModelCards = [
         <MiningChoiceCard
-            key="Conformance"
-            name="Conformance"
+            key="OptimalAlignment"
+            name="Optimal Alignments"
             svgLogo={<img src={ChecklistLogo} alt="Conformance Check" />}
             targetUrl={TargetURL.OPTIMAL_ALIGNMENT}
+            description="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Fusce consectetuer risus a nunc."
         />,
     ];
 

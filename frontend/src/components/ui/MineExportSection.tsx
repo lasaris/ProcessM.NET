@@ -6,12 +6,10 @@ import { H4 } from './typography/H4';
 
 type MineExportSectionProps = {
     dotModel: string;
-    exportPnmlFunction: () => void;
 };
 
 export const MineExportSection: React.FC<MineExportSectionProps> = ({
     dotModel,
-    exportPnmlFunction,
 }) => {
     const { entityName } = useParams();
 
@@ -23,10 +21,6 @@ export const MineExportSection: React.FC<MineExportSectionProps> = ({
         <div className="flex flex-col gap-3 p-6 bg-white rounded-lg shadow-lg min-w-[400px]">
             <H4>Export</H4>
             <div className="flex justify-start gap-4">
-                <ExportButton
-                    title="PNML"
-                    exportFunction={exportPnmlFunction}
-                />
                 <ExportButton
                     title="DOT"
                     exportFunction={() => exportDot(entityName, dotModel)}

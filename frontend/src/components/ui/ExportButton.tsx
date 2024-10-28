@@ -15,7 +15,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
 }) => {
     return (
         <Button
-            className={`flex w-1/2 gap-2 ${className}`}
+            className={`flex w-full gap-2 ${className}`}
             onClick={exportFunction}
         >
             <DownloadIcon />
