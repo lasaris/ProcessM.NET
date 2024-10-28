@@ -329,25 +329,28 @@ namespace LogImport.Models
 
         public EventLog BuildEventLog()
         {
-            var events = new List<Event>(_rows.Capacity);
+            var events = new List<Event>(Rows.Capacity);
 
-            events.AddRange(_rows.Select(row =>
+            events.AddRange(Rows.Select(row =>
             {
                 var e = new Event(
-                    row[_activity],
-                    row[_caseId],
-                    // TODO: Add the resources
-                    new string[1]
+                    row[Activity],
+                    row[CaseId]
                 );
 
-                // TODO: Add timestamping
-                // if (_timestamp.HasValue && _timestamp < _headers.Length)
-                // {
-                //     e.TimeStamp = row[_timestamp.Value];
-                // }
+                if (Timestamp.HasValue && Timestamp < Headers.Length && TimestampFormat != null)
+                {
+                    e.TimeStamp = DateTime.ParseExact(row[Timestamp.Value], TimestampFormat, CultureInfo.CurrentCulture);
+                }
 
                 return e;
             }));
+
+            // If the log has timestamps, then the events can be ordered by timestamp here
+            if (Timestamp.HasValue)
+            {
+                events = events.OrderBy(e => e.TimeStamp).ToList();
+            }
 
             return new EventLog(events, Headers.ToList());
         }

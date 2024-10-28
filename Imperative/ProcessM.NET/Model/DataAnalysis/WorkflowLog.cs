@@ -80,7 +80,7 @@ namespace ProcessM.NET.Model.DataAnalysis
         /// <returns>List of filled workflow traces.</returns>
         private List<WorkflowTrace> MakeWftsBasedOnTimestamp(ImportedEventLog importedData)
         {
-            List<TimestampedWorkflowTrace> traces = MakeEmptyTimestampedWfts(importedData.GetNthRow(importedData.CaseId));
+            List<TimestampedWorkflowTrace> traces = MakeEmptyTimestampedWfts(importedData.GetNthColumn(importedData.CaseId));
 
             foreach (var row in importedData.Rows)
             {
