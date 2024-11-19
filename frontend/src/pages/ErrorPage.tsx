@@ -4,7 +4,11 @@ import { TargetURL } from '@/router';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export const ErrorPage: React.FC = () => {
+type ErrorPageProps = {
+    errorMessage?: string;
+};
+
+export const ErrorPage: React.FC<ErrorPageProps> = ({ errorMessage }) => {
     const navigate = useNavigate();
 
     const onNaviagteHandler = () => {
@@ -13,7 +17,11 @@ export const ErrorPage: React.FC = () => {
 
     return (
         <div className="flex flex-col gap-3 justify-center items-center w-screen h-screen">
-            <H3>Error 404: Not found!</H3>
+            <H3>
+                {errorMessage
+                    ? `The error message: ${errorMessage}`
+                    : 'Error 404: Not found!'}
+            </H3>
             <Button onClick={onNaviagteHandler}>Home!</Button>
         </div>
     );
