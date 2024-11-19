@@ -17,6 +17,7 @@ import { ConfiguredLog } from '@/models/API/ConfiguredLog';
 import { AlphaMinerConfigurationType } from '@/models/schemas/AlphaMinerConfiguration';
 import { UseFormReturn } from 'react-hook-form';
 import { Button } from '../ShadCN/button';
+import { InfoTooltip } from '../common/InfoTooltip';
 import { H4 } from '../typography/H4';
 import { useToast } from '../use-toast';
 
@@ -123,11 +124,19 @@ export const BasicConfigs = ({ form, log }: BasicConfigsProps) => {
                             Source Petri Net
                         </FormLabel>
                         <FormControl>
-                            <Switch
-                                onCheckedChange={field.onChange}
-                                checked={field.value}
-                                className="bg-gray-200 focus:ring-2 focus:ring-blue-500"
-                            />
+                            <InfoTooltip
+                                tooltipContent={
+                                    <p>
+                                        If selected, places from petri net will
+                                        be present in the mined model
+                                    </p>
+                                }
+                            >
+                                <Switch
+                                    onCheckedChange={field.onChange}
+                                    checked={field.value}
+                                />
+                            </InfoTooltip>
                         </FormControl>
                         <FormMessage />
                     </FormItem>

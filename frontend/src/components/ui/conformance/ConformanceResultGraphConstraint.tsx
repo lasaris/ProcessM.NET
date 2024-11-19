@@ -11,16 +11,16 @@ import { createDotFromTraceWithHighlight } from '@/helpers/createDotFromTraceWit
 import { Event } from '@/models/API/Event';
 import { TemplateEvaluation } from '@/models/TraceEvaluation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Graphviz from 'graphviz-react';
-import { UndoIcon } from 'lucide-react';
-import React, { useState } from 'react';
+import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { Lead } from '../typography/Lead';
 import { useToast } from '../use-toast';
 
 type ConformanceResultGraphConstraintProps = {
     templateEvaluation: TemplateEvaluation[];
     trace: Event[];
+    setDot: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 const formSchema = z.object({
@@ -30,9 +30,8 @@ const formSchema = z.object({
 
 export const ConformanceResultGraphConstraint: React.FC<
     ConformanceResultGraphConstraintProps
-> = ({ templateEvaluation, trace }) => {
+> = ({ templateEvaluation, trace, setDot }) => {
     const { toast } = useToast();
-    const [dot, setDot] = useState<string | undefined>(undefined);
     const { control, watch, handleSubmit } = useForm<
         z.infer<typeof formSchema>
     >({
@@ -86,105 +85,105 @@ export const ConformanceResultGraphConstraint: React.FC<
 
     return (
         <Card>
-            <CardContent className="flex flex-col aspect-square items-center justify-center p-6">
-                {!dot && (
-                    <form
-                        onSubmit={handleSubmit(onSubmit)}
-                        className="flex flex-col gap-2 w-full"
-                    >
-                        <Controller
-                            name="templateSelect"
-                            control={control}
-                            defaultValue=""
-                            render={({ field }) => (
-                                <Select
-                                    onValueChange={field.onChange}
-                                    value={field.value}
-                                >
-                                    <SelectTrigger className="">
-                                        <SelectValue placeholder="Select a Template" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {templateEvaluation.map(
-                                            (templateEvaluation) => {
-                                                const name =
-                                                    templateEvaluation.readableName;
+            <CardContent className="flex flex-col gap-4 aspect-square items-center p-6">
+                <Lead className="underline w-full">
+                    View constraint in trace
+                </Lead>
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="flex flex-col gap-4 w-full"
+                >
+                    <p>
+                        Select a mined template and a constraint to view it in
+                        the trace.
+                    </p>
+                    <Controller
+                        name="templateSelect"
+                        control={control}
+                        defaultValue=""
+                        render={({ field }) => (
+                            <Select
+                                onValueChange={field.onChange}
+                                value={field.value}
+                            >
+                                <SelectTrigger className="">
+                                    <SelectValue placeholder="Select a Template" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {templateEvaluation.map(
+                                        (templateEvaluation) => {
+                                            const name =
+                                                templateEvaluation.readableName;
 
-                                                if (name) {
-                                                    return (
-                                                        <SelectItem
-                                                            key={name}
-                                                            value={name}
-                                                        >
-                                                            {name}
-                                                        </SelectItem>
-                                                    );
-                                                }
+                                            if (name) {
+                                                return (
+                                                    <SelectItem
+                                                        key={name}
+                                                        value={name}
+                                                    >
+                                                        {name}
+                                                    </SelectItem>
+                                                );
                                             }
-                                        )}
-                                    </SelectContent>
-                                </Select>
-                            )}
-                        />
+                                        }
+                                    )}
+                                </SelectContent>
+                            </Select>
+                        )}
+                    />
 
-                        <Controller
-                            name="constraintSelect"
-                            control={control}
-                            defaultValue=""
-                            render={({ field }) => (
-                                <Select
-                                    onValueChange={field.onChange}
-                                    value={field.value}
-                                    disabled={!templateSelect}
-                                >
-                                    <SelectTrigger className="">
-                                        <SelectValue placeholder="Select a Constraint" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {templateSelect &&
-                                            templateEvaluation
-                                                .find(
-                                                    (templateEvaluation) =>
-                                                        templateEvaluation.readableName ===
-                                                        templateSelect
-                                                )
-                                                ?.constraintEvaluations.map(
-                                                    (constraintEvaluation) => {
-                                                        const name =
-                                                            constraintEvaluation.readableName;
+                    <Controller
+                        name="constraintSelect"
+                        control={control}
+                        defaultValue=""
+                        render={({ field }) => (
+                            <Select
+                                onValueChange={field.onChange}
+                                value={field.value}
+                                disabled={!templateSelect}
+                            >
+                                <SelectTrigger className="">
+                                    <SelectValue placeholder="Select a Constraint" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {templateSelect &&
+                                        templateEvaluation
+                                            .find(
+                                                (templateEvaluation) =>
+                                                    templateEvaluation.readableName ===
+                                                    templateSelect
+                                            )
+                                            ?.constraintEvaluations.map(
+                                                (constraintEvaluation) => {
+                                                    const name =
+                                                        constraintEvaluation.readableName;
 
-                                                        if (name) {
-                                                            return (
-                                                                <SelectItem
-                                                                    key={name}
-                                                                    value={name}
-                                                                >
-                                                                    {name}
-                                                                </SelectItem>
-                                                            );
-                                                        }
+                                                    if (name) {
+                                                        return (
+                                                            <SelectItem
+                                                                key={name}
+                                                                value={name}
+                                                            >
+                                                                {name}
+                                                            </SelectItem>
+                                                        );
                                                     }
-                                                )}
-                                    </SelectContent>
-                                </Select>
-                            )}
-                        />
-                        <Button type="submit">View</Button>
-                    </form>
-                )}
-                {dot && (
-                    <div className="border-4 w-full h-[60vh] overflow-y-hidden">
-                        <UndoIcon onClick={() => setDot(undefined)} />
-                        <Graphviz
-                            dot={dot}
-                            options={{
-                                zoom: true,
-                                width: '100%',
-                                useWorker: false,
-                            }}
-                        />
-                    </div>
-                )}
+                                                }
+                                            )}
+                                </SelectContent>
+                            </Select>
+                        )}
+                    />
+                    <Button type="submit">View</Button>
+                    <Button
+                        type="button"
+                        onClick={() => {
+                            setDot(createDotFromTraceWithHighlight(trace, []));
+                        }}
+                    >
+                        Clear
+                    </Button>
+                </form>
             </CardContent>
         </Card>
     );

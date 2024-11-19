@@ -32,7 +32,10 @@ export const AddTracesDialog: React.FC<AddTracesDialogProps> = ({
         <DialogContent>
             <DialogHeader>
                 <DialogTitle>Select Traces</DialogTitle>
-                <DialogDescription>Select the traces to add</DialogDescription>
+                <DialogDescription>
+                    Select the traces to add. You can hover over the case to
+                    view the trace.
+                </DialogDescription>
             </DialogHeader>
             <TracesTable
                 traces={data.data as TraceDTO[]}

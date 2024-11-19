@@ -7,7 +7,10 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/ShadCN/table';
+import { createDotFromTraceWithHighlight } from '@/helpers/createDotFromTraceWithHighlight';
 import { TraceDTO } from '@/models/API/TraceDTO';
+import { TooltipWrapper } from '@/wrappers/TooltipWrapper';
+import Graphviz from 'graphviz-react';
 import { CheckIcon, XIcon } from 'lucide-react';
 import React, { useState } from 'react';
 
@@ -66,7 +69,27 @@ export const TracesTable: React.FC<TracesTableProps> = ({
                         <TableCell>
                             {isTraceSelected(trace) ? <CheckIcon /> : <XIcon />}
                         </TableCell>
-                        <TableCell>{trace.case}</TableCell>
+                        <TableCell>
+                            <TooltipWrapper
+                                side="right"
+                                tooltipContent={
+                                    <Graphviz
+                                        dot={createDotFromTraceWithHighlight(
+                                            trace.events,
+                                            []
+                                        )}
+                                        className="w-[100px]"
+                                        options={{
+                                            zoom: true,
+                                            useWorker: false,
+                                            width: '100px',
+                                        }}
+                                    />
+                                }
+                            >
+                                <span>{trace.case}</span>
+                            </TooltipWrapper>
+                        </TableCell>
                     </TableRow>
                 );
             })}

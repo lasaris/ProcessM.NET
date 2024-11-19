@@ -17,6 +17,7 @@ export const ModelOperationSelection: React.FC<
             name="Conformance"
             svgLogo={<img src={ChecklistLogo} alt="Conformance Check" />}
             targetUrl={TargetURL.CONFORMANCE}
+            description="Check, whether a selected trace is compliant with the mined model"
         />,
     ];
 
@@ -26,7 +27,7 @@ export const ModelOperationSelection: React.FC<
             name="Optimal Alignments"
             svgLogo={<img src={ChecklistLogo} alt="Conformance Check" />}
             targetUrl={TargetURL.OPTIMAL_ALIGNMENT}
-            description="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Fusce consectetuer risus a nunc."
+            description="Finding an optimal alignment shows the best way a trace can be replayed on a mined model."
         />,
     ];
 

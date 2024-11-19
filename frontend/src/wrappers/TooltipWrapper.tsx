@@ -21,7 +21,9 @@ export const TooltipWrapper: React.FC<TooltipWrapperProps> = ({
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>{children}</TooltipTrigger>
-                <TooltipContent side={side}>{tooltipContent}</TooltipContent>
+                <TooltipContent side={side}>
+                    <div className="max-w-60">{tooltipContent}</div>
+                </TooltipContent>
             </Tooltip>
         </TooltipProvider>
     );

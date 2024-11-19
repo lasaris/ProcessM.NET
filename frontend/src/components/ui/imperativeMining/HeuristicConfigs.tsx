@@ -19,6 +19,7 @@ import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { PMSlider } from '../PMSlider';
 import { Button } from '../ShadCN/button';
+import { InfoTooltip } from '../common/InfoTooltip';
 import { H4 } from '../typography/H4';
 import { useToast } from '../use-toast';
 
@@ -138,11 +139,20 @@ export const HeuristicConfigs: React.FC<HeuristicConfigsProps> = ({
                             Source Petri Net
                         </FormLabel>
                         <FormControl>
-                            <Switch
-                                onCheckedChange={field.onChange}
-                                checked={field.value}
-                                className="bg-gray-200 focus:ring-2 focus:ring-blue-500"
-                            />
+                            <InfoTooltip
+                                tooltipContent={
+                                    <p>
+                                        If selected, places from petri net will
+                                        be present in the mined model
+                                    </p>
+                                }
+                            >
+                                <Switch
+                                    onCheckedChange={field.onChange}
+                                    checked={field.value}
+                                    className="bg-gray-200 focus:ring-2 focus:ring-blue-500"
+                                />
+                            </InfoTooltip>
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -154,13 +164,20 @@ export const HeuristicConfigs: React.FC<HeuristicConfigsProps> = ({
                 control={form.control}
                 name="direct"
                 render={({ field }) => (
-                    <FormItem className="flex flex-col gap-2">
+                    <FormItem className="">
                         <PMSlider
                             changeValue={field.onChange}
-                            label={`Direct (a => b) - ${direct}`}
+                            label={`Direct (a ⇒ b) - ${direct}`}
                             maxValue={1}
                             value={direct}
                             step={0.1}
+                            tooltipDescription={
+                                <p>
+                                    Sets the confidence level for detecting
+                                    direct relationships, where activity A
+                                    frequently leads directly to activity B.
+                                </p>
+                            }
                         />
                         <FormMessage />
                     </FormItem>
@@ -173,10 +190,17 @@ export const HeuristicConfigs: React.FC<HeuristicConfigsProps> = ({
                     <FormItem className="flex flex-col gap-2">
                         <PMSlider
                             changeValue={field.onChange}
-                            label={`Loop Length 1 (A => A) - ${loopLengthAA}`}
+                            label={`Loop Length 1 (A ⇒ A) - ${loopLengthAA}`}
                             maxValue={1}
                             value={loopLengthAA}
                             step={0.1}
+                            tooltipDescription={
+                                <p>
+                                    Specifies the minimum frequency for
+                                    identifying self-loops, where an activity
+                                    repeats consecutively.
+                                </p>
+                            }
                         />
                         <FormMessage />
                     </FormItem>
@@ -189,10 +213,17 @@ export const HeuristicConfigs: React.FC<HeuristicConfigsProps> = ({
                     <FormItem className="flex flex-col gap-2">
                         <PMSlider
                             changeValue={field.onChange}
-                            label={`Direct (A => B => A) - ${loopLengthABA}`}
+                            label={`Direct (A ⇒ B ⇒ A) - ${loopLengthABA}`}
                             maxValue={1}
                             value={loopLengthABA}
                             step={0.1}
+                            tooltipDescription={
+                                <p>
+                                    Defines the confidence level for two-step
+                                    loops, where an activity A leads to B and
+                                    then returns to A.
+                                </p>
+                            }
                         />
                         <FormMessage />
                     </FormItem>
@@ -204,7 +235,17 @@ export const HeuristicConfigs: React.FC<HeuristicConfigsProps> = ({
                     name="allTasksConnected"
                     render={({ field }) => (
                         <FormItem className="flex flex-col gap-2">
-                            <FormLabel>All Connected</FormLabel>
+                            <InfoTooltip
+                                tooltipContent={
+                                    <p>
+                                        Each non-initial activity must have at
+                                        least one other activity as a cause (arc
+                                        in).
+                                    </p>
+                                }
+                            >
+                                <FormLabel>All Connected</FormLabel>
+                            </InfoTooltip>
                             <Switch
                                 onCheckedChange={field.onChange}
                                 checked={field.value}
@@ -224,6 +265,17 @@ export const HeuristicConfigs: React.FC<HeuristicConfigsProps> = ({
                                     maxValue={1}
                                     value={relativeToBest}
                                     step={0.1}
+                                    tooltipDescription={
+                                        <p>
+                                            The percentage for the admissible
+                                            distance between "directly follows"
+                                            relations for an activity and the
+                                            activity's best one. At 0, only the
+                                            best "directly follows" relation
+                                            will be shown for every activity. At
+                                            1, all will be shown.
+                                        </p>
+                                    }
                                 />
                                 <FormMessage />
                             </FormItem>
@@ -257,6 +309,12 @@ export const HeuristicConfigs: React.FC<HeuristicConfigsProps> = ({
                                     maxValue={1}
                                     value={longDistance}
                                     step={0.1}
+                                    tooltipDescription={
+                                        <p>
+                                            A threshold for the strength of the
+                                            eventually follows relation.
+                                        </p>
+                                    }
                                 />
                                 <FormMessage />
                             </FormItem>
