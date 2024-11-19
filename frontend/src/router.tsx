@@ -46,6 +46,7 @@ export const router = createBrowserRouter([
     {
         path: TargetURL.HOME,
         element: <MainLayout />,
+        errorElement: <ErrorPage errorMessage="Something went wrong..." />,
         children: [
             {
                 index: true,
@@ -56,6 +57,7 @@ export const router = createBrowserRouter([
     {
         path: TargetURL.LOGS,
         element: <LayoutWithNavbar />,
+        errorElement: <ErrorPage errorMessage="Something went wrong..." />,
         children: [
             {
                 index: true,
@@ -127,6 +129,7 @@ export const router = createBrowserRouter([
     {
         path: TargetURL.MODELS,
         element: <LayoutWithNavbar />,
+        errorElement: <ErrorPage errorMessage="Something went wrong..." />,
         children: [
             {
                 path: TargetURL.MODELS_TABLE,
@@ -175,5 +178,6 @@ export const router = createBrowserRouter([
     {
         path: '*',
         element: <ErrorPage />,
+        errorElement: <ErrorPage errorMessage="Something went wrong..." />,
     },
 ]);
