@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/ShadCN/table';
 import { ViewModel } from '@/components/ui/ViewModel';
 import { exportDot } from '@/helpers/exportDot';
-import { exportJson } from '@/helpers/exportJson';
 import { useModelsDb } from '@/hooks/useModelsDb';
 import Empty from '@/icons/Empty.svg';
 import { RightArrow } from '@/icons/RightArrow';
@@ -118,35 +117,19 @@ export const Models: React.FC = () => {
                                     {model.name}
                                 </TableCell>
                                 <TableCell>
-                                    {model.type === ModelType.IMPERATIVE ? (
-                                        <div className="flex gap-4">
-                                            <Button
-                                                onClick={() =>
-                                                    exportDot(
-                                                        model.name,
-                                                        model.model as string
-                                                    )
-                                                }
-                                            >
-                                                DOT
-                                            </Button>
-                                        </div>
-                                    ) : (
+                                    <div className="flex gap-4">
                                         <Button
+                                            className="hover:bg-slate-200 hover:text-black transition-transform"
                                             onClick={() =>
-                                                exportJson(
+                                                exportDot(
                                                     model.name,
-                                                    JSON.stringify(
-                                                        model.model,
-                                                        undefined,
-                                                        2
-                                                    )
+                                                    model.model as string
                                                 )
                                             }
                                         >
-                                            JSON
+                                            DOT
                                         </Button>
-                                    )}
+                                    </div>
                                 </TableCell>
                                 <TableCell className="font-medium text-center">
                                     {model.type === ModelType.IMPERATIVE
@@ -183,7 +166,13 @@ export const Models: React.FC = () => {
                                             }
                                             className="rounded-full w-8 h-8 flex items-center justify-center transition duration-200 cursor-pointer"
                                         >
-                                            <TrashIcon />
+                                            <TooltipWrapper
+                                                tooltipContent={
+                                                    <p>Delete model</p>
+                                                }
+                                            >
+                                                <TrashIcon />
+                                            </TooltipWrapper>
                                         </div>
                                     </div>
                                 </TableCell>

@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/ShadCN/dialog';
 import { useModelsDb } from '@/hooks/useModelsDb';
 import { ModelType } from '@/models/ImperativeModel';
+import { TooltipWrapper } from '@/wrappers/TooltipWrapper';
 import Graphviz from 'graphviz-react';
 import { EyeIcon } from 'lucide-react';
 import React, { ReactNode } from 'react';
@@ -59,7 +60,11 @@ export const ViewModel: React.FC<ViewModelProps> = ({ title }) => {
         <Dialog>
             <DialogTrigger asChild>
                 <div className="rounded-full w-8 h-8 flex items-center justify-center transition duration-200 cursor-pointer">
-                    <EyeIcon />
+                    <TooltipWrapper
+                        tooltipContent={<p>View the mined model</p>}
+                    >
+                        <EyeIcon />
+                    </TooltipWrapper>
                 </div>
             </DialogTrigger>
             <DialogContent className="w-full">

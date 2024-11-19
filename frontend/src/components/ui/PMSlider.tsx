@@ -1,6 +1,7 @@
 import { Label } from '@/components/ui/ShadCN/label';
 import { Slider } from '@/components/ui/ShadCN/slider';
-import React, { Dispatch } from 'react';
+import React, { Dispatch, ReactNode } from 'react';
+import { InfoTooltip } from './common/InfoTooltip';
 
 type PMSliderProps = {
     label: string;
@@ -9,6 +10,7 @@ type PMSliderProps = {
     value: number;
     step?: number;
     className?: string;
+    tooltipDescription?: ReactNode;
 };
 
 export const PMSlider: React.FC<PMSliderProps> = ({
@@ -18,13 +20,31 @@ export const PMSlider: React.FC<PMSliderProps> = ({
     value,
     step = 1,
     className,
+    tooltipDescription,
 }) => {
+    if (tooltipDescription) {
+        return (
+            <div className="flex flex-col gap-3 w-full">
+                <InfoTooltip tooltipContent={tooltipDescription}>
+                    <Label>{label}</Label>
+                </InfoTooltip>
+                <Slider
+                    defaultValue={[value]}
+                    onValueChange={([val]) => changeValue(val)}
+                    max={maxValue}
+                    step={step}
+                    className={className}
+                />
+            </div>
+        );
+    }
+
     return (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 w-full">
             <Label>{label}</Label>
             <Slider
                 defaultValue={[value]}
-                onValueCommit={([val]) => changeValue(val)}
+                onValueChange={([val]) => changeValue(val)}
                 max={maxValue}
                 step={step}
                 className={className}
