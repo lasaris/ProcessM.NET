@@ -8,7 +8,6 @@ import { VisibleTracesTrigger } from '@/components/ui/VisibleTracesTrigger';
 import { BasicConfigs } from '@/components/ui/imperativeMining/BasicConfigs';
 import { H4 } from '@/components/ui/typography/H4';
 import { useAlphaMine } from '@/hooks/apiHooks/useAlphaMine';
-import { useModelExport } from '@/hooks/apiHooks/useModelExport';
 import { useLogsDb } from '@/hooks/useLogsDb';
 import { MinePageLayout } from '@/layout/MinePageLayout';
 import { ModelType } from '@/models/ImperativeModel';
@@ -39,10 +38,8 @@ export const AlphaMinerPage: React.FC = () => {
         },
     });
 
-    const config = form.watch();
     const log = useAsync(() => fetchSingleLog(entityName || ''), []);
     const { data, isPending, isError, mine } = useAlphaMine();
-    const { alphaPnmlExport } = useModelExport(entityName || '');
 
     if (isPending || log.loading) {
         return <LoadingSpinner />;
@@ -51,10 +48,6 @@ export const AlphaMinerPage: React.FC = () => {
     if (isError || log.error) {
         return <UnableToLoad />;
     }
-
-    const exportPnmlHandler = () => {
-        alphaPnmlExport(config);
-    };
 
     let content: ReactNode;
 

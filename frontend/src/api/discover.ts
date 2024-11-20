@@ -2,7 +2,7 @@ import { DiscoverLog } from '@/models/API/DiscoverLog';
 import { axiosInstance } from './axios';
 
 const discoverLog = (discoverLog: DiscoverLog) => {
-    return axiosInstance.post('/log/discover', discoverLog, {
+    return axiosInstance.post('/mine/declare', discoverLog, {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -10,7 +10,7 @@ const discoverLog = (discoverLog: DiscoverLog) => {
 };
 
 const getTemplates = () => {
-    return axiosInstance.get('/log/discover/constraints');
+    return axiosInstance.get('/mine/declare/templates');
 };
 
 const discover = {

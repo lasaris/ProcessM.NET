@@ -33,7 +33,7 @@ export const OptimalAlignmentForTraceResultDialog: React.FC<
 
     const result = data?.data as STransition[];
     const dotGraph = generateDotFromSTransitions(result);
-    let content = (
+    const content = (
         <div className="flex flex-row w-full">
             <div className="flex flex-col gap-3 w-full items-center md:w-1/2">
                 <H4>Optimal Alignment</H4>
