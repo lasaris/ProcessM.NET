@@ -1,6 +1,11 @@
 ﻿using API.Mining;
 using API.Models;
+using API.Utils;
+using DeclarativePM.Lib.Discovery;
+using DeclarativePM.Lib.Enums;
+using DeclarativePM.Lib.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using ProcessM.NET.Discovery.Alpha;
 using ProcessM.NET.Discovery.HeuristicMiner;
 using ProcessM.NET.Model.DataAnalysis;
@@ -8,11 +13,11 @@ using ProcessM.NET.Model.DataAnalysis;
 namespace API.Controllers;
 
 [ApiController]
-[Route("/log/mine")]
+[Route("/mine")]
 public class MineController : ControllerBase
 {
     [HttpPost]
-    [Route("heuristic")]
+    [Route("imperative/heuristic")]
     public ActionResult<MineResultAPI> HeuristicMine(ConfiguredHeuristicModelAPI configuredHeuristicModel)
     {
         // Prepare
@@ -34,7 +39,7 @@ public class MineController : ControllerBase
 
 
     [HttpPost]
-    [Route("alpha")]
+    [Route("imperative/alpha")]
     public ActionResult<MineResultAPI> AlphaMine(ConfiguredAlphaModelAPI configuredAlphaModel)
     {
         var importedLog = configuredAlphaModel.ImportedLog;
@@ -65,5 +70,46 @@ public class MineController : ControllerBase
             );
 
         return Ok(result);
+    }
+
+    [HttpPost]
+    [Route("declare")]
+    public async Task<ActionResult<DiscoveredModelResult>> Discover(DiscoverLogAPI log)
+    {
+        var eventLog = log.ImportedEventLog.BuildEventLog();
+        var templates = API.Discover.Discover.ConvertApiParametrizedTemplates(log.ParametrizedTemplates);
+
+        var ctk = new CancellationToken();
+
+        var discovery = new Discovery();
+        var declareModel = await discovery.DiscoverModelAsync(eventLog, templates, ctk);
+        var declareModelJson = JsonConvert.SerializeObject(declareModel, new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() });
+
+        var dotGraph = Utilities.CreateDotGraph(templates);
+
+        var result = new DiscoveredModelResult()
+        {
+            Model = declareModelJson,
+            DotGraph = dotGraph,
+        };
+
+        return Ok(result);
+    }
+
+    [HttpGet]
+    [Route("declare/templates")]
+    public ActionResult<List<TemplateDescriptionAPI>> GetTemplateDescriptions()
+    {
+        var templateInstanceTypes = Enum.GetValues(typeof(TemplateInstanceType))
+            .Cast<TemplateInstanceType>()
+            .Where(x => x != TemplateInstanceType.None)
+            .Select(e => new TemplateDescriptionAPI()
+            {
+                Description = e.GetTemplateDescription(),
+                TitName = e.ToString()
+            })
+            .ToList();
+
+        return Ok(templateInstanceTypes);
     }
 }

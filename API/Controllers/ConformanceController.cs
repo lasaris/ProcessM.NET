@@ -4,15 +4,16 @@ using Microsoft.AspNetCore.Mvc;
 using ProcessM.NET.ConformanceChecking.Alignments;
 using ProcessM.NET.Model.DataAnalysis;
 using ProcessM.NET.Model.SynchronousProductNet;
+using Newtonsoft.Json;
 
 namespace API.Controllers;
 
 [ApiController]
-[Route("/model/conformance")]
+[Route("/conformance")]
 public class ConformanceController : ControllerBase
 {
     [HttpPost]
-    [Route("declare")]
+    [Route("declarative/constraints")]
     public ActionResult<TraceEvaluationAPI> DeclareConformance(ConformanceModelAPI conformanceModel)
     {
         var declareModel = conformanceModel.DeclareModel.ConvertToDeclareModel();
@@ -24,13 +25,13 @@ public class ConformanceController : ControllerBase
         traceEvaluation.TemplateEvaluations.Clear();
         traceEvaluation.TemplateEvaluations.AddRange(temp);
 
-        var result = Conformance.Conformance.PrepareConformanceEvaluationResult(traceEvaluation);
+        var result = JsonConvert.SerializeObject(Conformance.Conformance.PrepareConformanceEvaluationResult(traceEvaluation), new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() });
 
         return Ok(result);
     }
 
     [HttpPost]
-    [Route("alignment")]
+    [Route("imperative/alignments")]
     public ActionResult<List<STransition>> AlignmentConformance(AlignmentConformanceAPI alignmentConformance)
     {
         var petriNetApi = alignmentConformance.PetriNet;
@@ -59,7 +60,7 @@ public class ConformanceController : ControllerBase
     }
 
     [HttpPost]
-    [Route("traces")]
+    [Route("model/traces")]
     public ActionResult<List<TraceDTO>> GetEventLog(ImportedEventLogAPI importedEventLog)
     {
         var traces = importedEventLog
