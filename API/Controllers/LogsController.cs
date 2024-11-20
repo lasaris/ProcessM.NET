@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 [ApiController]
-[Route("/log")]
+[Route("/import/log")]
 public class LogsController : ControllerBase
 {
     [HttpPost]
@@ -30,7 +30,7 @@ public class LogsController : ControllerBase
     }
 
     [HttpPost]
-    [Route("/log/timestamp")]
+    [Route("timestamp")]
     public ActionResult<string> TrySetTimestamp(ImportedEventLogAPI importedEventLogAPI)
     {
         var importedEventLog = importedEventLogAPI.SerializeImportedEventLogAPI();
@@ -75,7 +75,7 @@ public class LogsController : ControllerBase
     }
 
     [HttpPost]
-    [Route("/log/timestamp/manual")]
+    [Route("timestamp/format")]
     public ActionResult<string> SetTimestampManual(LogWithTimestampFormatAPI logWithTimestampFormat)
     {
 

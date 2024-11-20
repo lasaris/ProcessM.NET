@@ -7,30 +7,38 @@ namespace API.Conformance;
 
 public static class Conformance
 {
-    public static TemplateEvaluation GetMostViolatingTemplate(TraceEvaluation traceEvaluation)
+    public static TemplateEvaluation? GetMostViolatingTemplate(TraceEvaluation traceEvaluation)
     {
-        return traceEvaluation.TemplateEvaluations.Aggregate((t1, t2) =>
-            t1.Healthiness.ViolationRation > t2.Healthiness.ViolationRation ? t1 : t2);
+        return traceEvaluation.TemplateEvaluations
+            .Where(evaluation => !Double.IsNaN(evaluation.Healthiness.ViolationRation) && evaluation.Healthiness.ViolationRation > 0)
+            .DefaultIfEmpty(null)
+            .Aggregate((t1, t2) => t1 != null && t2 != null && t1.Healthiness.ViolationRation > t2.Healthiness.ViolationRation ? t1 : t2);
     }
 
-    public static TemplateEvaluation GetMostConflictingTemplate(TraceEvaluation traceEvaluation)
+    public static TemplateEvaluation? GetMostConflictingTemplate(TraceEvaluation traceEvaluation)
     {
-        return traceEvaluation.TemplateEvaluations.Aggregate((t1, t2) =>
-            t1.Healthiness.ConflictRation > t2.Healthiness.ConflictRation ? t1 : t2);
+        return traceEvaluation.TemplateEvaluations
+            .Where(evaluation => !Double.IsNaN(evaluation.Healthiness.ConflictRation) && evaluation.Healthiness.ConflictRation > 0)
+            .DefaultIfEmpty(null)
+            .Aggregate((t1, t2) => t1 != null && t2 != null && t1.Healthiness.ConflictRation > t2.Healthiness.ConflictRation ? t1 : t2);
     }
 
-    public static ConstraintEvaluation GetMostViolatingConstraint(TraceEvaluation traceEvaluation)
+    public static ConstraintEvaluation? GetMostViolatingConstraint(TraceEvaluation traceEvaluation)
     {
         return traceEvaluation.TemplateEvaluations.SelectMany(t => t.ConstraintEvaluations)
+            .Where(evaluation => !Double.IsNaN(evaluation.Healthiness.ViolationRation) && evaluation.Healthiness.ViolationRation > 0)
+            .DefaultIfEmpty(null)
             .Aggregate((t1, t2) =>
-                t1.Healthiness.ViolationRation > t2.Healthiness.ViolationRation ? t1 : t2);
+                t1 != null && t2 != null && t1.Healthiness.ViolationRation > t2.Healthiness.ViolationRation ? t1 : t2);
     }
 
-    public static ConstraintEvaluation GetMostConflictingConstraint(TraceEvaluation traceEvaluation)
+    public static ConstraintEvaluation? GetMostConflictingConstraint(TraceEvaluation traceEvaluation)
     {
         return traceEvaluation.TemplateEvaluations.SelectMany(t => t.ConstraintEvaluations)
+            .Where(constraintEvaluation => !Double.IsNaN(constraintEvaluation.Healthiness.ConflictRation) && constraintEvaluation.Healthiness.ConflictRation > 0)
+            .DefaultIfEmpty(null)
             .Aggregate((t1, t2) =>
-                t1.Healthiness.ConflictRation > t2.Healthiness.ConflictRation ? t1 : t2);
+                t1 != null && t2 != null && t1.Healthiness.ConflictRation > t2.Healthiness.ConflictRation ? t1 : t2);
     }
 
     public static TraceEvaluationAPI PrepareConformanceEvaluationResult(TraceEvaluation traceEvaluation)
@@ -52,23 +60,23 @@ public static class Conformance
             OverallTraceHealthiness = traceEvaluation.Healthiness,
             MostConflictingConstraint = new ConformanceExtremeHealthiness()
             {
-                Healthiness = mostConflictingConstraint.Healthiness,
-                Title = mostConflictingConstraint.Constraint.ToString(),
+                Healthiness = mostConflictingConstraint?.Healthiness,
+                Title = mostConflictingConstraint?.Constraint.ToString(),
             },
             MostViolatingConstraint = new ConformanceExtremeHealthiness()
             {
-                Healthiness = mostViolatingConstraint.Healthiness,
-                Title = mostViolatingConstraint.Constraint.ToString(),
+                Healthiness = mostViolatingConstraint?.Healthiness,
+                Title = mostViolatingConstraint?.Constraint.ToString(),
             },
             MostConflictingTemplate = new ConformanceExtremeHealthiness()
             {
-                Healthiness = mostConflictingTemplate.Healthiness,
-                Title = mostConflictingTemplate.Template.TemplateDescription.ReadableName,
+                Healthiness = mostConflictingTemplate?.Healthiness,
+                Title = mostConflictingTemplate?.Template.TemplateDescription.ReadableName,
             },
             MostViolatingTemplate = new ConformanceExtremeHealthiness()
             {
-                Healthiness = mostViolatingTemplate.Healthiness,
-                Title = mostViolatingTemplate.Template.TemplateDescription.ReadableName
+                Healthiness = mostViolatingTemplate?.Healthiness,
+                Title = mostViolatingTemplate?.Template.TemplateDescription.ReadableName
             },
             Trace = traceEvaluation.Trace,
             TemplateEvaluations = templateEvals,
