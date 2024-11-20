@@ -3,16 +3,20 @@ import { ConformanceDeclare } from '@/models/API/ConformanceDeclare';
 import { axiosInstance } from './axios';
 
 const conformanceCheck = (conformanceInput: ConformanceDeclare) => {
-    return axiosInstance.post('/model/conformance/declare', conformanceInput, {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
+    return axiosInstance.post(
+        '/conformance/declarative/constraints',
+        conformanceInput,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+    );
 };
 
 const alignmentCheck = (alignmentConformanceInput: AlignmentConformance) => {
     return axiosInstance.post(
-        '/model/conformance/alignment',
+        '/conformance/imperative/alignments',
         alignmentConformanceInput,
         {
             headers: {
