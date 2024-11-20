@@ -13,7 +13,7 @@ namespace API.Models;
  *  - UniTemplate
  *  - BiTemplate
  */
-public class TemplateAPI
+public class TemplateDTO
 {
     public string? LogEvent { get; set; }
     public string? LogEventA { get; set; }

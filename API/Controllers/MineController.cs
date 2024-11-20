@@ -18,7 +18,7 @@ public class MineController : ControllerBase
 {
     [HttpPost]
     [Route("imperative/heuristic")]
-    public ActionResult<MineResultAPI> HeuristicMine(ConfiguredHeuristicModelAPI configuredHeuristicModel)
+    public ActionResult<MineResultDTO> HeuristicMine(ConfiguredHeuristicModelDTO configuredHeuristicModel)
     {
         // Prepare
         var configs = configuredHeuristicModel.Configuration;
@@ -40,7 +40,7 @@ public class MineController : ControllerBase
 
     [HttpPost]
     [Route("imperative/alpha")]
-    public ActionResult<MineResultAPI> AlphaMine(ConfiguredAlphaModelAPI configuredAlphaModel)
+    public ActionResult<MineResultDTO> AlphaMine(ConfiguredAlphaModelDTO configuredAlphaModel)
     {
         var importedLog = configuredAlphaModel.ImportedLog;
         var configuration = configuredAlphaModel.Configuration;
@@ -74,7 +74,7 @@ public class MineController : ControllerBase
 
     [HttpPost]
     [Route("declare")]
-    public async Task<ActionResult<DiscoveredModelResult>> Discover(DiscoverLogAPI log)
+    public async Task<ActionResult<DiscoveredModelResult>> Discover(DiscoverLogDTO log)
     {
         var eventLog = log.ImportedEventLog.BuildEventLog();
         var templates = API.Discover.Discover.ConvertApiParametrizedTemplates(log.ParametrizedTemplates);
@@ -98,12 +98,12 @@ public class MineController : ControllerBase
 
     [HttpGet]
     [Route("declare/templates")]
-    public ActionResult<List<TemplateDescriptionAPI>> GetTemplateDescriptions()
+    public ActionResult<List<TemplateDescriptionDTO>> GetTemplateDescriptions()
     {
         var templateInstanceTypes = Enum.GetValues(typeof(TemplateInstanceType))
             .Cast<TemplateInstanceType>()
             .Where(x => x != TemplateInstanceType.None)
-            .Select(e => new TemplateDescriptionAPI()
+            .Select(e => new TemplateDescriptionDTO()
             {
                 Description = e.GetTemplateDescription(),
                 TitName = e.ToString()

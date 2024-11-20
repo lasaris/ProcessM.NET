@@ -3,10 +3,10 @@ using DeclarativePM.Lib.Models.LogModels;
 
 namespace API.Models;
 
-public class DeclareModelAPI
+public class DeclareModelDTO
 {
     public string Name { get; set; }
-    public List<ConstraintAPI> Constraints { get; set; }
+    public List<ConstraintDTO> Constraints { get; set; }
     public EventLog Log { get; set; }
 
     public DeclareModel ConvertToDeclareModel()

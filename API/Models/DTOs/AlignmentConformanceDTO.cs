@@ -2,8 +2,8 @@ using DeclarativePM.Lib.Models.LogModels;
 
 namespace API.Models;
 
-public class AlignmentConformanceAPI
+public class AlignmentConformanceDTO
 {
-    public PetriNetAPI? PetriNet { get; set; }
+    public PetriNetDTO? PetriNet { get; set; }
     public List<Event>? Trace { get; set; }
 }

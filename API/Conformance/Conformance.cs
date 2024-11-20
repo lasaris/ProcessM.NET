@@ -41,21 +41,21 @@ public static class Conformance
                 t1 != null && t2 != null && t1.Healthiness.ConflictRation > t2.Healthiness.ConflictRation ? t1 : t2);
     }
 
-    public static TraceEvaluationAPI PrepareConformanceEvaluationResult(TraceEvaluation traceEvaluation)
+    public static TraceEvaluationDTO PrepareConformanceEvaluationResult(TraceEvaluation traceEvaluation)
     {
         var mostConflictingTemplate = GetMostConflictingTemplate(traceEvaluation);
         var mostViolatingTemplate = GetMostViolatingTemplate(traceEvaluation);
         var mostConflictingConstraint = GetMostConflictingConstraint(traceEvaluation);
         var mostViolatingConstraint = GetMostViolatingConstraint(traceEvaluation);
-        List<TemplateEvaluationAPI> templateEvals = traceEvaluation.TemplateEvaluations
-            .Select(templateEvaluation => new TemplateEvaluationAPI()
+        List<TemplateEvaluationDTO> templateEvals = traceEvaluation.TemplateEvaluations
+            .Select(templateEvaluation => new TemplateEvaluationDTO()
             {
                 ReadableName = templateEvaluation.Template.TemplateDescription.ReadableName,
                 ConstraintEvaluations = templateEvaluation.ConstraintEvaluations.Select(convertConstraintEvaluationToDTO).ToList()
             }).ToList();
 
 
-        var result = new TraceEvaluationAPI()
+        var result = new TraceEvaluationDTO()
         {
             OverallTraceHealthiness = traceEvaluation.Healthiness,
             MostConflictingConstraint = new ConformanceExtremeHealthiness()
@@ -85,10 +85,10 @@ public static class Conformance
         return result;
     }
 
-    private static ConstraintEvaluationAPI convertConstraintEvaluationToDTO(ConstraintEvaluation evaluation)
+    private static ConstraintEvaluationDTO convertConstraintEvaluationToDTO(ConstraintEvaluation evaluation)
     {
         var constraint = evaluation.Constraint;
-        var result = new ConstraintEvaluationAPI()
+        var result = new ConstraintEvaluationDTO()
         {
             ReadableName = constraint.ToString(),
         };

@@ -1,6 +1,6 @@
 ﻿namespace API.Models;
 
-public class MetadataAPI
+public class MetadataDTO
 {
     public string Name { get; set; }
     public long Modified { get; set; }

@@ -8,7 +8,7 @@ public static class Discover
 {
 
     public static List<ParametrizedTemplate> ConvertApiParametrizedTemplates(
-        List<ParametrizedTemplateAPI> parametrizedTemplateApis)
+        List<ParametrizedTemplateDTO> parametrizedTemplateApis)
     {
         var res = new List<ParametrizedTemplate>();
 
@@ -20,7 +20,7 @@ public static class Discover
         return res;
     }
 
-    private static ParametrizedTemplate convertApiParametrizedTemplate(ParametrizedTemplateAPI template)
+    private static ParametrizedTemplate convertApiParametrizedTemplate(ParametrizedTemplateDTO template)
     {
         TemplateInstanceType.TryParse(template.Template, out TemplateInstanceType templateInstance);
         
