@@ -2,7 +2,7 @@
 
 namespace API.Models;
 
-public class ParametrizedTemplateAPI
+public class ParametrizedTemplateDTO
 {
     public string Template { get; set; }
     public decimal Poe { get; set; }

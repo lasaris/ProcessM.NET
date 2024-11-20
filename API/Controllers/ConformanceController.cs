@@ -14,7 +14,7 @@ public class ConformanceController : ControllerBase
 {
     [HttpPost]
     [Route("declarative/constraints")]
-    public ActionResult<TraceEvaluationAPI> DeclareConformance(ConformanceModelAPI conformanceModel)
+    public ActionResult<TraceEvaluationDTO> DeclareConformance(ConformanceModelDTO conformanceModel)
     {
         var declareModel = conformanceModel.DeclareModel.ConvertToDeclareModel();
 
@@ -32,7 +32,7 @@ public class ConformanceController : ControllerBase
 
     [HttpPost]
     [Route("imperative/alignments")]
-    public ActionResult<List<STransition>> AlignmentConformance(AlignmentConformanceAPI alignmentConformance)
+    public ActionResult<List<STransition>> AlignmentConformance(AlignmentConformanceDTO alignmentConformance)
     {
         var petriNetApi = alignmentConformance.PetriNet;
         var traceApi = alignmentConformance.Trace;
@@ -61,7 +61,7 @@ public class ConformanceController : ControllerBase
 
     [HttpPost]
     [Route("model/traces")]
-    public ActionResult<List<TraceDTO>> GetEventLog(ImportedEventLogAPI importedEventLog)
+    public ActionResult<List<TraceDTO>> GetEventLog(ImportedEventLogDTO importedEventLog)
     {
         var traces = importedEventLog
             .BuildEventLog()

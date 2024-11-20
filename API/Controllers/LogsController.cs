@@ -31,9 +31,9 @@ public class LogsController : ControllerBase
 
     [HttpPost]
     [Route("timestamp")]
-    public ActionResult<string> TrySetTimestamp(ImportedEventLogAPI importedEventLogAPI)
+    public ActionResult<string> TrySetTimestamp(ImportedEventLogDTO importedEventLogDto)
     {
-        var importedEventLog = importedEventLogAPI.SerializeImportedEventLogAPI();
+        var importedEventLog = importedEventLogDto.SerializeImportedEventLogAPI();
 
         if (importedEventLog == null)
         {

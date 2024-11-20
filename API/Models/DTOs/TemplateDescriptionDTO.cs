@@ -2,7 +2,7 @@
 
 namespace API.Models;
 
-public class TemplateDescriptionAPI
+public class TemplateDescriptionDTO
 {
     public TemplateDescription Description { get; set; }
     public string TitName { get; set; }

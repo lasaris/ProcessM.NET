@@ -4,10 +4,10 @@ using DeclarativePM.Lib.Utils;
 
 namespace API.Models;
 
-public class ConstraintAPI
+public class ConstraintDTO
 {
-    public List<TemplateAPI> TemplateInstances { get; set; }
-    public List<TemplateAPI> OptionalConstraints { get; set; }
+    public List<TemplateDTO> TemplateInstances { get; set; }
+    public List<TemplateDTO> OptionalConstraints { get; set; }
     public decimal Poe { get; set; }
     public decimal Poi { get; set; }
     public bool CheckVacuously { get; set; }

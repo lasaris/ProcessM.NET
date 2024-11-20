@@ -14,7 +14,7 @@ public class ExportController : ControllerBase
 {
     [HttpPost]
     [Route("pnml/heuristic")]
-    public ActionResult<string> HeuristicMineSerializePnml(ConfiguredHeuristicModelAPI configuredHeuristicModel)
+    public ActionResult<string> HeuristicMineSerializePnml(ConfiguredHeuristicModelDTO configuredHeuristicModel)
     {
         // Prepare
         var configs = configuredHeuristicModel.Configuration;
@@ -35,7 +35,7 @@ public class ExportController : ControllerBase
 
     [HttpPost]
     [Route("pnml/alpha")]
-    public ActionResult<string> AlphaMineSerializePnml(ConfiguredAlphaModelAPI configuredAlphaModel)
+    public ActionResult<string> AlphaMineSerializePnml(ConfiguredAlphaModelDTO configuredAlphaModel)
     {
         var importedLog = configuredAlphaModel.ImportedLog;
         var configuration = configuredAlphaModel.Configuration;

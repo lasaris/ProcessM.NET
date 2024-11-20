@@ -9,7 +9,7 @@ namespace API.Mining;
 
 public static class Imperative
 {
-    public static EventLogFile CreateEventLogFileFromImportedModel(ImportedEventLogAPI importedLog, MetadataAPI metadata)
+    public static EventLogFile CreateEventLogFileFromImportedModel(ImportedEventLogDTO importedLog, MetadataDTO metadata)
     {
 
         // First I need to create the ImportedEventLog from the ConfiguredModelAPI.ImportedEventLogAPI
@@ -37,7 +37,7 @@ public static class Imperative
         };
     }
 
-    public static WorkflowLog PrepareWorkflowLog(EventLogFile eventLogFile, BasicMineConfigurationAPI? basicConfigs)
+    public static WorkflowLog PrepareWorkflowLog(EventLogFile eventLogFile, BasicMineConfigurationDTO? basicConfigs)
     {
         var workflowLog = eventLogFile.EventLog;
 
@@ -54,13 +54,13 @@ public static class Imperative
         return workflowLog;
     }
 
-    public static MineResultAPI CreateResult(PetriNet? petriNet, WorkflowLog workflowLog,
-        BasicMineConfigurationAPI? basicConfigs, List<Tuple<WorkflowTrace, int>> traces, List<string> activities)
+    public static MineResultDTO CreateResult(PetriNet? petriNet, WorkflowLog workflowLog,
+        BasicMineConfigurationDTO? basicConfigs, List<Tuple<WorkflowTrace, int>> traces, List<string> activities)
     {
         var graphvizNet = new GraphvizNet(petriNet, workflowLog);
         var dotString = DOTExport.Serialize(graphvizNet, basicConfigs?.SourcePetriNet != true);
 
-        var transitions = petriNet?.Transitions.Cast<Transition>().Select((transition) => new TransitionAPI()
+        var transitions = petriNet?.Transitions.Cast<Transition>().Select((transition) => new TransitionDTO()
         {
             Activity = transition.Activity,
             Frequency = transition.Frequency,
@@ -72,7 +72,7 @@ public static class Imperative
 
         var places = petriNet?.Places.Cast<Place>().ToList();
 
-        var petriNetApi = new PetriNetAPI()
+        var petriNetApi = new PetriNetDTO()
         {
             Places = places,
             Transitions = transitions,
@@ -80,7 +80,7 @@ public static class Imperative
             StartPlace = (Place?)petriNet?.StartPlace
         };
 
-        var result = new MineResultAPI()
+        var result = new MineResultDTO()
         {
             MinedModel = dotString,
             WorkflowLog = workflowLog,
@@ -92,7 +92,7 @@ public static class Imperative
         return result;
     }
 
-    public static HeuristicMinerSettings PrepareHeuristicMinerSettings(HeuristicMineConfigurationAPI? configs)
+    public static HeuristicMinerSettings PrepareHeuristicMinerSettings(HeuristicMineConfigurationDTO? configs)
     {
         if (configs == null)
         {

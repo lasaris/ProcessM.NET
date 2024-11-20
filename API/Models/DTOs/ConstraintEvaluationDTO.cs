@@ -1,6 +1,6 @@
 ﻿namespace API.Models;
 
-public class ConstraintEvaluationAPI
+public class ConstraintEvaluationDTO
 {
     public string? ReadableName { get; set; }
     public string? ActivityAName { get; set; }

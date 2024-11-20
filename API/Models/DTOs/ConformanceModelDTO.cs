@@ -3,8 +3,8 @@ using DeclarativePM.Lib.Models.LogModels;
 
 namespace API.Models;
 
-public class ConformanceModelAPI
+public class ConformanceModelDTO
 {
-    public DeclareModelAPI DeclareModel { get; set; }
+    public DeclareModelDTO DeclareModel { get; set; }
     public List<Event> Trace { get; set; }
 }

@@ -1,6 +1,6 @@
 ﻿namespace API.Models;
 
-public class BasicMineConfigurationAPI
+public class BasicMineConfigurationDTO
 {
     public bool SourcePetriNet { get; set; }
     public List<List<string>>? InvisibleTraces { get; set; }

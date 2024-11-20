@@ -3,9 +3,9 @@ using ProcessM.NET.Model.BasicPetriNet;
 
 namespace API.Models;
 
-public class PetriNetAPI
+public class PetriNetDTO
 {
-    public List<TransitionAPI>? Transitions { get; set; }
+    public List<TransitionDTO>? Transitions { get; set; }
     public List<Place>? Places { get; set; }
     public Place? StartPlace { get; set; }
     public Place? EndPlace { get; set; }

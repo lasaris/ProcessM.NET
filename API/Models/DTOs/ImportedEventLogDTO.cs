@@ -4,7 +4,7 @@ using ImportedEventLog = LogImport.Models.ImportedEventLog;
 
 namespace API.Models;
 
-public class ImportedEventLogAPI
+public class ImportedEventLogDTO
 {
     public int Activity { get; set; }
     public int CaseId { get; set; }

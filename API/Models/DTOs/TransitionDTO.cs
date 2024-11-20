@@ -6,7 +6,7 @@ namespace API.Models
     /// <summary>
     /// Basic transition implementation.
     /// </summary>
-    public class TransitionAPI
+    public class TransitionDTO
     {
         public List<Place>? InputPlaces { get; set; }
         public List<Place>? OutputPlaces { get; set; }

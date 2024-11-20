@@ -1,6 +1,6 @@
 ﻿namespace API.Models;
 
-public class HeuristicMineConfigurationAPI: BasicMineConfigurationAPI
+public class HeuristicMineConfigurationDTO: BasicMineConfigurationDTO
 {
     public float Direct { get; set; }
     public float LoopLengthAA { get; set; }
