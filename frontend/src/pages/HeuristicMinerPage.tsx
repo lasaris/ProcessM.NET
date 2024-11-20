@@ -8,7 +8,6 @@ import { VisibleTracesTrigger } from '@/components/ui/VisibleTracesTrigger';
 import { HeuristicConfigs } from '@/components/ui/imperativeMining/HeuristicConfigs';
 import { H4 } from '@/components/ui/typography/H4';
 import { useHeuristicMine } from '@/hooks/apiHooks/useHeuristicMine';
-import { useModelExport } from '@/hooks/apiHooks/useModelExport';
 import { useLogsDb } from '@/hooks/useLogsDb';
 import { MinePageLayout } from '@/layout/MinePageLayout';
 import { ModelType } from '@/models/ImperativeModel';
@@ -50,9 +49,6 @@ export const HeuristicMinerPage: React.FC = () => {
             },
         });
 
-    const { heuristicPnmlExport } = useModelExport(entityName || '');
-
-    const config = form.watch();
     const { data, isPending, isError, mine } = useHeuristicMine();
 
     if (isPending || log.loading) {
@@ -62,10 +58,6 @@ export const HeuristicMinerPage: React.FC = () => {
     if (isError || log.error) {
         return <UnableToLoad />;
     }
-
-    const exportPnmlHandler = () => {
-        heuristicPnmlExport(config);
-    };
 
     let content: ReactNode = <div>Unable to load</div>;
 
