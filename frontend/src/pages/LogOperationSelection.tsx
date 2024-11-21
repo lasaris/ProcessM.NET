@@ -24,7 +24,7 @@ export const LogOperationSelection: React.FC = () => {
         />,
         <MiningChoiceCard
             key="Discover"
-            name="DECLARE Discover"
+            name="DECLARE Discovery"
             description="The discovery process for DECLARE constraints identifies and extracts rule-based patterns from event logs, generating a compact, flexible model of allowable behaviors within the process."
             svgLogo={<img src={Discover} alt="Discover" />}
             targetUrl={TargetURL.DISCOVER_CONFIGURE_CASE_ACTIVITY}
