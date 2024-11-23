@@ -2,7 +2,7 @@ services:
   api:
     build:
       context: .
-      target: final
+      dockerfile: API/Dockerfile
     volumes:
       - ./API/Logs:/app/logs
     ports:
