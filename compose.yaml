@@ -6,7 +6,9 @@ services:
     volumes:
       - ./API/Logs:/app/logs
     ports:
-      - 8080:80
+      - 8000:80
+    networks:
+      - processm_network
   frontend:
     build:
       context: .
@@ -14,4 +16,10 @@ services:
       args:
         VITE_API_URL: ${VITE_API_URL}
     ports:
-      - 8081:80
+      - 3000:80
+    networks:
+      - processm_network
+
+networks:
+  processm_network:
+    driver: bridge
