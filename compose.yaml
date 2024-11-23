@@ -6,17 +6,15 @@ services:
     volumes:
       - ./API/Logs:/app/logs
     ports:
-      - 8000:8000
+      - 80:8000
     networks:
       - processm_network
   frontend:
     build:
       context: .
       dockerfile: frontend/Dockerfile
-      args:
-        VITE_API_URL: ${VITE_API_URL}
     ports:
-      - 3000:80
+      - 80:80
     networks:
       - processm_network
 
