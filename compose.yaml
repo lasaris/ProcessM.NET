@@ -6,7 +6,7 @@ services:
     volumes:
       - ./API/Logs:/app/logs
     ports:
-      - 8000:80
+      - 8000:8000
     networks:
       - processm_network
   frontend:
