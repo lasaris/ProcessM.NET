@@ -6,7 +6,7 @@ services:
     volumes:
       - ./API/Logs:/app/logs
     ports:
-      - 80:8000
+      - 8080:80
     networks:
       - processm_network
   frontend:
@@ -14,7 +14,7 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
     ports:
-      - 80:80
+      - 8081:80
     networks:
       - processm_network
 

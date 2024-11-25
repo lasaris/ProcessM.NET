@@ -3,13 +3,21 @@ import { useModelsDb } from '@/hooks/useModelsDb';
 import { NavLink } from '@/models/NavLink';
 import { TargetURL } from '@/router';
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+    useLocation,
+    useMatch,
+    useNavigate,
+    useParams,
+} from 'react-router-dom';
 import { MyNavLink } from './MyNavLink';
 
 export const NavBar: React.FC = () => {
     const navigate = useNavigate();
     const { entityName } = useParams();
     const { pathname } = useLocation();
+    const matchModels = useMatch('/models/*');
+    const matchModelsTable = useMatch('/models/:entityName');
+    const matchLogs = useMatch('/logs/*');
 
     const { fetchSingleModel } = useModelsDb();
     const { fetchSingleLog } = useLogsDb();
@@ -24,12 +32,7 @@ export const NavBar: React.FC = () => {
             },
         ];
 
-        console.log(pathname);
-        if (
-            pathname.includes('models') &&
-            entityName &&
-            pathname.replace(entityName, '') !== '/models/'
-        ) {
+        if (matchModels && !matchModelsTable && entityName) {
             const model = await fetchSingleModel(entityName);
             const targetUrl = TargetURL.MODELS_TABLE.replace(
                 ':entityName',
@@ -44,7 +47,7 @@ export const NavBar: React.FC = () => {
             }
         }
 
-        if (pathname.includes('logs') && entityName) {
+        if (matchLogs && entityName) {
             const log = await fetchSingleLog(entityName);
             const targetUrl = TargetURL.MODELS_TABLE.replace(
                 ':entityName',
