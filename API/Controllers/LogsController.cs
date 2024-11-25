@@ -1,4 +1,6 @@
-﻿using API.Models;
+﻿using System.Diagnostics.CodeAnalysis;
+using API.Models;
+using API.Utils;
 using LogImport.CsvImport;
 using LogImport.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -12,17 +14,19 @@ public class LogsController : ControllerBase
     [HttpPost]
     public ActionResult<ImportedEventLog> UploadLog([FromForm] IFormFile? file, [FromForm] string? csvSeparator)
     {
-        if (string.IsNullOrEmpty(csvSeparator) || file == null)
+        if (file == null)
         {
-            return BadRequest("No CsvSeparator or File were provided");
+            return BadRequest("No File was provided");
         }
 
         var stream = file.OpenReadStream();
 
-        var importer = new CsvImporter
+        var importer = new CsvImporter { };
+
+        if (!string.IsNullOrEmpty(csvSeparator))
         {
-            Delimiter = csvSeparator[0]
-        };
+            importer.Delimiter = csvSeparator[0];
+        }
 
         var importedEventLog = importer.LoadLog(stream);
 
@@ -40,28 +44,9 @@ public class LogsController : ControllerBase
             return BadRequest("Unable to parse the imported event log");
         }
 
-        List<string> timestampFormats = new()
+        for (int i = 0; i < Utilities.CommonTimestampFormats.Count; i++)
         {
-            "yyyy-MM-dd HH:mm:ss",      // 2024-10-09 13:45:30
-            "yyyy/MM/dd HH:mm:ss",      // 2024/10/09 13:45:30
-            "yyyy-MM-ddTHH:mm:ss",      // 2024-10-09T13:45:30
-            "yyyy-MM-ddTHH:mm:ss.fffZ", // 2024-10-09T13:45:30.123Z (ISO 8601 with milliseconds)
-            "yyyyMMddHHmmss",           // 20241009134530 (Compact format)
-            "dd-MM-yyyy HH:mm:ss",      // 09-10-2024 13:45:30
-            "dd/MM/yyyy HH:mm:ss",      // 09/10/2024 13:45:30
-            "MM/dd/yyyy HH:mm:ss",      // 10/09/2024 13:45:30
-            "MM/dd/yyyy HH:mm",      // 10/09/2024 13:45
-            "dddd, dd MMMM yyyy HH:mm:ss",  // Wednesday, 09 October 2024 13:45:30 (Verbose)
-            "yyyy-MM-dd HH:mm:ss.fff",  // 2024-10-09 13:45:30.123 (With milliseconds)
-            "yyyy-MM-dd HH:mm:ssK",     // 2024-10-09 13:45:30+02:00 (with time zone)
-            "O",                        // 2024-10-09T13:45:30.1234567+02:00 (Round-trip ISO 8601)
-            "R",                        // Wed, 09 Oct 2024 13:45:30 GMT (RFC1123)
-            "u",                        // 2024-10-09 13:45:30Z (UTC sortable)
-        };
-
-        for (int i = 0; i < timestampFormats.Count; i++)
-        {
-            var timestampFormat = timestampFormats[i];
+            var timestampFormat = Utilities.CommonTimestampFormats[i];
 
             var currentResult = importedEventLog.TrySetTimestampFormat(timestampFormat);
 
