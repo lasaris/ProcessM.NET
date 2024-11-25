@@ -70,6 +70,23 @@ export const AlphaMinerPage: React.FC = () => {
     }
 
     const onSubmit = async (values: AlphaMinerConfigurationType) => {
+        if (!values.activity) {
+            form.setError('activity', {
+                type: 'custom',
+                message: 'The activity column must be selected',
+            });
+        }
+
+        if (!values.caseId) {
+            form.setError('caseId', {
+                type: 'custom',
+                message: 'The caseId column must be selected',
+            });
+        }
+
+        if (!values.activity || !values.caseId) {
+            return;
+        }
         mine(values);
     };
 

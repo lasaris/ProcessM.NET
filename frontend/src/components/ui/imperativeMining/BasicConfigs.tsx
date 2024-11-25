@@ -74,6 +74,7 @@ export const BasicConfigs = ({ form, log }: BasicConfigsProps) => {
                                     })}
                                 </SelectContent>
                             </Select>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -110,6 +111,7 @@ export const BasicConfigs = ({ form, log }: BasicConfigsProps) => {
                                     })}
                                 </SelectContent>
                             </Select>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
