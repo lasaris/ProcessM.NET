@@ -1,18 +1,76 @@
+import { useLogsDb } from '@/hooks/useLogsDb';
+import { useModelsDb } from '@/hooks/useModelsDb';
 import { NavLink } from '@/models/NavLink';
 import { TargetURL } from '@/router';
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { MyNavLink } from './MyNavLink';
 
 export const NavBar: React.FC = () => {
     const navigate = useNavigate();
+    const { entityName } = useParams();
+    const { pathname } = useLocation();
 
-    const links: NavLink[] = [
-        {
-            targetUrl: TargetURL.LOGS,
-            title: 'Logs',
-        },
-    ];
+    const { fetchSingleModel } = useModelsDb();
+    const { fetchSingleLog } = useLogsDb();
+
+    const [navLinks, setNavLinks] = useState<NavLink[]>([]);
+
+    const getNavLinks = async () => {
+        const links: NavLink[] = [
+            {
+                targetUrl: TargetURL.LOGS,
+                title: 'Logs',
+            },
+        ];
+
+        console.log(pathname);
+        if (
+            pathname.includes('models') &&
+            entityName &&
+            pathname.replace(entityName, '') !== '/models/'
+        ) {
+            const model = await fetchSingleModel(entityName);
+            const targetUrl = TargetURL.MODELS_TABLE.replace(
+                ':entityName',
+                model.eventLogName
+            );
+
+            if (model && targetUrl) {
+                links.push({
+                    targetUrl,
+                    title: 'Models',
+                });
+            }
+        }
+
+        if (pathname.includes('logs') && entityName) {
+            const log = await fetchSingleLog(entityName);
+            const targetUrl = TargetURL.MODELS_TABLE.replace(
+                ':entityName',
+                log.metadata.name
+            );
+
+            if (log && targetUrl) {
+                links.push({
+                    targetUrl,
+                    title: 'Models',
+                });
+            }
+        }
+
+        return links;
+    };
+
+    // Refetch links whenever the pathname changes
+    useEffect(() => {
+        const updateNavLinks = async () => {
+            const links = await getNavLinks();
+            setNavLinks(links);
+        };
+
+        updateNavLinks();
+    }, [pathname, entityName]); // Add dependencies to watch for changes
 
     const navigateHome = () => {
         navigate(TargetURL.HOME);
@@ -27,17 +85,19 @@ export const NavBar: React.FC = () => {
                 ProcessM.NET
             </h2>
             <div>
-                <div className="gap-8">
-                    {links.map((link) => {
-                        return (
-                            <MyNavLink
-                                key={link.title}
-                                targetUrl={link.targetUrl}
-                                title={link.title}
-                            />
-                        );
-                    })}
-                </div>
+                {navLinks.length > 0 && (
+                    <div className="gap-8">
+                        {navLinks.map((link) => {
+                            return (
+                                <MyNavLink
+                                    key={link.title}
+                                    targetUrl={link.targetUrl}
+                                    title={link.title}
+                                />
+                            );
+                        })}
+                    </div>
+                )}
             </div>
         </nav>
     );

@@ -1,9 +1,8 @@
-import { TargetURL } from '@/router';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 type MyNavLinkProps = {
-    targetUrl: TargetURL;
+    targetUrl: string;
     title: string;
 };
 
