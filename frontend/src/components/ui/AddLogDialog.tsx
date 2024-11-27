@@ -18,7 +18,12 @@ type AddLogDialogProps = {
 
 export const AddLogDialog: React.FC<AddLogDialogProps> = ({ resetLogs }) => {
     const [openDialog, setOpenDialog] = useState<boolean>(false);
-    const { uploadLog, data: importedEventLogData, reset } = useLogs();
+    const {
+        uploadLog,
+        isPending,
+        data: importedEventLogData,
+        reset,
+    } = useLogs();
 
     return (
         <Dialog
@@ -39,7 +44,10 @@ export const AddLogDialog: React.FC<AddLogDialogProps> = ({ resetLogs }) => {
                     </DialogDescription>
                 </DialogHeader>
                 {importedEventLogData === undefined && (
-                    <UploadLogFile uploadLog={uploadLog} />
+                    <UploadLogFile
+                        uploadLog={uploadLog}
+                        isPending={isPending}
+                    />
                 )}
                 {importedEventLogData !== undefined && (
                     <SaveUploadLog

@@ -8,6 +8,7 @@ import { AxiosResponse } from 'axios';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { LoadingSpinner } from './LoadingSpinner';
 import { Switch } from './ShadCN/switch';
 
 type FileInputFormType = {
@@ -23,6 +24,7 @@ const fileInputSchema = z.object({
 });
 
 type UploadLogFileProps = {
+    isPending: boolean;
     uploadLog: UseMutateFunction<
         AxiosResponse<any, any>,
         Error,
@@ -31,7 +33,10 @@ type UploadLogFileProps = {
     >;
 };
 
-export const UploadLogFile: React.FC<UploadLogFileProps> = ({ uploadLog }) => {
+export const UploadLogFile: React.FC<UploadLogFileProps> = ({
+    uploadLog,
+    isPending,
+}) => {
     const fileForm = useForm<FileInputFormType>({
         resolver: zodResolver(fileInputSchema),
         defaultValues: {
@@ -73,6 +78,10 @@ export const UploadLogFile: React.FC<UploadLogFileProps> = ({ uploadLog }) => {
             uploadLog(formData);
         }
     };
+
+    if (isPending) {
+        return <LoadingSpinner />;
+    }
 
     return (
         <Form {...fileForm}>
