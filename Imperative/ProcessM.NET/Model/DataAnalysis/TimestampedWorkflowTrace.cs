@@ -11,12 +11,12 @@ namespace ProcessM.NET.Model.DataAnalysis
     class TimestampedWorkflowTrace
     {
         public string CaseId { get; }
-        public Dictionary<string, DateTime> Activities { get; }
+        public Dictionary<int, Tuple<string, DateTime>> Activities { get; }
 
         public TimestampedWorkflowTrace(string caseId)
         {
             CaseId = caseId;
-            Activities = new Dictionary<string, DateTime>();
+            Activities = new Dictionary<int, Tuple<string, DateTime>>();
         }
 
         /// <summary>
@@ -31,7 +31,8 @@ namespace ProcessM.NET.Model.DataAnalysis
                 throw new ArgumentNullException("Activity in AddActivity cannot be null");
             }
 
-            Activities.Add(activity, timestamp);
+            var activityWithTimestamp = new Tuple<string, DateTime>(activity, timestamp);
+            Activities.Add(Activities.Count, activityWithTimestamp);
         }
 
         /// <summary>
@@ -42,12 +43,13 @@ namespace ProcessM.NET.Model.DataAnalysis
         public WorkflowTrace ConvertToWorkflowTrace()
         {
             List<string> orderedActivities = new List<string>();
-            IOrderedEnumerable<KeyValuePair<string, DateTime>> newActivities = Activities.OrderBy(a => a.Value);
-            foreach (KeyValuePair<string, DateTime> timestampedActivity in newActivities)
+            IOrderedEnumerable<Tuple<string, DateTime>> newActivities = Activities.Select(trace => trace.Value).OrderBy(timestampedActivity => timestampedActivity.Item2);
+
+            foreach (Tuple<string, DateTime> timestampedActivity in newActivities)
             {
-                orderedActivities.Add(timestampedActivity.Key);
+                orderedActivities.Add(timestampedActivity.Item1);
             }
-            
+
             WorkflowTrace outTrace = new WorkflowTrace(CaseId);
             outTrace.AddActivities(orderedActivities);
             return outTrace;
