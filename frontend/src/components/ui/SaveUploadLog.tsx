@@ -21,6 +21,7 @@ import { AxiosResponse } from 'axios';
 import React, { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { LoadingSpinner } from './LoadingSpinner';
 import { Switch } from './ShadCN/switch';
 import { useToast } from './use-toast';
 
@@ -64,6 +65,7 @@ export const SaveUploadLog: React.FC<SaveUploadLogProps> = ({
         timestampFormat,
         reset: resetTimestamp,
         isError: setTimestampFormatError,
+        isPending,
         isSuccess: setTimestampFormatIsSuccess,
     } = useTrySetTimestampFormat();
     const containsTimestampWatch = configureLogForm.watch('containsTimestamp');
@@ -303,6 +305,11 @@ export const SaveUploadLog: React.FC<SaveUploadLogProps> = ({
                                 );
                             }}
                         />
+                        {isPending && (
+                            <div>
+                                <LoadingSpinner />
+                            </div>
+                        )}
                         {setTimestampFormatIsSuccess && timestampFormat && (
                             <div>
                                 <Label htmlFor="timestampFormatInput">
