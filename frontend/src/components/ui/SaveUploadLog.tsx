@@ -271,7 +271,12 @@ export const SaveUploadLog: React.FC<SaveUploadLogProps> = ({
                             render={({ field }) => {
                                 return (
                                     <div>
-                                        <Select onValueChange={field.onChange}>
+                                        <Select
+                                            onValueChange={(value) => {
+                                                field.onChange(value);
+                                                resetTimestamp();
+                                            }}
+                                        >
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Select Timestamp" />
                                             </SelectTrigger>
@@ -319,14 +324,33 @@ export const SaveUploadLog: React.FC<SaveUploadLogProps> = ({
                                     id="timestampFormatInput"
                                     ref={timestampFormatInputRef}
                                 />
+                                <p className="text-sm text-red-500">
+                                    Unable to automatically detect the timestamp
+                                    format. Enter a valid one in C# notation.
+                                </p>
                             </div>
                         )}
-                        <Button type="button" onClick={onCheckTimestamp}>
-                            Check Timestamp
-                        </Button>
+                        {!setTimestampFormatError &&
+                            !setTimestampFormatIsSuccess && (
+                                <Button
+                                    type="button"
+                                    onClick={onCheckTimestamp}
+                                >
+                                    Check Timestamp
+                                </Button>
+                            )}
                     </div>
                 )}
-                <Button type="submit">Submit!</Button>
+                <Button
+                    type="submit"
+                    disabled={
+                        containsTimestampWatch &&
+                        !setTimestampFormatError &&
+                        !setTimestampFormatIsSuccess
+                    }
+                >
+                    Submit!
+                </Button>
             </form>
         </Form>
     );
