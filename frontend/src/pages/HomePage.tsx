@@ -14,7 +14,7 @@ export const HomePage: React.FC = () => {
     return (
         <div className="flex flex-col items-center gap-4 p-10 sm:px-14 md:px-20 lg:px-32 md:py-20 overflow-x-hidden text-justify">
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-                ProcessM.NET
+                ProcessM.NET App
             </h1>
             <HomePageDescription />
             <Button
