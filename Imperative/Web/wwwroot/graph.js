@@ -1,12 +1,12 @@
 ﻿import { ContextMenu } from './context-menu.js';
 
 window.InitGraph = (element, csharpObjectRef) => {
-    
+
     window.csharpGraphRef = csharpObjectRef;
 
     // https://github.com/api-client/context-menu
     window.contextMenu = new ContextMenu(element);
-    
+
     // https://github.com/magjac/d3-graphviz
     window.graphviz = d3.select(element)
         .graphviz()
@@ -25,22 +25,29 @@ window.InitGraph = (element, csharpObjectRef) => {
                 const text = t.querySelector('text');
                 const title = t.querySelector('title');
                 const polygon = t.querySelector('polygon');
-                
+
                 text.setAttribute("pointer-events", "none");
                 title.setAttribute("pointer-events", "none");
-                if (!["<<start>>", "<<end>>"].includes(t.id)) {
-                    polygon.setAttribute("transitionId", t.id);
-                    polygon.classList.add('hasContextMenu');
-                }
+                // if (!["<<start>>", "<<end>>"].includes(t.id)) {
+                //     polygon.setAttribute("transitionId", t.id);
+                //     polygon.classList.add('hasContextMenu');
+                // }
             });
 
             rebuildContextMenu();
+
+            // Adjust the viewBox of the rendered SVG to match the size of the element
+            const svg = element.querySelector('svg');
+            if (svg) {
+                svg.setAttribute('width', '100%');
+                svg.setAttribute('height', '100%');
+            }
+
         });
 };
 
 window.RenderGraph = async (dotString) => {
     graphviz.renderDot(dotString);
-    // console.log(dotString);
 }
 
 window.ResetZoom = async () => {
@@ -53,8 +60,9 @@ const rebuildContextMenu = () => {
         {
             target: '.hasContextMenu',
             label: 'hide',
-            execute: (ctx) => { 
-                csharpGraphRef.invokeMethodAsync('HideTransition', ctx.target.getAttribute("transitionId")) }
+            execute: (ctx) => {
+                csharpGraphRef.invokeMethodAsync('HideTransition', ctx.target.getAttribute("transitionId"))
+            }
         },
         {
             target: '.hasContextMenu',

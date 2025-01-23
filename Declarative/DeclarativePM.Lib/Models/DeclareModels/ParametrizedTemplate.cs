@@ -60,9 +60,9 @@ namespace DeclarativePM.Lib.Models.DeclareModels
             Poi = template.Poi;
         }
 
-        [JsonIgnore] public List<ITemplate> TemplateInstances { get; set; }
+        public List<ITemplate> TemplateInstances { get; set; }
 
-        [JsonIgnore] public List<ITemplate> OptionalConstraints { get; set; } = new();
+        public List<ITemplate> OptionalConstraints { get; set; } = new();
 
         /// <summary>
         ///     Percentage of instances
@@ -76,7 +76,7 @@ namespace DeclarativePM.Lib.Models.DeclareModels
 
         public bool CheckVacuously { get; set; } = true;
 
-        [JsonIgnore] public TemplateDescription TemplateDescription { get; set; }
+        public TemplateDescription TemplateDescription { get; set; }
 
         /// <summary>
         ///     Creates TemplateDescription for template from the Type

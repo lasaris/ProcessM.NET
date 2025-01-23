@@ -1,33 +1,18 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProcessM.NET.Discovery.Alpha;
-using ProcessM.NET.Export;
 using ProcessM.NET.Import;
-using ProcessM.NET;
 using ProcessM.NET.Model.BasicPetriNet;
 using ProcessM.NET.Model.DataAnalysis;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using ProcessM.NET.Model;
+using LogImport.Models;
 
 namespace ProcessM.NETtests
 {
     [TestClass]
-    public class AlphaTests
+    public class AlphaTests : TestBase
     {
-        static readonly string workingDirectory = Environment.CurrentDirectory;
-        static readonly string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
-
-        static readonly string separator = System.IO.Path.DirectorySeparatorChar.ToString();
-        readonly string hardCsv = projectDirectory + separator + "Files" + separator + "alpha.csv";
-        readonly string easyCsv = projectDirectory + separator + "Files" + separator + "alpha2.csv";
-        readonly string veryHardCsv = projectDirectory + separator + "Files" + separator + "alphaHard.csv";
-        readonly string cycleNetCsv = projectDirectory + separator + "Files" + separator + "cycleNet.csv";
-        readonly string veryHardPnml = projectDirectory + separator + "Files" + separator + "hardPetriNet.xml";
-        readonly string hardPnml = projectDirectory + separator + "Files" + separator + "net.xml";
-        readonly string cycleNetPnml = projectDirectory + separator + "Files" + separator + "cycleNet.xml";
-
         private IPetriNet MakeEasyPetriNet()
         {
             IPlace p0 = new Place("p0");
@@ -61,8 +46,8 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream fs = File.Open(easyCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(fs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = easyCsvActivity;
+            elog.CaseId = easyCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             RelationMatrix matrix = new RelationMatrix(wlog);
             IPetriNet exampleNet = MakeEasyPetriNet();
@@ -94,10 +79,10 @@ namespace ProcessM.NETtests
         public void MakeHardPetriNetTest()
         {
             // Arrange
-            using FileStream hardCsvFs = File.Open(hardCsv, FileMode.Open);
+            using FileStream hardCsvFs = File.Open(alphaCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(hardCsvFs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = hardCsvActivity;
+            elog.CaseId = hardCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             RelationMatrix matrix = new RelationMatrix(wlog);
             using FileStream hardPnmlFs = File.Open(hardPnml, FileMode.Open);
@@ -152,8 +137,8 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream csvFs = File.Open(veryHardCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(csvFs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = veryHardCsvActivity;
+            elog.CaseId = veryHardCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             RelationMatrix matrix = new RelationMatrix(wlog);
             using FileStream pnmlFs = File.Open(veryHardPnml, FileMode.Open);
@@ -188,8 +173,8 @@ namespace ProcessM.NETtests
             // Arrange
             using FileStream cycleNetCsvfs = File.Open(cycleNetCsv, FileMode.Open);
             ImportedEventLog elog = CSVImport.MakeDataFrame(cycleNetCsvfs);
-            elog.SetActivity("act");
-            elog.SetCaseId("id");
+            elog.Activity = cycleNetCsvActivity;
+            elog.CaseId = cycleNetCsvCaseId;
             WorkflowLog wlog = new WorkflowLog(elog);
             RelationMatrix matrix = new RelationMatrix(wlog);
             using FileStream cycleNetPnmlFs = File.Open(cycleNetPnml, FileMode.Open);

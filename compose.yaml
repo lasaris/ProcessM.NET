@@ -1,0 +1,23 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: API/Dockerfile
+    volumes:
+      - ./API/Logs:/app/logs
+    ports:
+      - 8080:80
+    networks:
+      - processm_network
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - 8081:80
+    networks:
+      - processm_network
+
+networks:
+  processm_network:
+    driver: bridge

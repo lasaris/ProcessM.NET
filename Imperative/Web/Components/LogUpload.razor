@@ -2,30 +2,30 @@
 @using BakaMining.Components.Dialogs
 @using BakaMining.Utils
 @using ProcessM.NET.Import
-@using ProcessM.NET.Model
+@using LogImport.Models
 @using ProcessM.NET.Model.DataAnalysis
 @inject Services.Storage.EventLogStore EventLogStore
 @inject IDialogService DialogService
 
 
-<MudAlert Severity="Severity.Warning" Class="mb-4">Not suitable for large logs - thousands of lines - they take very long time to process.</MudAlert>
+<MudAlert Severity="Severity.Warning" Class="mb-4">Not suitable for large logs - thousands of lines - they take very
+    long time to process.</MudAlert>
 <MudAlert Severity="Severity.Info" Class="my-4">
-    Import expects .csv file with one header row, separator <code>{';', ',', '|', '\t', ','}</code> detected automaticaly. <br/>
-    Example logs can be found <a href="https://github.com/otahirs/ProcessM.NET/tree/master/ProcessM.NET-tests/Files" target="_blank">here</a>.
+    Import expects .csv file with one header row, separator <code>{';', ',', '|', '\t', ','}</code> detected
+    automaticaly. <br />
+    Example logs can be found <a href="https://github.com/otahirs/ProcessM.NET/tree/master/ProcessM.NET-tests/Files"
+        target="_blank">here</a>.
 </MudAlert>
 
 @if (!string.IsNullOrEmpty(_error))
 {
-    <MudAlert Severity="Severity.Error">File upload failed, see console for details. Truncated error follows: <br/> @_error</MudAlert>
+    <MudAlert Severity="Severity.Error">File upload failed, see console for details. Truncated error follows: <br /> @_error
+    </MudAlert>
 }
-<InputFile id="fileInput" OnChange="OnFileSelected" hidden accept=".csv"/>
+<InputFile id="fileInput" OnChange="OnFileSelected" hidden accept=".csv" />
 
-<MudButton HtmlTag="label"
-           Variant="Variant.Filled"
-           Color="Color.Primary"
-           StartIcon="@Icons.Material.Outlined.FileUpload"
-           for="fileInput"
-           Class="my-4">
+<MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary"
+    StartIcon="@Icons.Material.Outlined.FileUpload" for="fileInput" Class="my-4">
     Import .csv
 </MudButton>
 
@@ -34,7 +34,7 @@
 
     [Parameter]
     public EventCallback OnLogUploaded { get; set; }
-    
+
     ImportedEventLog _importedLog;
     IBrowserFile _file;
     string _error;
@@ -53,9 +53,9 @@
                 _importedLog = CSVImport.MakeDataFrame(memoryString);
             }
             var result = await DialogService.Show<DialogLogProperties>(
-                "Set Activity & CaseId columns",
-                new DialogParameters { ["Log"] = _importedLog }
-                ).Result;
+            "Set Activity & CaseId columns",
+            new DialogParameters { ["Log"] = _importedLog }
+            ).Result;
             if (!result.Cancelled)
             {
                 UploadLog();
@@ -67,7 +67,7 @@
             _error = exception.Message.Substring(0, Math.Min(exception.Message.Length, 2048));
             StateHasChanged();
         }
-       
+
     }
 
     private async void UploadLog()
@@ -75,19 +75,20 @@
         var workflowLog = new WorkflowLog(_importedLog);
 
         var logFile = new EventLogFile()
-        {
-            Metadata = new FileMetadata()
             {
-                Name = _file.Name,
-                Modified = _file.LastModified,
-                Size =  _file.Size
-            },
-            EventLog = OrderByActivityFrequency(workflowLog),
-            Activity = _importedLog.Activity,
-            CaseId = _importedLog.CaseId,
-            Timestamp = _importedLog.Timestamp,
-            Key = _file.Name + _importedLog.Activity + _importedLog.CaseId + _importedLog.Timestamp
-        };
+                Metadata = new FileMetadata()
+                {
+                    Name = _file.Name,
+                    Modified = _file.LastModified,
+                    Size = _file.Size
+                },
+                EventLog = OrderByActivityFrequency(workflowLog),
+                Activity = _importedLog.Headers[_importedLog.Activity],
+                CaseId = _importedLog.Headers[_importedLog.CaseId],
+                Timestamp = _importedLog.Timestamp.HasValue ? _importedLog.Headers[_importedLog.Timestamp.Value] : default,
+                Key = _file.Name + _importedLog.Activity + _importedLog.CaseId + _importedLog.Timestamp
+            };
+
         await EventLogStore.Add(logFile);
         await OnLogUploaded.InvokeAsync();
     }
@@ -96,9 +97,9 @@
     {
         var comparer = new ActivitiesComparer();
         return new WorkflowLog(wfLog.WorkflowTraces
-            .GroupBy(tr => tr.Activities, comparer)
-            .OrderByDescending(gr => gr.Count())
-            .SelectMany(gr => gr)
-            .ToList());
+        .GroupBy(tr => tr.Activities, comparer)
+        .OrderByDescending(gr => gr.Count())
+        .SelectMany(gr => gr)
+        .ToList());
     }
 }

@@ -34,13 +34,13 @@ namespace BakaMining
                 dbStore.Stores.Add(new StoreSchema
                 {
                     Name = Enums.Storename.EventLogFile,
-                    PrimaryKey = new IndexSpec{Name="key", KeyPath = "key", Auto=false},
-                    
+                    PrimaryKey = new IndexSpec { Name = "key", KeyPath = "key", Auto = false },
+
                 });
                 dbStore.Stores.Add(new StoreSchema
                 {
                     Name = Enums.Storename.PetriNetFile,
-                    PrimaryKey = new IndexSpec{Name="filename", KeyPath = "metadata.name", Auto=false},
+                    PrimaryKey = new IndexSpec { Name = "filename", KeyPath = "metadata.name", Auto = false },
                 });
             });
             builder.Services.AddScoped<EventLogStore>();
@@ -66,13 +66,13 @@ namespace BakaMining
         }
     }
 
-    public class AbstractConverter<TInterface, TImplementation> 
+    public class AbstractConverter<TInterface, TImplementation>
         : JsonConverter<TInterface> where TImplementation : TInterface
     {
         [return: MaybeNull]
-        public override TInterface Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) 
+        public override TInterface Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             => JsonSerializer.Deserialize<TImplementation>(ref reader, options);
-        public override void Write(Utf8JsonWriter writer, TInterface value, JsonSerializerOptions options) 
+        public override void Write(Utf8JsonWriter writer, TInterface value, JsonSerializerOptions options)
             => JsonSerializer.Serialize(writer, (TImplementation)value!, options);
     }
 }
