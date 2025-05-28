@@ -1,144 +1,98 @@
-
+using CsvHelper;
+using CsvHelper.Configuration;
 using LogImport.Exceptions;
 using LogImport.Interfaces;
 using LogImport.Models;
-using Microsoft.VisualBasic.FileIO;
+using System.Globalization;
+using System.Text;
 
-namespace LogImport.CsvImport
+namespace LogImport.CsvImport;
+
+/// <summary>
+/// Minimal CSV importer using CsvHelper
+/// </summary>
+public class CsvImporter : ILogImporter
 {
-    /// <summary>
-    ///    Class responsible for importing of CSV files
-    /// </summary>
-    public class CsvImporter : ILogImporter
+    public char? Delimiter { get; set; }
+    public bool HasHeaders { get; set; } = true;
+
+    public ImportedEventLog LoadLog(string filePath)
     {
-        private char? _delimiter;
-        private char[] _delimiterCandidates = new[] { ';', '|', '\t', ',' };
-        private string[] _missing = new[] { "none", "null", "nan", "na", "-", "" };
-        private bool _hasHeaders = true;
-
-        /// <summary>
-        ///   Delimiter used in the CSV file
-        /// </summary>
-        public char? Delimiter { get => _delimiter; set => _delimiter = value; }
-
-        /// <summary>
-        ///   Array of strings that are considered as missing values
-        /// </summary>
-        public string[] Missing { get => _missing; set => _missing = value; }
-
-        /// <summary>
-        ///   Flag indicating whether the CSV file has headers
-        /// </summary>
-        public bool HasHeaders { get => _hasHeaders; set => _hasHeaders = value; }
-
-        /// <summary>
-        ///  Default constructor
-        /// </summary>
-        public CsvImporter() { }
-
-        /// <summary>
-        ///  Overriden method from the interface <see cref="ILogImporter"/>
-        /// </summary>
-        /// <param name="filePath">string path to the file, that is being imported</param>
-        /// <returns><see cref="ImportedEventLog"/></returns>
-        public ImportedEventLog LoadLog(string filePath)
+        try
         {
-            try
+            using var stream = File.OpenRead(filePath);
+            return LoadLog(stream);
+        }
+        catch (Exception ex) when (
+            ex is FileNotFoundException ||
+            ex is IOException ||
+            ex is UnauthorizedAccessException ||
+            ex is ReaderException)
+        {
+            throw new CannotParseFileException(ex.Message);
+        }
+    }
+
+    public ImportedEventLog LoadLog(Stream stream)
+    {
+        using var reader = new StreamReader(stream, Encoding.UTF8, leaveOpen: true);
+        stream.Seek(0, SeekOrigin.Begin);
+
+        this.Delimiter ??= DetectCsvDelimiter(stream, new[] { ';', '|', '\t', ',' });
+
+        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            HasHeaderRecord = HasHeaders,
+            Delimiter = this.Delimiter.ToString(),
+            IgnoreBlankLines = true,
+            TrimOptions = TrimOptions.Trim,
+            BadDataFound = null,
+            MissingFieldFound = null,
+        };
+
+        using var csv = new CsvReader(reader, config);
+
+        var rows = new List<string[]>();
+        string[] headers;
+
+        if (HasHeaders)
+        {
+            csv.Read();
+            csv.ReadHeader();
+            headers = csv.HeaderRecord!;
+        }
+        else
+        {
+            if (!csv.Read() || csv.Parser.Record == null)
+                throw new CannotParseFileException("Empty file or unreadable data.");
+            
+            var first = csv.Parser.Record!;
+            headers = Enumerable.Range(0, first.Length).Select(i => $"Column {i + 1}").ToArray();
+            rows.Add(first);
+        }
+
+        while (csv.Read())
+        {
+            var row = csv.Parser.Record;
+            if (row != null)
             {
-                var stream = File.OpenRead(filePath);
-                return LoadLog(stream);
-            }
-            catch (FileNotFoundException)
-            {
-                throw new CannotParseFileException("File not found.");
-            }
-            catch (IOException)
-            {
-                throw new CannotParseFileException("File is in use.");
-            }
-            catch (UnauthorizedAccessException)
-            {
-                throw new CannotParseFileException("Access denied.");
-            }
-            catch (Exception e)
-            {
-                throw new CannotParseFileException(e.Message);
+                rows.Add(row);
             }
         }
 
-        /// <summary>
-        ///     Method containing the logic of loading an event log from a stream
-        /// </summary>
-        /// <param name="stream">Opened stream</param>
-        /// <returns><see cref="ImportedEventLog"/></returns>
-        /// <exception cref="CannotParseFileException">This exception is thrown, if the file doesn't contain headers, and we cannot create custom ones by the first row (for headers creation I need their length)</exception>
-        public ImportedEventLog LoadLog(Stream stream)
-        {
-            if (this._delimiter == null)
-            {
-                _delimiter = DetectCsvDelimiter(stream, _delimiterCandidates);
-            }
+        return new ImportedEventLog(rows, headers);
+    }
 
-            var logRows = new List<string[]>();
+    private static char DetectCsvDelimiter(Stream stream, IEnumerable<char> candidates)
+    {
+        var buffer = new byte[1024];
 
-            using (var parser = new TextFieldParser(stream))
-            {
-                parser.TextFieldType = FieldType.Delimited;
-                parser.SetDelimiters(_delimiter.ToString());
+        stream.Read(buffer, 0, 1024);
+        stream.Seek(0, SeekOrigin.Begin);
 
-                while (!parser.EndOfData)
-                {
-                    var row = parser.ReadFields();
+        var q = candidates.Select(sep => new
+        { Separator = sep, Found = buffer.Count(ch => ch == sep) });
 
-                    if (row == null)
-                    {
-                        continue;
-                    }
-
-                    logRows.Add(row);
-                }
-            }
-
-            if (_hasHeaders && logRows.Count > 0)
-            {
-                var fileHeaders = logRows[0];
-                logRows.RemoveAt(0);
-
-                return new ImportedEventLog(logRows, fileHeaders);
-            }
-
-            if (logRows.Count == 0)
-            {
-                throw new CannotParseFileException("Unable to parse file. No rows found.");
-            }
-
-            var firstLineLength = logRows[0].Length;
-            var headers = new string[firstLineLength];
-            for (var i = 0; i < firstLineLength; i++)
-            {
-                headers[i] = $"Column {i + 1}";
-            }
-
-            return new ImportedEventLog(logRows, headers);
-        }
-
-        /// <summary>
-        ///    Method responsible for detecting the delimiter of the CSV file
-        /// </summary>
-        /// <param name="stream">Open stream</param>
-        /// <param name="candidates">Candidate delimiters</param>
-        /// <returns>Delimiter character</returns>
-        private static char DetectCsvDelimiter(Stream stream, IEnumerable<char> candidates)
-        {
-            var buffer = new byte[1024];
-
-            stream.Read(buffer, 0, 1024);
-            stream.Seek(0, SeekOrigin.Begin);
-
-            var q = candidates.Select(sep => new
-            { Separator = sep, Found = buffer.Count(ch => ch == sep) });
-
-            return q.OrderByDescending(x => x.Found).First().Separator;
-        }
+        return q.OrderByDescending(x => x.Found).First().Separator;
     }
 }
